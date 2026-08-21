@@ -1,0 +1,1381 @@
+[
+  {
+    "id": "p1",
+    "name": "Aquiline One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 0,
+    "mappedFile": "one_piece_wc_s-trap-1.png"
+  },
+  {
+    "id": "p2",
+    "name": "Inslim One Piece WC (C8935)",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 1,
+    "mappedFile": "one_piece_wc_s-trap-2.png"
+  },
+  {
+    "id": "p3",
+    "name": "Inslim One Piece WC (C8905)",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 2,
+    "mappedFile": "one_piece_wc_s-trap-3.png"
+  },
+  {
+    "id": "p4",
+    "name": "Reeve One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 3,
+    "mappedFile": "one_piece_wc_s-trap-4.png"
+  },
+  {
+    "id": "p5",
+    "name": "Zest One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 4,
+    "mappedFile": "one_piece_wc_s-trap-5.png"
+  },
+  {
+    "id": "p6",
+    "name": "Atlas One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 5,
+    "mappedFile": "one_piece_wc_s-trap-6.png"
+  },
+  {
+    "id": "p7",
+    "name": "Viva One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 6,
+    "mappedFile": "one_piece_wc_s-trap-7.png"
+  },
+  {
+    "id": "p8",
+    "name": "Prime Plus One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 7,
+    "mappedFile": "one_piece_wc_s-trap-8.png"
+  },
+  {
+    "id": "p9",
+    "name": "Canvas One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 8,
+    "mappedFile": "one_piece_wc_s-trap-9.png"
+  },
+  {
+    "id": "p10",
+    "name": "Millenia One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 9,
+    "mappedFile": "one_piece_wc_s-trap-pg2-10.png"
+  },
+  {
+    "id": "p11",
+    "name": "Marvel One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 10,
+    "mappedFile": "one_piece_wc_s-trap-pg2-11.png"
+  },
+  {
+    "id": "p12",
+    "name": "Vista One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 11,
+    "mappedFile": "one_piece_wc_s-trap-pg2-12.png"
+  },
+  {
+    "id": "p13",
+    "name": "Apex One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 12,
+    "mappedFile": "one_piece_wc_s-trap-pg2-13.png"
+  },
+  {
+    "id": "p14",
+    "name": "Ovalo One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 13,
+    "mappedFile": "one_piece_wc_s-trap-pg2-14.png"
+  },
+  {
+    "id": "p15",
+    "name": "Crystal One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 14,
+    "mappedFile": "one_piece_wc_s-trap-pg2-15.png"
+  },
+  {
+    "id": "p16",
+    "name": "Opal One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 15,
+    "mappedFile": "one_piece_wc_s-trap-pg2-16.png"
+  },
+  {
+    "id": "p17",
+    "name": "Jeta One Piece WC (Inbuilt Jet)",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 16,
+    "mappedFile": "one_piece_wc_s-trap-pg2-17.png"
+  },
+  {
+    "id": "p18",
+    "name": "Honor One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 17,
+    "mappedFile": "one_piece_wc_s-trap-pg2-18.png"
+  },
+  {
+    "id": "p19",
+    "name": "Brezza One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 18,
+    "mappedFile": "one_piece_wc_s-trap-pg3-19.png"
+  },
+  {
+    "id": "p20",
+    "name": "Aster One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 19,
+    "mappedFile": "one_piece_wc_s-trap-pg3-20.png"
+  },
+  {
+    "id": "p21",
+    "name": "Claret One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 20,
+    "mappedFile": "one_piece_wc_s-trap-pg3-21.png"
+  },
+  {
+    "id": "p22",
+    "name": "Prime One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 21,
+    "mappedFile": "one_piece_wc_s-trap-pg3-22.png"
+  },
+  {
+    "id": "p23",
+    "name": "Jupiter One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 22,
+    "mappedFile": "one_piece_wc_s-trap-pg3-23.png"
+  },
+  {
+    "id": "p24",
+    "name": "Aura One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 23,
+    "mappedFile": "one_piece_wc_s-trap-pg3-24.png"
+  },
+  {
+    "id": "p25",
+    "name": "Sutra One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 24,
+    "mappedFile": "one_piece_wc_s-trap-pg3-25.png"
+  },
+  {
+    "id": "p26",
+    "name": "Peri One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 25,
+    "mappedFile": "one_piece_wc_s-trap-pg3-26.png"
+  },
+  {
+    "id": "p27",
+    "name": "Tiger One Piece WC",
+    "category": "One Piece WC (S-Trap)",
+    "indexInCat": 26,
+    "mappedFile": "one_piece_wc_s-trap-pg3-27.png"
+  },
+  {
+    "id": "p28",
+    "name": "Grand Hi-Jet Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 0,
+    "mappedFile": "wall_hung_wc-pg4-1.png"
+  },
+  {
+    "id": "p29",
+    "name": "Rombi Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 1,
+    "mappedFile": "wall_hung_wc-pg4-2.png"
+  },
+  {
+    "id": "p30",
+    "name": "Helix Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 2,
+    "mappedFile": "wall_hung_wc-pg4-3.png"
+  },
+  {
+    "id": "p31",
+    "name": "Confident Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 3,
+    "mappedFile": "wall_hung_wc-pg4-4.png"
+  },
+  {
+    "id": "p32",
+    "name": "Blaze Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 4,
+    "mappedFile": "wall_hung_wc-pg4-5.png"
+  },
+  {
+    "id": "p33",
+    "name": "Superio Rimless Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 5,
+    "mappedFile": "wall_hung_wc-pg4-6.png"
+  },
+  {
+    "id": "p34",
+    "name": "Luco Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 6,
+    "mappedFile": "wall_hung_wc-pg4-7.png"
+  },
+  {
+    "id": "p35",
+    "name": "Verve AM Rimless Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 7,
+    "mappedFile": "wall_hung_wc-pg4-8.png"
+  },
+  {
+    "id": "p36",
+    "name": "Zest N Rimless Wall Hung WC",
+    "category": "Wall Hung WC",
+    "indexInCat": 8,
+    "mappedFile": "wall_hung_wc-pg4-9.png"
+  },
+  {
+    "id": "p37",
+    "name": "Niagara Coupled Closet Set",
+    "category": "Floor Mounted Coupled Closet",
+    "indexInCat": 0,
+    "mappedFile": "floor_mounted_coupled_closet_with_dual_flush_cistern-pg5-1.png"
+  },
+  {
+    "id": "p38",
+    "name": "Casa Coupled Closet Set",
+    "category": "Floor Mounted Coupled Closet",
+    "indexInCat": 1,
+    "mappedFile": "floor_mounted_coupled_closet_with_dual_flush_cistern-pg5-2.png"
+  },
+  {
+    "id": "p39",
+    "name": "Verve AM Wall Hung Suite",
+    "category": "Wall Hung with Dual Flush Cistern",
+    "indexInCat": 0,
+    "mappedFile": "wall_hung_with_dual_flush_cistern-pg5-1.png"
+  },
+  {
+    "id": "p40",
+    "name": "Flair Wall Hung Suite",
+    "category": "Wall Hung with Dual Flush Cistern",
+    "indexInCat": 1,
+    "mappedFile": "wall_hung_with_dual_flush_cistern-pg5-2.png"
+  },
+  {
+    "id": "p41",
+    "name": "Indus Wall Hung Suite",
+    "category": "Wall Hung with Dual Flush Cistern",
+    "indexInCat": 2,
+    "mappedFile": "wall_hung_with_dual_flush_cistern-pg5-3.png"
+  },
+  {
+    "id": "p42",
+    "name": "Casa Wall Hung Suite",
+    "category": "Wall Hung with Dual Flush Cistern",
+    "indexInCat": 3,
+    "mappedFile": "wall_hung_with_dual_flush_cistern-pg5-4.png"
+  },
+  {
+    "id": "p43",
+    "name": "Universal EWC Suite",
+    "category": "Floor Mounted WC (EWC)",
+    "indexInCat": 0,
+    "mappedFile": "floor_mounted_wc-pg6-1.png"
+  },
+  {
+    "id": "p44",
+    "name": "Niagara EWC Suite",
+    "category": "Floor Mounted WC (EWC)",
+    "indexInCat": 1,
+    "mappedFile": "floor_mounted_wc-pg6-2.png"
+  },
+  {
+    "id": "p45",
+    "name": "Verve Plus EWC",
+    "category": "Floor Mounted WC (EWC)",
+    "indexInCat": 2,
+    "mappedFile": "floor_mounted_wc-pg6-3.png"
+  },
+  {
+    "id": "p46",
+    "name": "Camry / Verve EWC",
+    "category": "Floor Mounted WC (EWC)",
+    "indexInCat": 3,
+    "mappedFile": "floor_mounted_wc-pg6-4.png"
+  },
+  {
+    "id": "p47",
+    "name": "Petite Concealed EWC",
+    "category": "Floor Mounted WC (EWC)",
+    "indexInCat": 4,
+    "mappedFile": "floor_mounted_wc-pg6-5.png"
+  },
+  {
+    "id": "p48",
+    "name": "Elite EWC (ISI Certified)",
+    "category": "Floor Mounted WC (EWC)",
+    "indexInCat": 5,
+    "mappedFile": "floor_mounted_wc-pg6-6.png"
+  },
+  {
+    "id": "p49",
+    "name": "Petite EWC (ISI Certified)",
+    "category": "Floor Mounted WC (EWC)",
+    "indexInCat": 6,
+    "mappedFile": "floor_mounted_wc-pg6-7.png"
+  },
+  {
+    "id": "p50",
+    "name": "New Asian Pan",
+    "category": "Squatting Pan",
+    "indexInCat": 0,
+    "mappedFile": "squatting_pan-pg7-1.png"
+  },
+  {
+    "id": "p51",
+    "name": "Rapti Pan",
+    "category": "Squatting Pan",
+    "indexInCat": 1,
+    "mappedFile": "squatting_pan-pg7-2.png"
+  },
+  {
+    "id": "p52",
+    "name": "Utsav Pan XL 580mm (ISI Certified)",
+    "category": "Squatting Pan",
+    "indexInCat": 2,
+    "mappedFile": "squatting_pan-pg7-3.png"
+  },
+  {
+    "id": "p53",
+    "name": "Utsav Pan 500mm",
+    "category": "Squatting Pan",
+    "indexInCat": 3,
+    "mappedFile": "squatting_pan-pg7-4.png"
+  },
+  {
+    "id": "p54",
+    "name": "Ace Pan 580mm",
+    "category": "Squatting Pan",
+    "indexInCat": 4,
+    "mappedFile": "squatting_pan-pg7-1.png"
+  },
+  {
+    "id": "p55",
+    "name": "Ace Pan 500mm",
+    "category": "Squatting Pan",
+    "indexInCat": 5,
+    "mappedFile": "squatting_pan-pg7-2.png"
+  },
+  {
+    "id": "p56",
+    "name": "Utsav Pan 580mm",
+    "category": "Squatting Pan",
+    "indexInCat": 6,
+    "mappedFile": "squatting_pan-pg7-3.png"
+  },
+  {
+    "id": "p57",
+    "name": "Rimfree Pan",
+    "category": "Squatting Pan",
+    "indexInCat": 7,
+    "mappedFile": "squatting_pan-pg7-4.png"
+  },
+  {
+    "id": "p58",
+    "name": "Resolute Wall Hung Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 0,
+    "mappedFile": "wall_hung_basin-pg8-1.png"
+  },
+  {
+    "id": "p59",
+    "name": "Oxford Wall Hung Basin (ISI Certified)",
+    "category": "Wall Hung Basin",
+    "indexInCat": 1,
+    "mappedFile": "wall_hung_basin-pg8-2.png"
+  },
+  {
+    "id": "p60",
+    "name": "Corner Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 2,
+    "mappedFile": "wall_hung_basin-pg8-3.png"
+  },
+  {
+    "id": "p61",
+    "name": "Cooper Wall Hung Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 3,
+    "mappedFile": "wall_hung_basin-pg8-4.png"
+  },
+  {
+    "id": "p62",
+    "name": "Indus Standard Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 4,
+    "mappedFile": "wall_hung_basin-pg8-5.png"
+  },
+  {
+    "id": "p63",
+    "name": "Indus Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 5,
+    "mappedFile": "wall_hung_basin-pg8-6.png"
+  },
+  {
+    "id": "p64",
+    "name": "Kolar Sumo Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 6,
+    "mappedFile": "wall_hung_basin-pg8-7.png"
+  },
+  {
+    "id": "p65",
+    "name": "Apex Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 7,
+    "mappedFile": "wall_hung_basin-pg8-8.png"
+  },
+  {
+    "id": "p66",
+    "name": "Tapti Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 8,
+    "mappedFile": "wall_hung_basin-pg8-9.png"
+  },
+  {
+    "id": "p67",
+    "name": "Vault Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 9,
+    "mappedFile": "wall_hung_basin-pg9-10.png"
+  },
+  {
+    "id": "p68",
+    "name": "Kolar Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 10,
+    "mappedFile": "wall_hung_basin-pg9-11.png"
+  },
+  {
+    "id": "p69",
+    "name": "Atom Prime Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 11,
+    "mappedFile": "wall_hung_basin-pg9-12.png"
+  },
+  {
+    "id": "p70",
+    "name": "Atom Pro / Plus Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 12,
+    "mappedFile": "wall_hung_basin-pg9-13.png"
+  },
+  {
+    "id": "p71",
+    "name": "Cascade Classic Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 13,
+    "mappedFile": "wall_hung_basin-pg9-14.png"
+  },
+  {
+    "id": "p72",
+    "name": "Uno Basin",
+    "category": "Wall Hung Basin",
+    "indexInCat": 14,
+    "mappedFile": "wall_hung_basin-pg9-15.png"
+  },
+  {
+    "id": "p82",
+    "name": "Integrated N Electronic Urinal",
+    "category": "Urinals — Electronic",
+    "indexInCat": 0,
+    "mappedFile": "electronics_urinal-pg11-1.png"
+  },
+  {
+    "id": "p83",
+    "name": "Sensurn Electronic Urinal Set",
+    "category": "Urinals — Electronic",
+    "indexInCat": 1,
+    "mappedFile": "electronics_urinal-pg11-2.png"
+  },
+  {
+    "id": "p84",
+    "name": "Craft Electronic Urinal",
+    "category": "Urinals — Electronic",
+    "indexInCat": 2,
+    "mappedFile": "electronics_urinal-pg11-3.png"
+  },
+  {
+    "id": "p85",
+    "name": "Whiz Urinal Set",
+    "category": "Urinals — Regular",
+    "indexInCat": 0,
+    "mappedFile": "regular_urinal-pg11-1.png"
+  },
+  {
+    "id": "p86",
+    "name": "New Magnum Combo Set (ISI Certified)",
+    "category": "Urinals — Regular",
+    "indexInCat": 1,
+    "mappedFile": "regular_urinal-pg11-2.png"
+  },
+  {
+    "id": "p87",
+    "name": "Luna Urinal",
+    "category": "Urinals — Regular",
+    "indexInCat": 2,
+    "mappedFile": "regular_urinal-pg11-3.png"
+  },
+  {
+    "id": "p88",
+    "name": "Niagara N Urinal Set",
+    "category": "Urinals — Regular",
+    "indexInCat": 3,
+    "mappedFile": "regular_urinal-pg11-4.png"
+  },
+  {
+    "id": "p89",
+    "name": "Flat Back Urinal (ISI Certified)",
+    "category": "Urinals — Regular",
+    "indexInCat": 4,
+    "mappedFile": "regular_urinal-pg11-5.png"
+  },
+  {
+    "id": "p90",
+    "name": "Squatting Urinal",
+    "category": "Urinals — Regular",
+    "indexInCat": 5,
+    "mappedFile": "regular_urinal-pg11-6.png"
+  },
+  {
+    "id": "p91",
+    "name": "Single Lever Basin Mixer",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 0,
+    "mappedFile": "faucet_01.png"
+  },
+  {
+    "id": "p92",
+    "name": "Single Lever Basin Mixer (Cold Start)",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 1,
+    "mappedFile": "faucet_02.png"
+  },
+  {
+    "id": "p93",
+    "name": "Tall Body Basin Mixer",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 2,
+    "mappedFile": "faucet_03.png"
+  },
+  {
+    "id": "p94",
+    "name": "Wall Mounted Basin Mixer Upper Trim (G5277A1)",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 3,
+    "mappedFile": "faucet_04.png"
+  },
+  {
+    "id": "p95",
+    "name": "Wall Mounted Basin Mixer Upper Trim (G5276A1)",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 4,
+    "mappedFile": "faucet_05.png"
+  },
+  {
+    "id": "p96",
+    "name": "Center Hole Basin Mixer",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 5,
+    "mappedFile": "faucet_06.png"
+  },
+  {
+    "id": "p97",
+    "name": "Claret Pillar Cock",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 6,
+    "mappedFile": "faucet_07.png"
+  },
+  {
+    "id": "p98",
+    "name": "Tall Body Pillar Cock",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 7,
+    "mappedFile": "faucet_08.png"
+  },
+  {
+    "id": "p99",
+    "name": "Wall Mounted Basin Tap Upper Trim",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 8,
+    "mappedFile": "faucet_09.png"
+  },
+  {
+    "id": "p100",
+    "name": "Swan Neck Pillar Cock",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 9,
+    "mappedFile": "faucet_10.png"
+  },
+  {
+    "id": "p101",
+    "name": "Angle Valve",
+    "category": "Faucets — Claret Collection > Basin",
+    "indexInCat": 10,
+    "mappedFile": "faucet_11.png"
+  },
+  {
+    "id": "p102",
+    "name": "Concealed Diverter Upper Trim",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 0,
+    "mappedFile": "shower_01.png"
+  },
+  {
+    "id": "p103",
+    "name": "Ultra High Flow Concealed Diverter Upper Trim",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 1,
+    "mappedFile": "shower_02.png"
+  },
+  {
+    "id": "p104",
+    "name": "3-Inlet Diverter Upper Trim",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 2,
+    "mappedFile": "shower_03.png"
+  },
+  {
+    "id": "p105",
+    "name": "Deusch Mixer Upper Trim",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 3,
+    "mappedFile": "shower_04.png"
+  },
+  {
+    "id": "p106",
+    "name": "Non Telephonic Wall Mixer",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 4,
+    "mappedFile": "shower_05.png"
+  },
+  {
+    "id": "p107",
+    "name": "Wall Mixer 2-in-1",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 5,
+    "mappedFile": "shower_06.png"
+  },
+  {
+    "id": "p108",
+    "name": "Wall Mixer 3-in-1",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 6,
+    "mappedFile": "shower_07.png"
+  },
+  {
+    "id": "p109",
+    "name": "Wall Mixer with Crutch",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 7,
+    "mappedFile": "shower_08.png"
+  },
+  {
+    "id": "p110",
+    "name": "Wall Spout",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 8,
+    "mappedFile": "shower_09.png"
+  },
+  {
+    "id": "p111",
+    "name": "Wall Spout with Diverter",
+    "category": "Faucets — Claret Collection > Bath",
+    "indexInCat": 9,
+    "mappedFile": "shower_10.png"
+  },
+  {
+    "id": "p112",
+    "name": "Sink Mixer (Wall Mounted)",
+    "category": "Faucets — Claret Collection > Kitchen",
+    "indexInCat": 0,
+    "mappedFile": "claret_kitchen_01.png"
+  },
+  {
+    "id": "p113",
+    "name": "Wall Mounted Sink Mixer Top Outlet",
+    "category": "Faucets — Claret Collection > Kitchen",
+    "indexInCat": 1,
+    "mappedFile": "claret_kitchen_02.png"
+  },
+  {
+    "id": "p114",
+    "name": "Single Lever Sink Mixer",
+    "category": "Faucets — Claret Collection > Kitchen",
+    "indexInCat": 2,
+    "mappedFile": "claret_kitchen_03.png"
+  },
+  {
+    "id": "p115",
+    "name": "Sink Cock (Wall Mounted)",
+    "category": "Faucets — Claret Collection > Kitchen",
+    "indexInCat": 3,
+    "mappedFile": "claret_kitchen_04.png"
+  },
+  {
+    "id": "p116",
+    "name": "Sink Cock Long Spout (Wall Mounted)",
+    "category": "Faucets — Claret Collection > Kitchen",
+    "indexInCat": 4,
+    "mappedFile": "claret_kitchen_05.png"
+  },
+  {
+    "id": "p117",
+    "name": "Single Lever Deck Mounted Sink Mixer",
+    "category": "Faucets — Claret Collection > Kitchen",
+    "indexInCat": 5,
+    "mappedFile": "claret_kitchen_06.png"
+  },
+  {
+    "id": "p118",
+    "name": "Single Lever Sink Mixer (Deck Mounted)",
+    "category": "Faucets — Claret Collection > Kitchen",
+    "indexInCat": 6,
+    "mappedFile": "claret_kitchen_07.png"
+  },
+  {
+    "id": "p119",
+    "name": "Claret Bib Cock",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 0,
+    "mappedFile": "clarinet_utility_01.png"
+  },
+  {
+    "id": "p120",
+    "name": "Two Way Bib Cock",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 1,
+    "mappedFile": "clarinet_utility_02.png"
+  },
+  {
+    "id": "p121",
+    "name": "Two Way Angle Valve",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 2,
+    "mappedFile": "clarinet_utility_03.png"
+  },
+  {
+    "id": "p122",
+    "name": "Bib Cock with Nozzle",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 3,
+    "mappedFile": "clarinet_utility_04.png"
+  },
+  {
+    "id": "p123",
+    "name": "Long Body Bib Cock",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 4,
+    "mappedFile": "clarinet_utility_05.png"
+  },
+  {
+    "id": "p124",
+    "name": "Long Neck Bib Cock",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 5,
+    "mappedFile": "clarinet_utility_06.png"
+  },
+  {
+    "id": "p125",
+    "name": "Concealed Stop Cock 1/2",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 6,
+    "mappedFile": "clarinet_utility_07.png"
+  },
+  {
+    "id": "p126",
+    "name": "Concealed Stop Cock 3/4",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 7,
+    "mappedFile": "clarinet_utility_08.png"
+  },
+  {
+    "id": "p127",
+    "name": "Concealed Stop Cock Upper Trim",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 8,
+    "mappedFile": "clarinet_utility_09.png"
+  },
+  {
+    "id": "p128",
+    "name": "Exposed Part of Flush Cock",
+    "category": "Faucets — Claret Collection > Utility",
+    "indexInCat": 9,
+    "mappedFile": "clarinet_utility_10.png"
+  },
+  {
+    "id": "p129",
+    "name": "Basin Mixer without Pop-Up",
+    "category": "Faucets — Jade Collection > Basin",
+    "indexInCat": 0,
+    "mappedFile": "basin_01.png"
+  },
+  {
+    "id": "p130",
+    "name": "Pillar Cock with Aerator",
+    "category": "Faucets — Jade Collection > Basin",
+    "indexInCat": 1,
+    "mappedFile": "basin_02.png"
+  },
+  {
+    "id": "p131",
+    "name": "Swan Neck Pillar Cock (Jade)",
+    "category": "Faucets — Jade Collection > Basin",
+    "indexInCat": 2,
+    "mappedFile": "basin_03.png"
+  },
+  {
+    "id": "p132",
+    "name": "Angle Valve (Jade)",
+    "category": "Faucets — Jade Collection > Basin",
+    "indexInCat": 3,
+    "mappedFile": "basin_04.png"
+  },
+  {
+    "id": "p133",
+    "name": "Wall Mixer 2-in-1 (Jade)",
+    "category": "Faucets — Jade Collection > Bath",
+    "indexInCat": 0,
+    "mappedFile": "bath_01.png"
+  },
+  {
+    "id": "p134",
+    "name": "Wall Mixer 3-in-1 (Jade)",
+    "category": "Faucets — Jade Collection > Bath",
+    "indexInCat": 1,
+    "mappedFile": "bath_02.png"
+  },
+  {
+    "id": "p135",
+    "name": "Wall Mixer with Crutch (Jade)",
+    "category": "Faucets — Jade Collection > Bath",
+    "indexInCat": 2,
+    "mappedFile": "bath_03.png"
+  },
+  {
+    "id": "p136",
+    "name": "Sink Mixer (Wall Mounted) (Jade)",
+    "category": "Faucets — Jade Collection > Kitchen",
+    "indexInCat": 0,
+    "mappedFile": "kitchen_01.png"
+  },
+  {
+    "id": "p137",
+    "name": "Sink Cock (Wall Mounted) (Jade)",
+    "category": "Faucets — Jade Collection > Kitchen",
+    "indexInCat": 1,
+    "mappedFile": "kitchen_02.png"
+  },
+  {
+    "id": "p138",
+    "name": "Sink Cock (Deck Mounted) (Jade)",
+    "category": "Faucets — Jade Collection > Kitchen",
+    "indexInCat": 2,
+    "mappedFile": "kitchen_03.png"
+  },
+  {
+    "id": "p139",
+    "name": "Sink Mixer (Deck Mounted) Two Knob (Jade)",
+    "category": "Faucets — Jade Collection > Kitchen",
+    "indexInCat": 3,
+    "mappedFile": "kitchen_04.png"
+  },
+  {
+    "id": "p140",
+    "name": "Bib Cock (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 0,
+    "mappedFile": "utility_01.png"
+  },
+  {
+    "id": "p141",
+    "name": "Long Spout Bib Cock (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 1,
+    "mappedFile": "utility_02.png"
+  },
+  {
+    "id": "p142",
+    "name": "Two Way Bib Cock with Aerator (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 2,
+    "mappedFile": "utility_03.png"
+  },
+  {
+    "id": "p143",
+    "name": "Bib Cock With Nozzle (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 3,
+    "mappedFile": "utility_04.png"
+  },
+  {
+    "id": "p144",
+    "name": "Long Body Bib Cock (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 4,
+    "mappedFile": "utility_05.png"
+  },
+  {
+    "id": "p145",
+    "name": "Bib Cock (G0269A1) (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 5,
+    "mappedFile": "utility_06.png"
+  },
+  {
+    "id": "p146",
+    "name": "Two Way Angle Valve (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 6,
+    "mappedFile": "utility_07.png"
+  },
+  {
+    "id": "p147",
+    "name": "Concealed Stop Cock Upper Trim (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 7,
+    "mappedFile": "utility_08.png"
+  },
+  {
+    "id": "p148",
+    "name": "Exposed Part of Flush Cock (Jade)",
+    "category": "Faucets — Jade Collection > Utility",
+    "indexInCat": 8,
+    "mappedFile": "utility_09.png"
+  },
+  {
+    "id": "p149",
+    "name": "3-Inlet Concealed Diverter Body (G9969A1)",
+    "category": "Concealed Bodies",
+    "indexInCat": 0,
+    "mappedFile": "concealed_body_01.png"
+  },
+  {
+    "id": "p150",
+    "name": "3-Inlet Concealed Diverter Body (T9969A1)",
+    "category": "Concealed Bodies",
+    "indexInCat": 1,
+    "mappedFile": "concealed_body_02.png"
+  },
+  {
+    "id": "p151",
+    "name": "Ultra High Flow Concealed Diverter Body",
+    "category": "Concealed Bodies",
+    "indexInCat": 2,
+    "mappedFile": "concealed_body_03.png"
+  },
+  {
+    "id": "p152",
+    "name": "Concealed Diverter Body",
+    "category": "Concealed Bodies",
+    "indexInCat": 3,
+    "mappedFile": "concealed_body_04.png"
+  },
+  {
+    "id": "p153",
+    "name": "Concealed Body Basin Mixer",
+    "category": "Concealed Bodies",
+    "indexInCat": 4,
+    "mappedFile": "concealed_body_05.png"
+  },
+  {
+    "id": "p154",
+    "name": "Wall Mounted Pillar Cock Body - Pressmatic",
+    "category": "Concealed Bodies",
+    "indexInCat": 5,
+    "mappedFile": "concealed_body_06.png"
+  },
+  {
+    "id": "p155",
+    "name": "Concealed Deusch Mixer Body",
+    "category": "Concealed Bodies",
+    "indexInCat": 6,
+    "mappedFile": "concealed_body_07.png"
+  },
+  {
+    "id": "p156",
+    "name": "Concealed Deusch Mixer Body (Reverse)",
+    "category": "Concealed Bodies",
+    "indexInCat": 7,
+    "mappedFile": "concealed_body_08.png"
+  },
+  {
+    "id": "p157",
+    "name": "Concealed Wall Mounted Basin Tap Body",
+    "category": "Concealed Bodies",
+    "indexInCat": 8,
+    "mappedFile": "concealed_body_09.png"
+  },
+  {
+    "id": "p158",
+    "name": "Concealed Body of Flush Cock (Universal)",
+    "category": "Concealed Bodies",
+    "indexInCat": 9,
+    "mappedFile": "concealed_body_10.png"
+  },
+  {
+    "id": "p159",
+    "name": "Concealed Stop Cock Body (1/2",
+    "category": "Concealed Bodies",
+    "indexInCat": 10,
+    "mappedFile": "concealed_body_11.png"
+  },
+  {
+    "id": "p160",
+    "name": "Concealed Stop Cock Body (3/4",
+    "category": "Concealed Bodies",
+    "indexInCat": 11,
+    "mappedFile": "concealed_body_01.png"
+  },
+  {
+    "id": "p161",
+    "name": "3 Modes Hand Shower 120mm, Chrome Finish",
+    "category": "Hand Showers Collection",
+    "indexInCat": 0,
+    "mappedFile": "hand_shower_01.png"
+  },
+  {
+    "id": "p162",
+    "name": "Galaxy 3 Flow Hand Shower Black",
+    "category": "Hand Showers Collection",
+    "indexInCat": 1,
+    "mappedFile": "hand_shower_02.png"
+  },
+  {
+    "id": "p163",
+    "name": "Multiflow Hand Shower 100mm",
+    "category": "Hand Showers Collection",
+    "indexInCat": 2,
+    "mappedFile": "hand_shower_03.png"
+  },
+  {
+    "id": "p164",
+    "name": "Airmix Hand Shower 100mm, Chrome Finish",
+    "category": "Hand Showers Collection",
+    "indexInCat": 3,
+    "mappedFile": "hand_shower_04.png"
+  },
+  {
+    "id": "p165",
+    "name": "Multiflow Hand Shower 80mm, Chrome Finish",
+    "category": "Hand Showers Collection",
+    "indexInCat": 4,
+    "mappedFile": "hand_shower_05.png"
+  },
+  {
+    "id": "p166",
+    "name": "3 Modes Hand Shower 105mm, Chrome Finish",
+    "category": "Hand Showers Collection",
+    "indexInCat": 5,
+    "mappedFile": "hand_shower_06.png"
+  },
+  {
+    "id": "p167",
+    "name": "Single Flow Hand Shower 80mm, Normal Rain Flow",
+    "category": "Hand Showers Collection",
+    "indexInCat": 6,
+    "mappedFile": "hand_shower_01.png"
+  },
+  {
+    "id": "p168",
+    "name": "3 Modes Hand Shower 120mm (T9862A1)",
+    "category": "Hand Showers Collection",
+    "indexInCat": 7,
+    "mappedFile": "hand_shower_02.png"
+  },
+  {
+    "id": "p169",
+    "name": "4 Modes Hand Shower 105mm, Chrome Finish",
+    "category": "Hand Showers Collection",
+    "indexInCat": 8,
+    "mappedFile": "hand_shower_03.png"
+  },
+  {
+    "id": "p170",
+    "name": "Easy Cleaning Hand Shower, Rain Flow",
+    "category": "Hand Showers Collection",
+    "indexInCat": 9,
+    "mappedFile": "hand_shower_04.png"
+  },
+  {
+    "id": "p171",
+    "name": "Easy Cleaning Hand Shower 100mm, Rain Flow",
+    "category": "Hand Showers Collection",
+    "indexInCat": 10,
+    "mappedFile": "hand_shower_05.png"
+  },
+  {
+    "id": "p172",
+    "name": "2 Modes Hand Shower 110mm",
+    "category": "Hand Showers Collection",
+    "indexInCat": 11,
+    "mappedFile": "hand_shower_06.png"
+  },
+  {
+    "id": "p173",
+    "name": "Single Flow Hand Shower, Rain Flow",
+    "category": "Hand Showers Collection",
+    "indexInCat": 12,
+    "mappedFile": "hand_shower_01.png"
+  },
+  {
+    "id": "p174",
+    "name": "Single Flow Hand Shower 80mm, Rain Flow",
+    "category": "Hand Showers Collection",
+    "indexInCat": 13,
+    "mappedFile": "hand_shower_02.png"
+  },
+  {
+    "id": "p175",
+    "name": "3 Modes Hand Shower 120mm (T9866A1)",
+    "category": "Hand Showers Collection",
+    "indexInCat": 14,
+    "mappedFile": "hand_shower_03.png"
+  },
+  {
+    "id": "p176",
+    "name": "Opera Stick Hand Shower, Rain Flow",
+    "category": "Hand Showers Collection",
+    "indexInCat": 15,
+    "mappedFile": "hand_shower_04.png"
+  },
+  {
+    "id": "p177",
+    "name": "Sinatra Stick Hand Shower 30mm, Rain Flow",
+    "category": "Hand Showers Collection",
+    "indexInCat": 16,
+    "mappedFile": "hand_shower_05.png"
+  },
+  {
+    "id": "p178",
+    "name": "Comfort Hand Shower 80mm, Rain Flow",
+    "category": "Hand Showers Collection",
+    "indexInCat": 17,
+    "mappedFile": "hand_shower_06.png"
+  },
+  {
+    "id": "p179",
+    "name": "Cardiff Health Faucet Brass",
+    "category": "Health Faucet Collection",
+    "indexInCat": 0,
+    "mappedFile": "faucet_01.png"
+  },
+  {
+    "id": "p180",
+    "name": "Crust Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 1,
+    "mappedFile": "faucet_02.png"
+  },
+  {
+    "id": "p181",
+    "name": "Euclid Plus Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 2,
+    "mappedFile": "faucet_03.png"
+  },
+  {
+    "id": "p182",
+    "name": "Slimline Easy Cleaning Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 3,
+    "mappedFile": "faucet_04.png"
+  },
+  {
+    "id": "p183",
+    "name": "Praseo Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 4,
+    "mappedFile": "faucet_05.png"
+  },
+  {
+    "id": "p184",
+    "name": "Quattro Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 5,
+    "mappedFile": "faucet_06.png"
+  },
+  {
+    "id": "p185",
+    "name": "Primo Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 6,
+    "mappedFile": "faucet_07.png"
+  },
+  {
+    "id": "p186",
+    "name": "Pluto Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 7,
+    "mappedFile": "faucet_08.png"
+  },
+  {
+    "id": "p187",
+    "name": "Splash Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 8,
+    "mappedFile": "faucet_09.png"
+  },
+  {
+    "id": "p188",
+    "name": "Uno Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 9,
+    "mappedFile": "faucet_10.png"
+  },
+  {
+    "id": "p189",
+    "name": "Coral Neo Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 10,
+    "mappedFile": "faucet_11.png"
+  },
+  {
+    "id": "p190",
+    "name": "Ovalo Plus Anti Microbial Health Faucet",
+    "category": "Health Faucet Collection",
+    "indexInCat": 11,
+    "mappedFile": "faucet_12.png"
+  },
+  {
+    "id": "p191",
+    "name": "Bottle Trap - Light 9",
+    "category": "Bottle Traps",
+    "indexInCat": 0,
+    "mappedFile": "bottle_traps_01.png"
+  },
+  {
+    "id": "p192",
+    "name": "Bottle Trap - Heavy 9",
+    "category": "Bottle Traps",
+    "indexInCat": 1,
+    "mappedFile": "bottle_traps_01.png"
+  },
+  {
+    "id": "p193",
+    "name": "Bottle Trap - Light 12",
+    "category": "Bottle Traps",
+    "indexInCat": 2,
+    "mappedFile": "bottle_traps_01.png"
+  },
+  {
+    "id": "p194",
+    "name": "Bottle Trap - Light 12",
+    "category": "Bottle Traps",
+    "indexInCat": 3,
+    "mappedFile": "bottle_traps_01.png"
+  },
+  {
+    "id": "p195",
+    "name": "SS Braided Hose Pipe 1.5ft",
+    "category": "Connection Hose",
+    "indexInCat": 0,
+    "mappedFile": "connection_hose_01.png"
+  },
+  {
+    "id": "p196",
+    "name": "SS Braided Hose Pipe 2.0ft",
+    "category": "Connection Hose",
+    "indexInCat": 1,
+    "mappedFile": "connection_hose_02.png"
+  },
+  {
+    "id": "p197",
+    "name": "Connection PVC Hose 1.5ft (Milky White)",
+    "category": "Connection Hose",
+    "indexInCat": 2,
+    "mappedFile": "connection_hose_01.png"
+  },
+  {
+    "id": "p198",
+    "name": "Connection PVC Hose 2.0ft (Milky White)",
+    "category": "Connection Hose",
+    "indexInCat": 3,
+    "mappedFile": "connection_hose_02.png"
+  },
+  {
+    "id": "p199",
+    "name": "Full Thread Waste Coupling-80mm",
+    "category": "Waste Coupling",
+    "indexInCat": 0,
+    "mappedFile": "waste_coupling_01.png"
+  },
+  {
+    "id": "p200",
+    "name": "Full Thread Waste Coupling-130mm",
+    "category": "Waste Coupling",
+    "indexInCat": 1,
+    "mappedFile": "waste_coupling_02.png"
+  },
+  {
+    "id": "p201",
+    "name": "Half Thread Waste Coupling",
+    "category": "Waste Coupling",
+    "indexInCat": 2,
+    "mappedFile": "waste_coupling_03.png"
+  },
+  {
+    "id": "virtic-polymer-cistern-e8320",
+    "name": "Virtic Polymer Cistern (E8320)",
+    "category": "Polymer Cistern Dual Flush",
+    "indexInCat": 0,
+    "mappedFile": "floor_mounted_coupled_closet_with_dual_flush_cistern-pg5-1.png"
+  },
+  {
+    "id": "hexa-polymer-cistern-e8319",
+    "name": "Hexa Polymer Cistern (E8319)",
+    "category": "Polymer Cistern Dual Flush",
+    "indexInCat": 1,
+    "mappedFile": "floor_mounted_coupled_closet_with_dual_flush_cistern-pg5-2.png"
+  },
+  {
+    "id": "premium-polymer-cistern-e8392",
+    "name": "Premium Polymer Cistern (E8392)",
+    "category": "Polymer Cistern Dual Flush",
+    "indexInCat": 2,
+    "mappedFile": "floor_mounted_coupled_closet_with_dual_flush_cistern-pg5-1.png"
+  },
+  {
+    "id": "economy-polymer-cistern-e8090",
+    "name": "Economy Polymer Cistern (E8090)",
+    "category": "Polymer Cistern Single Flush",
+    "indexInCat": 0,
+    "mappedFile": "floor_mounted_coupled_closet_with_dual_flush_cistern-pg5-1.png"
+  },
+  {
+    "id": "standard-polymer-cistern-e8297",
+    "name": "Standard Polymer Cistern (E8297)",
+    "category": "Polymer Cistern Single Flush",
+    "indexInCat": 1,
+    "mappedFile": "floor_mounted_coupled_closet_with_dual_flush_cistern-pg5-2.png"
+  }
+]
