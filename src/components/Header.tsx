@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense, useTransition } from "react";
 import Link from "next/link";
 import { navItems } from "@/lib/mock-data";
 import { useCart } from "@/context/CartContext";
@@ -20,6 +20,7 @@ interface MegaMenuColumn {
 function HeaderContent() {
   const pathname = usePathname();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const currentCategory = searchParams ? searchParams.get("category") : null;
 
@@ -300,18 +301,21 @@ function HeaderContent() {
 
           {/* Search Bar (Centered/right-aligned flex item filling space) */}
           <form
-            className="flex-1 max-w-[220px] shrink relative hidden sm:block"
+            className={`flex-1 max-w-[220px] shrink relative hidden sm:block ${isPending ? 'opacity-50' : ''}`}
             onSubmit={(e) => {
               e.preventDefault();
               if (searchQuery.trim()) {
-                router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                startTransition(() => {
+                  router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                });
               }
             }}
           >
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search products..."
+                disabled={isPending}
+                placeholder={isPending ? "Searching..." : "Search products..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-gray-50 text-xs md:text-sm text-gray-900 placeholder-gray-400 font-semibold rounded-full pl-9 pr-4 py-2 border border-gray-200 focus:bg-white focus:border-sky-300 focus:ring-4 focus:ring-sky-50 outline-none transition-all"

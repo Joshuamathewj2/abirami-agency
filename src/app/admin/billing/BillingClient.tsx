@@ -59,16 +59,27 @@ export default function BillingClient() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // 1. Fetch Mattresses & variants
-        const { data: mattresses } = await supabase
-          .from('mattresses')
-          .select(`
-            *,
-            materials ( name ),
-            product_images ( image_url, is_primary ),
-            variants ( id, size_name, length, width, height, price, stock )
-          `)
-          .eq('is_active', true);
+        // Fetch Mattresses & coupons in parallel, using selective columns instead of wildcard *
+        const [mattressesResult, couponsResult] = await Promise.all([
+          supabase
+            .from('mattresses')
+            .select(`
+              id,
+              name,
+              is_active,
+              materials ( name ),
+              product_images ( image_url, is_primary ),
+              variants ( id, size_name, length, width, height, price, stock )
+            `)
+            .eq('is_active', true),
+          supabase
+            .from('coupons')
+            .select('id, code, percentage, flat_discount, min_order_value, max_discount, usage_limit, usage_count, expiry_date, is_active')
+            .eq('is_active', true)
+        ]);
+
+        const mattresses = mattressesResult.data;
+        const coupons = couponsResult.data;
 
         const mappedProducts: DBProduct[] = [];
 
@@ -100,12 +111,6 @@ export default function BillingClient() {
 
         setDbProducts(mappedProducts);
 
-        // 2. Fetch active coupons
-        const { data: coupons } = await supabase
-          .from('coupons')
-          .select('*')
-          .eq('is_active', true);
-        
         if (coupons) {
           const now = new Date();
           const validCoupons = coupons.filter((c: any) => {

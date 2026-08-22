@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Fetch the profile data
           const { data: profile } = await supabase
             .from('profiles')
-            .select('*')
+            .select('id, email, full_name, role, phone, created_at')
             .eq('id', session.user.id)
             .single()
             
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           const { data: profile } = await supabase
             .from('profiles')
-            .select('*')
+            .select('id, email, full_name, role, phone, created_at')
             .eq('id', session.user.id)
             .single()
             

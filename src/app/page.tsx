@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
 import {
   HeroSection,
@@ -57,10 +58,6 @@ const trustBadges = [
 ];
 
 export default async function Home() {
-  const dbProducts = await getProductsFromDB();
-  const products = dbProducts.filter((p) => p.sizes && p.sizes.length > 0);
-  const bestsellers = products.filter((p) => p.badge === "Bestseller");
-
   const allowedCategoryNames = [
     "One Piece WC (S-Trap)",
     "Wall Hung Basin",
@@ -164,40 +161,9 @@ export default async function Home() {
       </section>
 
       {/* ────────────────── BESTSELLERS (3D MARQUEE) ────────────────── */}
-      {bestsellers.length > 0 && (
-        <section className="py-16 md:py-24">
-          <div className="container-main">
-            <div className="flex items-end justify-between mb-12">
-              <FadeCard>
-                <div>
-                  <span className="text-xs font-black text-primary uppercase tracking-widest">
-                    🔥 Most Ordered
-                  </span>
-                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mt-2">
-                    Bestsellers
-                  </h2>
-                  <p className="text-gray-500 mt-1 font-medium">
-                    Our most popular products
-                  </p>
-                </div>
-              </FadeCard>
-              <FadeCard>
-                <Link href="/products" className="text-primary hover:text-primary-dark font-bold text-sm flex items-center gap-1 group">
-                  View All
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </FadeCard>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4 mt-8">
-              {bestsellers.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-      ) }
+      <Suspense fallback={<BestsellersSkeleton />}>
+        <BestsellersSection />
+      </Suspense>
 
       {/* ────────────────── TESTIMONIALS ────────────────── */}
       {testimonials.length > 0 && (
@@ -318,5 +284,79 @@ export default async function Home() {
         </div>
       </section>
     </div>
+  );
+}
+
+function BestsellersSkeleton() {
+  return (
+    <section className="py-16 md:py-24">
+      <div className="container-main">
+        <div className="flex items-end justify-between mb-12">
+          <div className="space-y-2 animate-pulse">
+            <div className="h-4 w-24 bg-gray-200 rounded-md" />
+            <div className="h-8 w-48 bg-gray-300 rounded-lg" />
+            <div className="h-4 w-36 bg-gray-100 rounded-md" />
+          </div>
+          <div className="h-6 w-20 bg-gray-200 rounded-md animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4 mt-8">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col h-[380px]">
+              <div className="w-full h-48 bg-gray-100 animate-pulse" />
+              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                <div className="space-y-2">
+                  <div className="h-3 w-16 bg-gray-100 rounded-md animate-pulse" />
+                  <div className="h-5 w-32 bg-gray-200 rounded-md animate-pulse" />
+                </div>
+                <div className="h-6 w-20 bg-gray-200 rounded-md animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+async function BestsellersSection() {
+  const dbProducts = await getProductsFromDB();
+  const products = dbProducts.filter((p) => p.sizes && p.sizes.length > 0);
+  const bestsellers = products.filter((p) => p.badge === "Bestseller");
+
+  if (bestsellers.length === 0) return null;
+
+  return (
+    <section className="py-16 md:py-24">
+      <div className="container-main">
+        <div className="flex items-end justify-between mb-12">
+          <FadeCard>
+            <div>
+              <span className="text-xs font-black text-primary uppercase tracking-widest">
+                🔥 Most Ordered
+              </span>
+              <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mt-2">
+                Bestsellers
+              </h2>
+              <p className="text-gray-500 mt-1 font-medium">
+                Our most popular products
+              </p>
+            </div>
+          </FadeCard>
+          <FadeCard>
+            <Link href="/products" className="text-primary hover:text-primary-dark font-bold text-sm flex items-center gap-1 group">
+              View All
+              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </FadeCard>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4 mt-8">
+          {bestsellers.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

@@ -72,18 +72,20 @@ export async function reorderCategoriesAction(orderedIds: string[]) {
   try {
     const supabase = await createClient();
     
-    for (let i = 0; i < orderedIds.length; i++) {
-      const id = orderedIds[i];
-      const { error } = await (supabase
-        .from('materials') as any)
-        .update({ sort_order: i })
-        .eq('id', id);
-        
-      if (error && (error.message.includes('sort_order') || error.code === '42703')) {
+    const updatePromises = orderedIds.map((id, index) => 
+      (supabase.from('materials') as any).update({ sort_order: index }).eq('id', id)
+    );
+    
+    const results = await Promise.all(updatePromises);
+    
+    for (const res of results) {
+      if (res.error && (res.error.message.includes('sort_order') || res.error.code === '42703')) {
         return { 
           success: false, 
           error: 'Reordering cannot be saved. The sort_order column does not exist in the database yet. Please run the SQL migration.' 
         };
+      } else if (res.error) {
+        throw res.error;
       }
     }
     

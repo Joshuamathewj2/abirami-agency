@@ -6,6 +6,19 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
+  // Skip auth checks on public storefront pages, static assets, and API routes
+  const pathname = request.nextUrl.pathname;
+  const isAuthRequiredRoute = 
+    pathname.startsWith('/admin') || 
+    pathname.startsWith('/user') || 
+    pathname === '/cart/checkout';
+
+  const isLoginPath = pathname.startsWith('/login');
+
+  if (!isAuthRequiredRoute && !isLoginPath) {
+    return supabaseResponse;
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
 

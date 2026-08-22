@@ -21,21 +21,19 @@ export async function placeInquiryAction(orderData: any) {
     const inquiry = await addInquiryToDB(orderData);
     revalidatePath('/admin/whatsapp');
 
-    // Generate the ORD ID exactly how the UI does it
+    // Generate the ORD ID by counting previous inquiries
     const { supabaseAdmin } = await import('@/lib/db');
-    const { data: allInquiries } = await supabaseAdmin
-      .from('inquiries')
-      .select('id, created_at')
-      .order('created_at', { ascending: true });
-
     let ordId = 'PENDING';
-    if (allInquiries) {
-      const idx = allInquiries.findIndex(inq => inq.id === inquiry.id);
-      if (idx !== -1) {
-        const year = new Date(inquiry.created_at || new Date()).getFullYear();
-        const numStr = String(idx + 1).padStart(4, '0');
-        ordId = `ORD-${year}-${numStr}`;
-      }
+    if (inquiry && inquiry.created_at) {
+      const { count } = await supabaseAdmin
+        .from('inquiries')
+        .select('id', { count: 'exact', head: true })
+        .lt('created_at', inquiry.created_at);
+      
+      const idx = count || 0;
+      const year = new Date(inquiry.created_at).getFullYear();
+      const numStr = String(idx + 1).padStart(4, '0');
+      ordId = `ORD-${year}-${numStr}`;
     }
 
     return { success: true, id: inquiry.id, ordId, createdAt: inquiry.created_at };
@@ -109,25 +107,14 @@ export async function getUserOrdersAction(userId: string) {
     const supabase = await createClient();
     const { supabaseAdmin } = await import('@/lib/db');
 
-    // Fetch all inquiries to determine global order numbers
-    const { data: allInquiries } = await supabaseAdmin
-      .from('inquiries')
-      .select('id, created_at')
-      .order('created_at', { ascending: true });
-
-    const idToOrdIdMap = new Map<string, string>();
-    if (allInquiries) {
-      allInquiries.forEach((inq: any, idx: number) => {
-        const year = new Date(inq.created_at || new Date()).getFullYear();
-        const numStr = String(idx + 1).padStart(4, '0');
-        idToOrdIdMap.set(inq.id, `ORD-${year}-${numStr}`);
-      });
-    }
-
     const { data: inquiries, error } = await supabase
       .from('inquiries')
       .select(`
-        *,
+        id,
+        created_at,
+        customer_name,
+        total_amount,
+        status,
         inquiry_items (
           id,
           quantity,
@@ -151,21 +138,44 @@ export async function getUserOrdersAction(userId: string) {
       throw error;
     }
 
-    return (inquiries || []).map((inq: any) => ({
-      id: inq.id,
-      ordId: idToOrdIdMap.get(inq.id) || `ORD-${new Date(inq.created_at || new Date()).getFullYear()}-0000`,
-      customerName: inq.customer_name,
-      createdAt: inq.created_at,
-      totalAmount: inq.total_amount,
-      status: inq.status,
-      items: (inq.inquiry_items || []).map((item: any) => ({
-        productName: item.variant?.mattress?.name || 'Unknown Product',
-        sizeLabel: item.variant?.size_name || 'Standard',
-        dimensions: `${item.variant?.length || 0}" x ${item.variant?.width || 0}"${item.variant?.height ? ` x ${item.variant.height}"` : ''}`,
-        quantity: item.quantity,
-        price: item.unit_price
-      }))
+    if (!inquiries || inquiries.length === 0) {
+      return [];
+    }
+
+    // For each user inquiry, run a parallel query to count preceding inquiries to generate the ORD ID
+    const resolvedInquiries = await Promise.all(inquiries.map(async (inq: any) => {
+      let ordId = `ORD-${new Date(inq.created_at || new Date()).getFullYear()}-0000`;
+      
+      if (inq.created_at) {
+        const { count } = await supabaseAdmin
+          .from('inquiries')
+          .select('id', { count: 'exact', head: true })
+          .lt('created_at', inq.created_at);
+          
+        const idx = count || 0;
+        const year = new Date(inq.created_at).getFullYear();
+        const numStr = String(idx + 1).padStart(4, '0');
+        ordId = `ORD-${year}-${numStr}`;
+      }
+
+      return {
+        id: inq.id,
+        ordId,
+        customerName: inq.customer_name,
+        createdAt: inq.created_at,
+        totalAmount: inq.total_amount,
+        status: inq.status,
+        items: (inq.inquiry_items || []).map((item: any) => ({
+          productName: item.variant?.mattress?.name || 'Unknown Product',
+          sizeLabel: item.variant?.size_name || 'Standard',
+          dimensions: `${item.variant?.length || 0}" x ${item.variant?.width || 0}"${item.variant?.height ? ` x ${item.variant.height}"` : ''}`,
+          quantity: item.quantity,
+          price: item.unit_price
+        }))
+      };
     }));
+
+    return resolvedInquiries;
   } catch (error) {
     console.error('Failed to fetch user orders for userId:', userId, 'Error:', error);
     return [];

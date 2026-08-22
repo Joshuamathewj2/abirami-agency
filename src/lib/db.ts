@@ -49,7 +49,7 @@ export const getProductsFromDB = unstable_cache(
       const { data: mattresses, error } = await supabaseAdmin
         .from('mattresses')
         .select(`
-          *,
+          id, name, description, warranty_years, is_active,
           materials ( name ),
           product_images ( image_url, is_primary, sort_order ),
           variants ( id, size_name, length, width, height, price, original_price, stock, sku )
@@ -391,10 +391,10 @@ export async function updateInquiryStatusInDB(inquiryId: string, status: string)
 export async function getAdminOverviewStats() {
   try {
     const [activeProductsCount, inquiriesCount, categoriesCount, pendingQuotesCount] = await Promise.all([
-      supabaseAdmin.from('mattresses').select('*', { count: 'exact', head: true }).eq('is_active', true),
-      supabaseAdmin.from('inquiries').select('*', { count: 'exact', head: true }),
-      supabaseAdmin.from('materials').select('*', { count: 'exact', head: true }),
-      supabaseAdmin.from('inquiries').select('*', { count: 'exact', head: true }).eq('status', 'Pending')
+      supabaseAdmin.from('mattresses').select('id', { count: 'exact', head: true }).eq('is_active', true),
+      supabaseAdmin.from('inquiries').select('id', { count: 'exact', head: true }),
+      supabaseAdmin.from('materials').select('id', { count: 'exact', head: true }),
+      supabaseAdmin.from('inquiries').select('id', { count: 'exact', head: true }).eq('status', 'Pending')
     ]);
     
     return {
