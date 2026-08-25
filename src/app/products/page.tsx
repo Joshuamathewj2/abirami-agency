@@ -25,7 +25,6 @@ interface CategoryGroup {
 const FAUCET_KEYWORDS = ["faucet", "claret", "jade", "shower", "health", "trap", "hose", "coupling", "concealed", "angle", "valve"];
 
 const SANITARYWARE_GROUPS: CategoryGroup[] = [
-  { id: "one-piece-wc", name: "One Piece WC", categoryFilterKey: "One Piece WC", keywords: ["one piece wc"] },
   { id: "wall-hung-wc", name: "Wall Hung WC", categoryFilterKey: "Wall Hung WC", keywords: ["wall hung wc", "dual flush cistern"] },
   { id: "coupled-closets", name: "Coupled Closets", categoryFilterKey: "Floor Mounted Coupled Closet", keywords: ["coupled closet"] },
   { id: "ewc", name: "Floor Mounted EWC", categoryFilterKey: "Floor Mounted WC (EWC)", keywords: ["floor mounted wc", "ewc"] },

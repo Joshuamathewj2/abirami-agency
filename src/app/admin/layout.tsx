@@ -33,7 +33,7 @@ export default function AdminLayout({
         setIsLocked(false);
         // Best effort: load Supabase user info for UI, but don't lock if failing/unauthenticated in Supabase
         const { data: { session } } = await supabase.auth.getSession();
-        setCurrentUser(session?.user || { email: 'joshuamathewj2@gmail.com', id: 'master-admin-id' });
+        setCurrentUser(session?.user || null);
         return;
       }
 
@@ -42,12 +42,7 @@ export default function AdminLayout({
 
       if (!session?.user) {
         setIsLocked(true);
-        return;
-      }
-
-      // Explicit Admin Email Bypass
-      if (session.user.email?.toLowerCase() === 'joshuamathewj2@gmail.com') {
-        setIsLocked(false);
+        window.location.href = "/login?redirect=/admin";
         return;
       }
 
@@ -69,10 +64,13 @@ export default function AdminLayout({
         setIsLocked(false);
       } else {
         setIsLocked(true);
+        alert("Access denied: Admin privileges required");
+        window.location.href = "/";
       }
     } catch (err) {
       console.error('Admin layout auth verification error:', err);
       setIsLocked(true);
+      window.location.href = "/";
     } finally {
       setCheckingAuth(false);
     }

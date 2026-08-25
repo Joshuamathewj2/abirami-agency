@@ -57,7 +57,6 @@ export async function updateSession(request: NextRequest) {
   // Local development or admin email bypass
   const isAdminPath = request.nextUrl.pathname.startsWith('/admin');
   const isDev = process.env.NODE_ENV === 'development';
-  const isBypassEmail = user?.email?.toLowerCase() === 'joshuamathewj2@gmail.com';
   const hasAdminCookie = request.cookies.get('admin_session')?.value === 'true';
 
   // Define your protected routes here (exclude /admin from automatic redirects to /login)
@@ -83,7 +82,7 @@ export async function updateSession(request: NextRequest) {
   // Role-based access control for admin routes:
   // If user is logged in, is accessing an admin path, and is NOT in dev mode / bypass email / has cookie, check role
   if (user && isAdminPath) {
-    if (isDev || isBypassEmail || hasAdminCookie) {
+    if (isDev || hasAdminCookie) {
       return supabaseResponse;
     }
 

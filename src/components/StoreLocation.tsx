@@ -23,7 +23,7 @@ export default function StoreLocation() {
           </div>
 
           <iframe
-            src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=1%20A,%20Madhavaram%20High%20Rd,%20next%20to%20SBI%20Bank,%20KKR%20Nagar,%20KKR%20Garden,%20Madhavaram,%20Chennai,%20Tamil%20Nadu%20600060+(Abirami%20Agency)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+            src="https://maps.google.com/maps?q=Madavaram%20Red%20Hills%20Rd,%20Kilburn%20Nagar,%20Madhavaram,%20Chennai+(Abirami%20Agency%20Parryware)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}
@@ -39,7 +39,7 @@ export default function StoreLocation() {
           </div>
 
           <a
-            href="https://maps.google.com/?q=1+A,+Madhavaram+High+Rd,+next+to+SBI+Bank,+KKR+Nagar,+KKR+Garden,+Madhavaram,+Chennai,+Tamil+Nadu+600060"
+            href="https://maps.google.com/?cid=4112521425107411362"
             target="_blank"
             rel="noopener noreferrer"
             className="absolute inset-0 bg-black/5 hover:bg-black/15 transition-colors duration-500 flex items-center justify-center z-10"
@@ -76,7 +76,7 @@ export default function StoreLocation() {
           <div>
             <h4 className="font-extrabold text-gray-900 dark:text-white mb-1 text-base tracking-tight">Address</h4>
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
-              1 A, Madhavaram High Rd, next to SBI Bank, KKR Nagar, KKR Garden, Madhavaram, Chennai, Greater Chennai, Tamil Nadu 600060
+              Abirami Agency Parryware, Madavaram Red Hills Rd, Kilburn Nagar, Madhavaram, Chennai - 600060
             </p>
           </div>
         </motion.div>

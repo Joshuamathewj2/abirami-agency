@@ -14,25 +14,7 @@ export async function loginAdminAction(emailInput: string, passwordInput: string
 
     console.log('[Admin Auth Action Submit]', { email, passwordLength: password?.length });
 
-    // Hardcoded Master Admin credentials
-    const MASTER_EMAIL = 'joshuamathewj2@gmail.com';
-    const MASTER_PASSWORD = 'joshua';
-
-    // 1. Immediate check: if credentials match master admin, authenticate immediately without external fetches
-    if (email.toLowerCase() === MASTER_EMAIL.toLowerCase() && password === MASTER_PASSWORD) {
-      console.log('[Admin Auth Action] ✅ Master admin fallback credentials matched immediately');
-      const cookieStore = await cookies();
-      await cookieStore.set('admin_session', 'true', {
-        path: '/',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-      });
-      return { success: true, user: { email: MASTER_EMAIL, id: 'master-admin-id' } };
-    }
-
-    // 2. Otherwise proceed to Supabase authentication
+    // 1. Proceed to Supabase authentication
     let supabase;
     try {
       supabase = await createClient();
@@ -84,7 +66,7 @@ export async function loginAdminAction(emailInput: string, passwordInput: string
       }
     }
 
-    if (hasPermission || userEmail === MASTER_EMAIL) {
+    if (hasPermission) {
       console.log('[Admin Auth Action] ✅ Supabase authentication and role validation successful');
       const cookieStore = await cookies();
       await cookieStore.set('admin_session', 'true', {

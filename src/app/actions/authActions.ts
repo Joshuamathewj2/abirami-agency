@@ -42,7 +42,7 @@ export async function registerUserAction(formData: FormData) {
     // Determine user role
     const adminEmails = process.env.ADMIN_EMAILS 
       ? process.env.ADMIN_EMAILS.split(',').map(e => e.trim().toLowerCase())
-      : ['admin@abirami.agency', 'admin@example.com', 'admin@abiramiagency.com', 'parryware@abirami.agency', 'joshuamathewj2@gmail.com'];
+      : ['admin@abirami.agency', 'admin@example.com', 'admin@abiramiagency.com', 'parryware@abirami.agency'];
       
     const role = adminEmails.includes(email.toLowerCase()) ? 'admin' : 'customer';
 

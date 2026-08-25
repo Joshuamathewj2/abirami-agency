@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
-import { registerUserAction } from '@/app/actions/authActions';
+import { useUserStore } from '@/store/userStore';
 
-export default function LoginPage() {
+export default function LoginPage({ onClose }: { onClose?: () => void } = {}) {
   const router = useRouter();
+  const { user, setUser, setProfile } = useUserStore();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +19,22 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+
+  // Helper to reset fields
+  const resetFormFields = () => {
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setFullName('');
+  };
+
+  // Helper to handle manual tab changes
+  const handleTabChange = (tab: 'login' | 'register') => {
+    setActiveTab(tab);
+    setError(null);
+    setSuccess(null);
+    resetFormFields();
+  };
 
   // Handle URL mode query (e.g. ?mode=register)
   useEffect(() => {
@@ -30,10 +47,25 @@ export default function LoginPage() {
     }
   }, []);
 
+  // Automatically redirect / close modal when user state is synced/logged in (e.g. after successful Google OAuth callback)
+  useEffect(() => {
+    if (user && !isLoading) {
+      if (typeof onClose === 'function') {
+        onClose();
+      }
+      if (typeof window !== 'undefined' && window.location.pathname === '/login') {
+        const params = new URLSearchParams(window.location.search);
+        const nextPath = params.get('redirect') || params.get('next') || '/';
+        window.location.href = nextPath;
+      }
+    }
+  }, [user, isLoading, onClose]);
+
   const handleGoogleLogin = async () => {
     try {
       setIsLoading(true);
       setError(null);
+      setSuccess(null);
       const params = new URLSearchParams(window.location.search);
       const nextPath = params.get('redirect') || params.get('next') || '/user';
       
@@ -45,38 +77,49 @@ export default function LoginPage() {
       });
       if (error) throw error;
     } catch (err: any) {
+      console.error('Raw Supabase Google signInWithOAuth error:', err);
       setError(err.message || 'An error occurred during Google login');
       setIsLoading(false);
     }
   };
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    setError(null);
+    setSuccess(null);
+
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail || !password) {
       setError('Please fill in all fields.');
       return;
     }
 
     try {
       setIsLoading(true);
-      setError(null);
-      setSuccess(null);
 
       // Sign in via Supabase Auth
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
+        email: trimmedEmail,
         password,
       });
 
       if (signInError) throw signInError;
       if (!data.user) throw new Error('Failed to retrieve user session.');
 
+      // Update global auth state
+      setUser(data.user);
+
       // Check user role from profiles database table
       const { data: profile } = await supabase
         .from('profiles')
-        .select('role')
+        .select('id, email, full_name, role, phone, created_at')
         .eq('id', data.user.id)
         .single();
+
+      if (profile) {
+        setProfile(profile);
+      }
 
       const userRole = profile?.role?.toLowerCase() || 'customer';
       
@@ -84,17 +127,29 @@ export default function LoginPage() {
       const nextPath = params.get('redirect') || params.get('next') || (userRole === 'admin' ? '/admin' : '/user');
 
       setSuccess('Logged in successfully! Redirecting...');
-      router.push(nextPath);
-      router.refresh();
+      
+      if (typeof onClose === 'function') {
+        onClose();
+      }
+
+      // Redirect on successful login
+      window.location.href = nextPath;
     } catch (err: any) {
+      console.error('Raw Supabase signIn error:', err);
       setError(err.message || 'Invalid email or password.');
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegisterSubmit = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !email || !password || !confirmPassword) {
+    setError(null);
+    setSuccess(null);
+
+    const trimmedEmail = email.trim();
+
+    if (!fullName || !trimmedEmail || !password || !confirmPassword) {
       setError('Please fill in all registration fields.');
       return;
     }
@@ -106,49 +161,70 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true);
-      setError(null);
-      setSuccess(null);
 
-      // Call server action to sign up and insert profile RLS-bypassed
-      const formData = new FormData();
-      formData.append('fullName', fullName);
-      formData.append('email', email);
-      formData.append('password', password);
-      formData.append('confirmPassword', confirmPassword);
-
-      const res = await registerUserAction(formData);
-
-      if (!res.success) {
-        throw new Error(res.error || 'Failed to register.');
-      }
-
-      setSuccess('Account created successfully! Signing in...');
-
-      // Auto login after signup
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
+      // Call supabase.auth.signUp directly on client
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: trimmedEmail,
         password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+        },
       });
 
-      if (signInError) throw signInError;
+      if (signUpError) throw signUpError;
+      if (!data.user) throw new Error('Signup failed to return user data.');
 
-      // Explicit Client Sign-Up Sync Fallback
-      if (data?.user) {
+      // Ensure the user profile creation / trigger works smoothly without race conditions
+      // Perform safe upsert client fallback
+      try {
         await supabase.from('profiles').upsert({
           id: data.user.id,
-          email: data.user.email || email,
+          email: data.user.email || trimmedEmail,
           full_name: fullName,
-          role: data.user.email === 'joshuamathewj2@gmail.com' ? 'admin' : 'customer'
         });
+      } catch (profileErr) {
+        console.error('Error during client profile sync fallback:', profileErr);
       }
-      
-      const params = new URLSearchParams(window.location.search);
-      const nextPath = params.get('redirect') || params.get('next') || '/user';
 
-      router.push(nextPath);
-      router.refresh();
+      if (data.session) {
+        // Automatically redirect or update user state to logged in without triggering a duplicate signInWithPassword error.
+        setUser(data.user);
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id, email, full_name, role, phone, created_at')
+          .eq('id', data.user.id)
+          .single();
+
+        if (profile) {
+          setProfile(profile);
+        }
+
+        const userRole = profile?.role?.toLowerCase() || 'customer';
+        const params = new URLSearchParams(window.location.search);
+        const nextPath = params.get('redirect') || params.get('next') || (userRole === 'admin' ? '/admin' : '/user');
+
+        setSuccess('Account created and logged in successfully! Redirecting...');
+
+        if (typeof onClose === 'function') {
+          onClose();
+        }
+
+        window.location.href = nextPath;
+      } else {
+        // If sign-up succeeds without an immediate session, display success message and switch tab
+        setSuccess('Account created successfully! You can now log in.');
+        setActiveTab('login');
+        setPassword('');
+        setConfirmPassword('');
+        setFullName('');
+      }
     } catch (err: any) {
+      console.error('Raw Supabase signUp error:', err);
       setError(err.message || 'An error occurred during registration.');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -160,7 +236,6 @@ export default function LoginPage() {
           {/* Logo & Header */}
           <div className="text-center mb-8">
             <div className="flex flex-col items-center justify-center mb-6 gap-1">
-              <img src="/logo.svg" alt="Abirami Agency Logo" className="h-16 w-auto object-contain -mb-2" />
               <div className="flex flex-col items-center justify-center">
                 <span className="font-playfair text-3xl font-black text-primary leading-none tracking-tight">
                   Abirami
@@ -181,7 +256,7 @@ export default function LoginPage() {
           {/* Tab Selection */}
           <div className="flex border-b border-gray-150 mb-6 gap-2">
             <button
-              onClick={() => { setActiveTab('login'); setError(null); setSuccess(null); }}
+              onClick={() => handleTabChange('login')}
               className={`flex-1 pb-3 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
                 activeTab === 'login' 
                   ? 'border-primary text-primary' 
@@ -191,7 +266,7 @@ export default function LoginPage() {
               Sign In
             </button>
             <button
-              onClick={() => { setActiveTab('register'); setError(null); setSuccess(null); }}
+              onClick={() => handleTabChange('register')}
               className={`flex-1 pb-3 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
                 activeTab === 'register' 
                   ? 'border-primary text-primary' 
@@ -203,22 +278,21 @@ export default function LoginPage() {
           </div>
 
           {/* Feedback Messages */}
-          {error && (
+          {!isLoading && error ? (
             <div className="mb-4 p-3.5 bg-red-50 border border-red-100 text-red-650 rounded-xl text-xs font-bold leading-relaxed">
               ⚠️ {error}
             </div>
-          )}
-          {success && (
+          ) : !isLoading && success ? (
             <div className="mb-4 p-3.5 bg-green-50 border border-green-150 text-green-700 rounded-xl text-xs font-bold leading-relaxed">
               ✨ {success}
             </div>
-          )}
+          ) : null}
 
           {/* Forms Section */}
           <div className="space-y-6">
             {activeTab === 'login' ? (
               // SIGN IN FORM
-              <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
                   <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">
                     Email Address
@@ -227,7 +301,10 @@ export default function LoginPage() {
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError(null);
+                    }}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-xs font-bold"
                     placeholder="e.g. name@gmail.com"
                   />
@@ -242,7 +319,10 @@ export default function LoginPage() {
                     type="password"
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setError(null);
+                    }}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-xs font-bold"
                     placeholder="Enter password"
                   />
@@ -257,7 +337,7 @@ export default function LoginPage() {
               </form>
             ) : (
               // REGISTER FORM
-              <form onSubmit={handleRegisterSubmit} className="space-y-4">
+              <form onSubmit={handleSignUp} className="space-y-4">
                 <div>
                   <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">
                     Full Name
@@ -266,7 +346,10 @@ export default function LoginPage() {
                     type="text"
                     required
                     value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    onChange={(e) => {
+                      setFullName(e.target.value);
+                      setError(null);
+                    }}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-xs font-bold"
                     placeholder="e.g. John Doe"
                   />
@@ -279,7 +362,10 @@ export default function LoginPage() {
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError(null);
+                    }}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-xs font-bold"
                     placeholder="e.g. name@gmail.com"
                   />
@@ -292,7 +378,10 @@ export default function LoginPage() {
                     type="password"
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setError(null);
+                    }}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-xs font-bold"
                     placeholder="Minimum 6 characters"
                   />
@@ -305,7 +394,10 @@ export default function LoginPage() {
                     type="password"
                     required
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      setError(null);
+                    }}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-xs font-bold"
                     placeholder="Repeat password"
                   />

@@ -50,8 +50,7 @@ export async function GET() {
           u.user_metadata?.name ||
           '',
         role:
-          u.user_metadata?.role ||
-          (u.email === 'joshuamathewj2@gmail.com' ? 'admin' : 'customer'),
+          u.user_metadata?.role || 'customer',
         created_at: u.created_at || new Date().toISOString(),
       }));
 
@@ -72,7 +71,7 @@ export async function GET() {
       const role =
         profile?.role ||
         u.user_metadata?.role ||
-        (u.email === 'joshuamathewj2@gmail.com' ? 'admin' : 'customer');
+        'customer';
       const provider =
         u.app_metadata?.provider ||
         u.identities?.[0]?.provider ||
@@ -116,18 +115,23 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // 1. Update Auth user_metadata
+    // 1. Update Auth user_metadata (so JWT reflects new role on next sign-in)
     const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
       user_metadata: { role: targetRole }
     });
-    if (authErr) throw new Error(`Auth update error: ${authErr.message}`);
+    if (authErr) {
+      console.error('[PATCH /api/admin/users] Auth metadata update error:', authErr);
+      throw new Error(`Auth update error: ${authErr.message}`);
+    }
 
-    // 2. Upsert into profiles table
+    // 2. Update profiles table directly (Service Role bypasses RLS)
     const { error: dbErr } = await supabaseAdmin
       .from('profiles')
-      .upsert({ id: userId, role: targetRole }, { onConflict: 'id' });
+      .update({ role: targetRole })
+      .eq('id', userId);
     if (dbErr) {
-      console.warn('Profile upsert warning:', dbErr.message);
+      console.error('[PATCH /api/admin/users] Profile update error:', dbErr);
+      throw new Error(`Database update error: ${dbErr.message}`);
     }
 
     return NextResponse.json({ success: true });

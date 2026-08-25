@@ -48,6 +48,10 @@ export default function UsersClient() {
   const handleRoleChange = async (userId: string, newRole: string) => {
     if (!userId) return;
     setUpdatingId(userId);
+
+    // Capture original role for accurate rollback if update fails
+    const originalRole = users.find(u => u?.id === userId)?.role ?? 'customer';
+
     // Optimistic update
     setUsers(prev => prev.map(u => u?.id === userId ? { ...u, role: newRole } : u));
     try {
@@ -58,12 +62,15 @@ export default function UsersClient() {
       });
       const result = await res.json();
       if (!result?.success) {
-        // Rollback on failure
-        setUsers(prev => prev.map(u => u?.id === userId ? { ...u, role: newRole === 'admin' ? 'customer' : 'admin' } : u));
+        console.error('Role update failed. Raw API response:', result);
+        // Rollback to original role
+        setUsers(prev => prev.map(u => u?.id === userId ? { ...u, role: originalRole } : u));
         alert(result?.error || 'Failed to update role');
       }
     } catch (err) {
-      console.error('Error updating role:', err);
+      console.error('Network error updating role:', err);
+      // Rollback to original role
+      setUsers(prev => prev.map(u => u?.id === userId ? { ...u, role: originalRole } : u));
       alert('Network error updating role');
     } finally {
       setUpdatingId(null);
