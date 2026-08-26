@@ -121,10 +121,10 @@ export default async function Home() {
             </div>
           </FadeCard>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/8">
+          <div className="flex flex-row overflow-x-auto snap-x snap-mandatory gap-4 pb-4 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-px sm:bg-white/8 sm:pb-0 scrollbar-hide">
             {trustBadges.map((b, i) => (
-              <FadeCard key={b.title} delay={i * 0.1}>
-                <div className="group relative bg-[#0c1a2e] p-8 md:p-10 h-full flex flex-col hover:bg-white/5 transition-colors duration-300 overflow-hidden">
+              <FadeCard key={b.title} delay={i * 0.1} className="w-[85%] sm:w-auto shrink-0 snap-center h-full">
+                <div className="group relative bg-[#0c1a2e] p-8 md:p-10 h-full flex flex-col hover:bg-white/5 transition-colors duration-300 overflow-hidden rounded-2xl sm:rounded-none">
                   <span className="absolute top-4 right-4 text-7xl font-black text-white/[0.04] select-none leading-none">
                     {b.num}
                   </span>
@@ -248,34 +248,36 @@ export default async function Home() {
         </div>
         <div className="container-main text-center relative z-10">
           <FadeCard>
-            <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
+            <h2 className="text-3xl md:text-6xl font-black mb-4 md:mb-6 tracking-tight">
               Ready to Transform Your Bathroom?
             </h2>
-            <p className="text-white/60 max-w-xl mx-auto mb-12 text-lg md:text-xl font-medium">
+            <p className="text-white/60 max-w-xl mx-auto mb-6 md:mb-12 text-base md:text-xl font-medium">
               Contact us today for wholesale prices and fast delivery across Tamil Nadu.
             </p>
-            <div className="flex flex-col sm:flex-row gap-5 justify-center">
-              <a
-                href="tel:8601710434"
-                className="inline-flex items-center justify-center gap-3 bg-primary text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-primary-dark transition-all hover:scale-105 shadow-[0_0_40px_rgba(14,165,233,0.4)] hover:shadow-[0_0_60px_rgba(14,165,233,0.6)]"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                Call 86107 10434
-              </a>
-              <a
-                href="tel:7200377455"
-                className="inline-flex items-center justify-center gap-3 bg-primary text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-primary-dark transition-all hover:scale-105 shadow-[0_0_40px_rgba(14,165,233,0.4)] hover:shadow-[0_0_60px_rgba(14,165,233,0.6)]"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                Call 72003 77455
-              </a>
+            <div className="flex flex-col md:flex-row gap-3 md:gap-5 justify-center max-w-md mx-auto md:max-w-none">
+              <div className="grid grid-cols-2 gap-3 md:flex md:flex-row md:gap-5 w-full md:w-auto">
+                <a
+                  href="tel:8610710434"
+                  className="inline-flex items-center justify-center gap-2 bg-primary text-white py-3 px-4 text-sm md:px-10 md:py-5 md:text-lg rounded-xl md:rounded-full font-bold hover:bg-primary-dark transition-all hover:scale-105 shadow-[0_0_40px_rgba(14,165,233,0.4)] hover:shadow-[0_0_60px_rgba(14,165,233,0.6)]"
+                >
+                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  Call 86107 10434
+                </a>
+                <a
+                  href="tel:7200377455"
+                  className="inline-flex items-center justify-center gap-2 bg-primary text-white py-3 px-4 text-sm md:px-10 md:py-5 md:text-lg rounded-xl md:rounded-full font-bold hover:bg-primary-dark transition-all hover:scale-105 shadow-[0_0_40px_rgba(14,165,233,0.4)] hover:shadow-[0_0_60px_rgba(14,165,233,0.6)]"
+                >
+                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  Call 72003 77455
+                </a>
+              </div>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 px-10 py-5 rounded-full font-bold text-lg transition-all"
+                className="w-full md:w-auto inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 py-3 px-4 text-sm md:px-10 md:py-5 md:text-lg rounded-xl md:rounded-full font-bold transition-all"
               >
                 Send Inquiry
               </Link>
@@ -299,7 +301,7 @@ function BestsellersSkeleton() {
           </div>
           <div className="h-6 w-20 bg-gray-200 rounded-md animate-pulse" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4 mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 max-w-7xl mx-auto px-2 sm:px-4 mt-8">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col h-[380px]">
               <div className="w-full h-48 bg-gray-100 animate-pulse" />
@@ -351,7 +353,7 @@ async function BestsellersSection() {
             </Link>
           </FadeCard>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4 mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 max-w-7xl mx-auto px-2 sm:px-4 mt-8">
           {bestsellers.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

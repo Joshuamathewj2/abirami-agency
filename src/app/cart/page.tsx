@@ -305,6 +305,14 @@ export default function CartPage() {
           
         const whatsappUrl = `https://api.whatsapp.com/send/?phone=${phoneNumber}&text=${encodeURIComponent(finalMessage)}`;
         window.open(whatsappUrl, "_blank");
+      } else if ((res as any).allowWhatsAppFallback) {
+        // DB save failed but we still open WhatsApp so the sale is not lost
+        clearCart();
+        setIsPlacingOrder(false);
+        setFormError(`Note: ${res.error}`);
+        const finalMessage = message;
+        const whatsappUrl = `https://api.whatsapp.com/send/?phone=${phoneNumber}&text=${encodeURIComponent(finalMessage)}`;
+        window.open(whatsappUrl, "_blank");
       } else {
         setFormError(res.error || "Failed to place order in database");
         setIsPlacingOrder(false);

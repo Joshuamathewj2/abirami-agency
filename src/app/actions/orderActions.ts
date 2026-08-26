@@ -37,11 +37,19 @@ export async function placeInquiryAction(orderData: any) {
     }
 
     return { success: true, id: inquiry.id, ordId, createdAt: inquiry.created_at };
-  } catch (error) {
-    console.error('Failed to place inquiry:', error);
-    return { success: false, error: 'Failed to place inquiry' };
+  } catch (error: any) {
+    const errorMsg = error?.message || error?.toString() || 'Unknown error';
+    console.error('[placeInquiryAction] Failed to place inquiry in DB:', errorMsg);
+    // Return partial success so the WhatsApp redirect still works — DB failure should not block the sale
+    return { 
+      success: false, 
+      error: `Database save failed: ${errorMsg}. Your WhatsApp order will still be sent.`,
+      // Indicate that the cart can still be cleared and WhatsApp can open despite DB failure
+      allowWhatsAppFallback: true
+    };
   }
 }
+
 
 export async function getAllInquiriesAction() {
   try {

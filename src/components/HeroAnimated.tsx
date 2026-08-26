@@ -37,10 +37,38 @@ export function HeroSection() {
   return (
     <section
       ref={ref}
-      className="relative w-full min-h-[90vh] lg:min-h-screen bg-slate-950 text-white grid grid-cols-1 lg:grid-cols-2 items-stretch mt-0 pt-0"
+      className="relative w-full min-h-screen lg:min-h-screen bg-slate-950 text-white grid grid-cols-1 lg:grid-cols-2 items-stretch mt-0 pt-0 overflow-hidden"
     >
+      {/* Background Video / Image Container (Subtle Backdrop on Mobile, Right Column on Desktop) */}
+      <div className="absolute inset-0 lg:relative lg:inset-auto w-full h-full min-h-full overflow-hidden flex items-stretch p-0 m-0 z-0 lg:z-10 lg:order-last">
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute top-[-10%] lg:top-[-20%] left-0 w-full h-[120%] lg:h-[130%] object-cover object-center lg:object-top scale-105 transition-transform duration-300 opacity-40 lg:opacity-100"
+        >
+          <source src="/freelance1.mp4" type="video/mp4" />
+        </video>
+
+        {/* Mobile Overlay Gradient for Backdrop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050B17] via-[#050B17]/90 to-transparent lg:hidden z-10 pointer-events-none" />
+
+        {/* Circular logo sticker */}
+        <div className="absolute bottom-4 right-4 lg:bottom-3 lg:right-3 z-30">
+          <div className="relative w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-full overflow-hidden border border-white/20 shadow-2xl bg-slate-950/90 backdrop-blur-sm flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95">
+            <img
+              src="/logo.webp"
+              alt="Parryware Logo"
+              className="w-full h-full object-contain p-1"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Left Column (Text & CTAs) */}
-      <div className="relative z-20 bg-slate-950 flex flex-col justify-center min-h-[90vh] lg:min-h-screen py-24 lg:py-32 pl-4 md:pl-8 lg:pl-16 xl:pl-[calc((100vw-1280px)/2+4rem)] pr-4 md:pr-8 lg:pr-16">
+      <div className="relative z-20 lg:bg-slate-950 flex flex-col justify-center min-h-screen lg:min-h-screen pt-20 pb-20 sm:pt-24 sm:pb-24 lg:py-32 pl-5 md:pl-8 lg:pl-16 xl:pl-[calc((100vw-1280px)/2+4rem)] pr-5 md:pr-8 lg:pr-16 lg:order-first">
         <div className="w-full max-w-xl">
           <motion.div
             className="flex flex-col items-start"
@@ -51,7 +79,7 @@ export function HeroSection() {
             {/* Badge / Tag */}
             <motion.div
               variants={fadeUpVariants}
-              className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-full px-4 py-1.5 mb-6 text-[10px] md:text-xs font-bold shadow-lg"
+              className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-full text-xs px-2.5 py-1 mb-4 sm:mb-6 font-bold shadow-lg"
             >
               <svg className="w-3.5 h-3.5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -66,21 +94,21 @@ export function HeroSection() {
             {/* Main Headline */}
             <motion.h1
               variants={fadeUpVariants}
-              className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-4 drop-shadow-md"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight md:leading-[1.1] mb-3 sm:mb-4 drop-shadow-md"
             >
               Elevate your <br />
               <span className="relative inline-block mt-1">
                 <span className="relative z-10 text-[#3B82F6] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-cyan-400 drop-shadow-lg">
                   bathroom.
                 </span>
-                <span className="absolute bottom-1 left-0 w-full h-3 bg-blue-500/20 rounded-full -z-10 -rotate-2" />
+                <span className="absolute bottom-1 left-0 w-full h-2.5 sm:h-3 bg-blue-500/20 rounded-full -z-10 -rotate-2" />
               </span>
             </motion.h1>
 
             {/* Subtitle */}
             <motion.p
               variants={fadeUpVariants}
-              className="text-sm md:text-base text-slate-300 max-w-md mb-6 font-medium leading-relaxed"
+              className="text-sm md:text-base text-slate-300 max-w-sm md:max-w-md mb-5 sm:mb-6 font-medium leading-relaxed"
             >
               Premium sanitaryware &amp; bathroom fittings at wholesale prices,
               delivered straight to your site.
@@ -98,7 +126,7 @@ export function HeroSection() {
               >
                 <Link
                   href="/products"
-                  className="relative overflow-hidden w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full font-bold text-base flex items-center justify-center gap-2.5 shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 transition-all group"
+                  className="relative overflow-hidden w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white py-3 px-6 sm:px-8 font-semibold sm:font-bold rounded-xl sm:rounded-full text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 transition-all group"
                 >
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full z-0"
@@ -120,22 +148,22 @@ export function HeroSection() {
             {/* Trust Metrics */}
             <motion.div
               variants={fadeUpVariants}
-              className="flex items-center gap-6 mt-8 pt-6 border-t border-white/10 w-full max-w-sm"
+              className="flex items-center gap-6 mt-5 pt-4 md:mt-8 md:pt-6 border-t border-white/10 w-full max-w-xs sm:max-w-sm"
             >
               <div>
-                <p className="text-2xl font-black text-white">
+                <p className="text-2xl font-bold lg:font-black text-white">
                   200<span className="text-[#3B82F6]">+</span>
                 </p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+                <p className="text-[11px] tracking-wider text-slate-400 font-semibold uppercase mt-0.5">
                   Premium Products
                 </p>
               </div>
-              <div className="w-px h-8 bg-white/10" />
+              <div className="w-px h-7 md:h-8 bg-white/10" />
               <div>
-                <p className="text-2xl font-black text-white">
+                <p className="text-2xl font-bold lg:font-black text-white">
                   24<span className="text-[#3B82F6]">h</span>
                 </p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+                <p className="text-[11px] tracking-wider text-slate-400 font-semibold uppercase mt-0.5">
                   Fast Delivery
                 </p>
               </div>
@@ -144,42 +172,17 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Right Column (Video Container) */}
-      <div className="relative w-full h-full min-h-full overflow-hidden flex items-stretch p-0 m-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute top-[-20%] left-0 w-full h-[130%] object-cover object-top scale-105 transition-transform duration-300"
-        >
-          <source src="/freelance1.mp4" type="video/mp4" />
-        </video>
-
-        {/* Circular logo sticker pinned to the bottom-right corner of this video frame (absolute bottom-3 right-3 z-30) */}
-        <div className="absolute bottom-3 right-3 z-30">
-          <div className="relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-full overflow-hidden border border-white/20 shadow-2xl bg-slate-950 flex items-center justify-center transition-transform duration-300 hover:scale-105 active:scale-95">
-            <img
-              src="/logo.webp"
-              alt="Parryware Logo"
-              className="w-full h-full object-contain"
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-white/50"
-        animate={{ y: [0, 8, 0] }}
+        className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 text-white/50 pointer-events-none"
+        animate={{ y: [0, 6, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       >
-        <span className="text-[10px] font-bold tracking-widest uppercase">
+        <span className="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase">
           Scroll
         </span>
         <svg
-          className="w-4 h-4"
+          className="w-3.5 h-3.5 sm:w-4 sm:h-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

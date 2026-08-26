@@ -96,3 +96,55 @@ export async function reorderCategoriesAction(orderedIds: string[]) {
     return { success: false, error: error.message };
   }
 }
+
+export async function createCategoryAction(name: string) {
+  try {
+    const supabase = await createClient();
+    const trimmedName = name.trim();
+    if (!trimmedName) return { success: false, error: 'Category name cannot be empty.' };
+
+    const { data, error } = await supabase
+      .from('materials')
+      .insert({ name: trimmedName })
+      .select('id, name')
+      .single();
+
+    if (error) throw error;
+
+    revalidatePath('/admin/categories');
+    revalidatePath('/products');
+    return { success: true, data };
+  } catch (error: any) {
+    console.error('Failed to create category:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteCategoryAction(id: string) {
+  try {
+    const supabase = await createClient();
+
+    // Guard: check no products reference this category
+    const { count } = await supabase
+      .from('mattresses')
+      .select('id', { count: 'exact', head: true })
+      .eq('material_id', id);
+
+    if (count && count > 0) {
+      return { 
+        success: false, 
+        error: `Cannot delete: ${count} product(s) still belong to this category. Reassign them first.` 
+      };
+    }
+
+    const { error } = await supabase.from('materials').delete().eq('id', id);
+    if (error) throw error;
+
+    revalidatePath('/admin/categories');
+    revalidatePath('/products');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to delete category:', error);
+    return { success: false, error: error.message };
+  }
+}

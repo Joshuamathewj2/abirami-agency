@@ -112,6 +112,18 @@ function HeaderContent() {
   const isClaretActive = pathname === "/products" && isFaucetsMode && currentCategory?.toLowerCase().includes("claret");
   const isSanitarywareActive = pathname === "/products" && !isFaucetsMode;
 
+  const mobileNavItems = [
+    { label: "Home", href: "/" },
+    {
+      label: "Products",
+      href: "/products",
+      children: productsItem?.children ?? [],
+    },
+    { label: "Claret Collection", href: "/products?category=Claret%20Collection" },
+    { label: "Sanitaryware Catalog", href: "/products" },
+    { label: "Contact Us", href: "/contact" },
+  ];
+
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm print:hidden">
       {/* Top utility bar */}
@@ -132,7 +144,7 @@ function HeaderContent() {
               />
             </svg>
             <a
-              href="tel:8601710434"
+              href="tel:8610710434"
               className="font-semibold hover:text-green-400  transition-colors"
             >
               86107 10434
@@ -367,6 +379,37 @@ function HeaderContent() {
               </div>
             </Link>
 
+            {/* Mobile User Profile/Login icon (next to Cart, hidden on desktop) */}
+            {isClient && user ? (
+              <Link
+                href="/user"
+                className="flex md:hidden items-center justify-center w-8.5 h-8.5 rounded-full bg-primary/10 text-primary border border-primary-light/20 overflow-hidden shadow-inner shrink-0"
+                title="Go to Dashboard"
+              >
+                {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
+                  <img
+                    src={user.user_metadata.avatar_url || user.user_metadata.picture}
+                    alt="User"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                )}
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="flex md:hidden items-center justify-center w-8 h-8 rounded-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 transition-all shrink-0"
+                title="Login"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </Link>
+            )}
+
             {isClient && user ? (
               <div className="hidden md:flex items-center gap-3">
                 {profile?.role?.toLowerCase() === 'admin' && (
@@ -451,112 +494,146 @@ function HeaderContent() {
 
         {/* ── MOBILE DRAWER ── */}
         {mobileOpen && (
-          <div className="lg:hidden pb-4 border-t animate-fade-in">
-            {navItems.map((item) => {
-              const active = isItemActive(item);
-              const hasMegaMenu = !!(item as { megaMenu?: unknown }).megaMenu;
-              const mobileChildren = hasMegaMenu
-                ? (item as { children?: { label: string; href: string }[] }).children ?? []
-                : (item as { children?: { label: string; href: string }[] }).children ?? [];
-              const isExpanded = expandedMobileSection === item.label;
+          <div className="lg:hidden border-t animate-fade-in max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain bg-white pb-12" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {/* Search Bar at the top of the mobile drawer */}
+            <div className="px-4 py-4 border-b border-gray-100 bg-gray-50/50">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (searchQuery.trim()) {
+                    setMobileOpen(false);
+                    startTransition(() => {
+                      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                    });
+                  }
+                }}
+                className="relative w-full"
+              >
+                <input
+                  type="text"
+                  disabled={isPending}
+                  placeholder={isPending ? "Searching..." : "Search products..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-white text-sm text-gray-900 placeholder-gray-400 font-semibold rounded-xl pl-9 pr-4 py-2.5 border border-gray-200 focus:border-sky-300 focus:ring-4 focus:ring-sky-50 outline-none transition-all"
+                />
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg className="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </form>
+            </div>
 
-              return (
-                <div key={item.label}>
-                  <div className="flex items-center">
-                    <Link
-                      href={item.href}
-                      className={`flex-1 py-3 px-2 border-b border-gray-100 flex items-center gap-2 transition-colors ${
-                        active ? "text-[#0091FF] font-semibold bg-sky-50" : "text-gray-700 hover:text-primary font-medium"
-                      }`}
-                      onClick={() => {
-                        if (!mobileChildren.length) setMobileOpen(false);
-                      }}
-                    >
-                      {item.label === "Inquiry" && (
-                        <svg className={`w-4.5 h-4.5 ${active ? "text-[#0091FF]" : "text-gray-700"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                      )}
-                      <span>{item.label}</span>
-                    </Link>
-                    {mobileChildren.length > 0 && (
-                      <button
-                        className="px-3 py-3 border-b border-gray-100 text-gray-500"
-                        onClick={() => setExpandedMobileSection(isExpanded ? null : item.label)}
+            {/* Navigation Links */}
+            <div className="px-2">
+              {mobileNavItems.map((item) => {
+                const active = isItemActive(item);
+                const mobileChildren = item.children ?? [];
+                const isExpanded = expandedMobileSection === item.label;
+
+                return (
+                  <div key={item.label} className="border-b border-gray-50 last:border-none">
+                    <div className="flex items-center">
+                      <Link
+                        href={item.href}
+                        className={`flex-1 py-3.5 px-3 rounded-xl flex items-center gap-2.5 transition-colors ${
+                          active ? "text-[#0091FF] font-bold bg-sky-50/70" : "text-gray-700 hover:text-primary font-semibold text-sm"
+                        }`}
+                        onClick={() => {
+                          if (!mobileChildren.length) setMobileOpen(false);
+                        }}
                       >
-                        <svg className={`w-4 h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
+                        {item.label === "Inquiry" && (
+                          <svg className={`w-4.5 h-4.5 ${active ? "text-[#0091FF]" : "text-gray-700"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          </svg>
+                        )}
+                        <span>{item.label}</span>
+                      </Link>
+                      {mobileChildren.length > 0 && (
+                        <button
+                          className="p-3 text-gray-500 hover:text-primary transition-colors focus:outline-none"
+                          onClick={() => setExpandedMobileSection(isExpanded ? null : item.label)}
+                          aria-label="Toggle submenu"
+                        >
+                          <svg className={`w-4.5 h-4.5 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Mobile sub-items accordion */}
+                    {mobileChildren.length > 0 && isExpanded && (
+                      <div className="pl-4 bg-gray-50/50 rounded-xl mb-2 py-1 space-y-0.5 border border-gray-100">
+                        {mobileChildren.map((child) => (
+                          <Link
+                            key={child.label}
+                            href={child.href}
+                            className="block py-2.5 px-3 text-gray-600 hover:text-primary text-xs font-semibold"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            – {child.label}
+                          </Link>
+                        ))}
+                      </div>
                     )}
                   </div>
+                );
+              })}
+            </div>
 
-                  {/* Mobile sub-items accordion */}
-                  {mobileChildren.length > 0 && isExpanded && (
-                    <div className="pl-4 bg-gray-50">
-                      {mobileChildren.map((child) => (
-                        <Link
-                          key={child.label}
-                          href={child.href}
-                          className="block py-2.5 px-2 text-gray-600 hover:text-primary text-sm font-medium"
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          – {child.label}
-                        </Link>
-                      ))}
-                    </div>
+            {/* Profile Action Buttons inside mobile drawer */}
+            <div className="px-4 pt-4 border-t border-gray-100">
+              {isClient && user ? (
+                <>
+                  {profile?.role?.toLowerCase() === 'admin' && (
+                    <Link
+                      href="/admin"
+                      className="flex items-center justify-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-slate-800 transition-colors text-sm"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <svg className="w-5 h-5 text-sky-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Admin Dashboard
+                    </Link>
                   )}
-                </div>
-              );
-            })}
-
-            {isClient && user ? (
-              <>
-                {profile?.role?.toLowerCase() === 'admin' && (
                   <Link
-                    href="/admin"
-                    className="flex items-center justify-center gap-2 mt-4 bg-red-650 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm"
+                    href="/user"
+                    className="flex items-center justify-center gap-2 mt-3 bg-primary text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-primary-dark transition-colors text-sm"
                     onClick={() => setMobileOpen(false)}
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <svg className="w-5 h-5 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    Admin Dashboard
+                    My Profile
                   </Link>
-                )}
+                  <button
+                    onClick={() => { setMobileOpen(false); handleLogout(); }}
+                    className="w-full flex items-center justify-center gap-2 mt-3 border-2 border-gray-200 text-gray-700 hover:bg-gray-50 px-5 py-2.5 rounded-xl font-bold transition-colors text-sm"
+                  >
+                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                  </button>
+                </>
+              ) : (
                 <Link
-                  href="/user"
-                  className="flex items-center justify-center gap-2 mt-2 bg-primary text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm"
+                  href="/login"
+                  className="flex items-center justify-center gap-2 border-2 border-primary text-primary px-5 py-2.5 rounded-xl font-bold hover:bg-primary hover:text-white transition-colors text-sm"
                   onClick={() => setMobileOpen(false)}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                   </svg>
-                  My Profile
+                  Login
                 </Link>
-                <button
-                  onClick={() => { setMobileOpen(false); handleLogout(); }}
-                  className="w-full flex items-center justify-center gap-2 mt-2 border-2 border-gray-200 text-gray-700 hover:bg-gray-50 px-5 py-2.5 rounded-lg font-semibold"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className="flex items-center justify-center gap-2 mt-4 border-2 border-primary text-primary px-5 py-2.5 rounded-lg font-semibold hover:bg-primary/5 transition-colors"
-                onClick={() => setMobileOpen(false)}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                </svg>
-                Login
-              </Link>
-            )}
+              )}
+            </div>
           </div>
         )}
       </nav>

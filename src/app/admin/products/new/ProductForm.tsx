@@ -5,15 +5,6 @@ import { useRouter } from 'next/navigation';
 import { createProductAction, updateProductAction } from '@/app/actions/productActions';
 import { Product } from '@/types';
 
-const COLORS = [
-  'Silky Off White',
-  'Alpine Blue',
-  'Moon Ivory',
-  'Magenta',
-  'Chrome',
-  'Gold/Emerald'
-];
-
 const CATEGORIES = [
   'Water Closet',
   'Bathroom Basin',
@@ -37,13 +28,10 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
   
   const baseVariant = initialProduct?.sizes?.find(s => s.label === 'Standard White');
   const initialBasePrice = baseVariant ? baseVariant.price : (initialProduct?.price || '');
-  
-  const colorVariantsList = initialProduct?.sizes?.filter(s => s.label !== 'Standard White') || [];
-  const initialColorPrice = colorVariantsList.length > 0 ? colorVariantsList[0].price : '';
-  const initialSelectedColors = colorVariantsList.map(s => s.label);
+  const initialColorPrice = initialProduct?.mrp || '';
+
 
   // Form State
-  const [selectedColors, setSelectedColors] = useState<string[]>(initialSelectedColors);
   const [existingImages, setExistingImages] = useState<string[]>(initialProduct?.images || []);
   const [images, setImages] = useState<File[]>([]);
   const [primaryImageIndex, setPrimaryImageIndex] = useState(0);
@@ -98,11 +86,6 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
     }
   };
 
-  const handleColorToggle = (color: string) => {
-    setSelectedColors(prev => 
-      prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
-    );
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -112,7 +95,7 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
       images.forEach(img => formData.append('images', img));
       formData.append('primaryImageIndex', primaryImageIndex.toString());
       formData.append('existingImages', JSON.stringify(existingImages.map((url, idx) => ({ url, isPrimary: idx === primaryImageIndex }))));
-      formData.append('selectedColors', JSON.stringify(selectedColors));
+      formData.append('selectedColors', JSON.stringify([]));
       
       if (initialProduct) {
         await updateProductAction(initialProduct.id, formData);
@@ -151,9 +134,8 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Model / SKU Number</label>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Model / SKU Number <span className="text-gray-300 font-normal">(Optional)</span></label>
             <input 
-              required 
               type="text" 
               name="sku"
               defaultValue={initialSku}
@@ -197,15 +179,15 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
         </div>
       </section>
 
-      {/* 2. Pricing & Color Variants Section */}
+      {/* 2. Pricing Section */}
       <section className="bg-white/50 rounded-2xl p-6 border border-gray-100 shadow-sm space-y-6">
         <h3 className="text-base font-bold text-gray-900 flex items-center gap-2">
           <span className="w-8 h-8 rounded-full bg-sky-50 text-primary flex items-center justify-center text-sm">2</span>
-          Pricing & Colors
+          Pricing
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Base Price (Standard White) (₹)</label>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Selling Price (₹) *</label>
             <input 
               required
               type="number" 
@@ -216,36 +198,14 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Color Finish Price (Optional) (₹)</label>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">MRP / Original Price (₹) <span className="text-gray-300 font-normal">(Optional)</span></label>
             <input 
               type="number" 
               name="color_price"
               defaultValue={initialColorPrice}
               className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition" 
-              placeholder="Defaults to Base Price if empty" 
+              placeholder="Leave blank if same as selling price" 
             />
-          </div>
-          <div className="col-span-1 md:col-span-2">
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Available Color Finishes</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-              {COLORS.map(color => {
-                const isSelected = selectedColors.includes(color);
-                return (
-                  <button
-                    key={color}
-                    type="button"
-                    onClick={() => handleColorToggle(color)}
-                    className={`py-2 px-3 border rounded-xl text-xs font-bold transition-all ${
-                      isSelected 
-                        ? 'border-primary bg-sky-50 text-primary shadow-sm' 
-                        : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
-                    }`}
-                  >
-                    {color}
-                  </button>
-                );
-              })}
-            </div>
           </div>
         </div>
       </section>

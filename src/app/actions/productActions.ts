@@ -106,47 +106,27 @@ export async function createProductAction(formData: FormData, oldVariants?: any[
   }));
   await supabase.from('product_images').insert(imageInserts);
 
-  // 5. Generate and Insert variants
-  const variantInserts: any[] = [];
-  
-  // Parse dimensions like "690x380x750" into length, width, height for DB
+  // 5. Generate and Insert a single primary variant
   const dimParts = dimensions.toLowerCase().replace(/mm/g, '').split('x').map(p => parseInt(p.trim()) || 0);
   const length = dimParts[0] || 0;
   const width = dimParts[1] || 0;
   const height = dimParts[2] || 0;
 
-  // 5.1 Standard White variant
-  const baseSku = sku ? `${sku}-WHITE` : `VAR-${Math.random().toString(36).substring(7).toUpperCase()}`;
-  variantInserts.push({
+  const mrpPrice = colorPrice || basePrice; // use colorPrice field as MRP (re-purposed field)
+  const variantSku = sku || `PAR-${Date.now().toString(36).toUpperCase()}`;
+  
+  await supabase.from('variants').insert([{
     mattress_id: mattress.id,
-    size_name: 'Standard White',
+    size_name: sku || 'Standard',
     length,
     width,
     height,
     price: basePrice,
-    original_price: basePrice,
+    original_price: mrpPrice,
     stock: 10,
-    sku: baseSku
-  });
+    sku: variantSku
+  }]);
 
-  // 5.2 Color variants
-  selectedColors.forEach((colorName: string) => {
-    const cleanColorId = colorName.toUpperCase().replace(/\s+/g, '');
-    const colorSku = sku ? `${sku}-${cleanColorId}` : `VAR-${Math.random().toString(36).substring(7).toUpperCase()}`;
-    variantInserts.push({
-      mattress_id: mattress.id,
-      size_name: colorName,
-      length,
-      width,
-      height,
-      price: colorPrice,
-      original_price: colorPrice,
-      stock: 10,
-      sku: colorSku
-    });
-  });
-  
-  await supabase.from('variants').insert(variantInserts);
 
   revalidatePath('/admin/products');
   revalidatePath('/products');

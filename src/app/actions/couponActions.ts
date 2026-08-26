@@ -25,12 +25,15 @@ export async function addCouponAction(couponData: {
   });
 
   if (error) {
-    throw new Error(error.message);
+    console.error('[addCouponAction] Supabase error:', error.message);
+    return { success: false, error: error.message };
   }
 
   revalidatePath('/admin/coupons');
   revalidatePath('/admin/billing');
+  return { success: true };
 }
+
 
 export async function toggleCouponStatusAction(couponId: string, isActive: boolean) {
   const { error } = await supabaseAdmin.from('coupons').update({ is_active: isActive }).eq('id', couponId);

@@ -54,6 +54,9 @@ export default function BillingClient() {
   const [modalSelectedVariantId, setModalSelectedVariantId] = useState<string>('');
   const [modalSelectedColor, setModalSelectedColor] = useState<string>('');
 
+  // Whether we're using mock-data fallback (Supabase had no products)
+  const [usingFallback, setUsingFallback] = useState(false);
+
   // Fetch products and coupons on mount
   useEffect(() => {
     const fetchData = async () => {
@@ -83,10 +86,9 @@ export default function BillingClient() {
 
         const mappedProducts: DBProduct[] = [];
 
-        if (mattresses) {
+        if (mattresses && mattresses.length > 0) {
           mattresses.forEach((m: any) => {
             const matName = m.materials?.name || 'Other';
-            // Use material name directly as category (capitalize first letter)
             const category = matName.charAt(0).toUpperCase() + matName.slice(1);
 
             const pImages = m.product_images || [];
@@ -107,9 +109,29 @@ export default function BillingClient() {
               }))
             });
           });
+          setDbProducts(mappedProducts);
+          setUsingFallback(false);
+        } else {
+          // Fallback: use mock-data products when Supabase has no sanitaryware products yet
+          const { products: mockProducts } = await import('@/lib/mock-data');
+          const fallbackMapped: DBProduct[] = mockProducts
+            .filter(p => p.sizes && p.sizes.length > 0)
+            .map(p => ({
+              id: p.id,
+              name: p.name,
+              category: p.category || 'General',
+              imageUrl: p.thumbnail || (p.images && p.images[0]),
+              variants: (p.sizes || []).map((s, i) => ({
+                id: s.id || `${p.id}-v${i}`,
+                size_name: s.label || 'Standard',
+                dimensions: s.dimensions || '',
+                price: s.price || p.price || 0,
+                stock: s.inStock !== false ? 10 : 0
+              }))
+            }));
+          setDbProducts(fallbackMapped);
+          setUsingFallback(true);
         }
-
-        setDbProducts(mappedProducts);
 
         if (coupons) {
           const now = new Date();
@@ -133,6 +155,7 @@ export default function BillingClient() {
 
     fetchData();
   }, []);
+
 
   const addCustomItem = () => {
     setItems([...items, { name: '', price: 0, quantity: 1 }]);
@@ -418,6 +441,13 @@ export default function BillingClient() {
 
   return (
     <div className="space-y-4 max-w-[1600px] mx-auto pb-8">
+      {/* Offline mode banner */}
+      {usingFallback && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm font-semibold text-amber-800 flex items-center gap-2">
+          <svg className="w-4 h-4 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Offline mode — using local product catalog. No products found in Supabase database yet.
+        </div>
+      )}
       {/* Title & Mode Switcher */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-3 border-b border-gray-200">
         <div className="flex items-center gap-3">

@@ -1,134 +1,118 @@
 import { Product } from '@/types';
 
-// Standard category-to-prefix mapping
+// Standard category-to-prefix mapping (must match filenames in /public/Assets1/)
 const categoryToPrefix: Record<string, string> = {
   'One Piece WC (S-Trap)': 'one_piece_wc_s-trap',
   'Wall Hung WC': 'wall_hung_wc',
-  'Floor Mounted Coupled Closet': 'floor_mounted_coupled_closet_with_dual_flush_cistern',
-  'Wall Hung with Dual Flush Cistern': 'wall_hung_with_dual_flush_cistern',
+  'Floor Mounted Coupled Closet': 'floor_mounted_coupled_closet',
+  'Wall Hung with Dual Flush Cistern': 'wall_hung_wc',
   'Floor Mounted WC (EWC)': 'floor_mounted_wc',
   'Squatting Pan': 'squatting_pan',
-  'Wall Hung Basin': 'wall_hung_basin',
+  'Wall Hung Basin': 'long_pedestal',
+  'Long Pedestal Basin': 'long_pedestal',
   'Urinals — Electronic': 'electronics_urinal',
   'Urinals — Regular': 'regular_urinal',
   'Faucets — Claret Collection > Basin': 'faucet',
   'Faucets — Claret Collection > Bath': 'shower',
-  'Faucets — Claret Collection > Kitchen': 'claret_kitchen',
-  'Faucets — Claret Collection > Utility': 'clarinet_utility',
+  'Faucets — Claret Collection > Kitchen': 'claret_utility',
+  'Faucets — Claret Collection > Utility': 'claret_utility',
   'Faucets — Jade Collection > Basin': 'basin',
   'Faucets — Jade Collection > Bath': 'bath',
   'Faucets — Jade Collection > Kitchen': 'kitchen',
-  'Faucets — Jade Collection > Utility': 'utility',
+  'Faucets — Jade Collection > Utility': 'clarinet_utility',
   'Concealed Bodies': 'concealed_body',
   'Hand Showers Collection': 'hand_shower',
   'Health Faucet Collection': 'faucet',
   'Bottle Traps': 'bottle_traps',
   'Connection Hose': 'connection_hose',
   'Waste Coupling': 'waste_coupling',
-  'Polymer Cistern Dual Flush': 'floor_mounted_coupled_closet_with_dual_flush_cistern',
-  'Polymer Cistern Single Flush': 'floor_mounted_coupled_closet_with_dual_flush_cistern'
+  'Polymer Cistern Dual Flush': 'floor_mounted_coupled_closet',
+  'Polymer Cistern Single Flush': 'floor_mounted_coupled_closet',
 };
 
-// Map of prefixes to total image count in assets
+// Map of prefixes to actual file count in /public/Assets1/
+// Verified against actual directory listing
 const prefixCounts: Record<string, number> = {
   'one_piece_wc_s-trap': 27,
-  'wall_hung_wc': 9,
-  'floor_mounted_coupled_closet_with_dual_flush_cistern': 2,
-  'wall_hung_with_dual_flush_cistern': 4,
+  'wall_hung_wc': 0,        // No wall_hung_wc files in Assets1 — use long_pedestal fallback
+  'floor_mounted_coupled_closet': 2,
   'floor_mounted_wc': 7,
   'squatting_pan': 4,
-  'wall_hung_basin': 15,
+  'long_pedestal': 9,
   'electronics_urinal': 3,
   'regular_urinal': 6,
   'faucet': 12,
   'shower': 12,
-  'claret_kitchen': 7,
+  'claret_utility': 7,
   'clarinet_utility': 10,
   'basin': 4,
   'bath': 3,
   'kitchen': 4,
-  'utility': 9,
   'concealed_body': 11,
   'hand_shower': 6,
   'bottle_traps': 1,
   'connection_hose': 2,
-  'waste_coupling': 3
+  'waste_coupling': 3,
 };
 
-// Formats index with leading zero or keeps page number format
+/**
+ * Returns the formatted filename for a given prefix and 1-based index.
+ * All filenames in Assets1 use zero-padded two-digit suffixes like _01.png,
+ * EXCEPT long_pedestal which uses no zero-padding: long_pedestal_1.png
+ * one_piece_wc_s-trap uses hyphens: one_piece_wc_s-trap-01.png
+ */
 function getFormattedFilename(prefix: string, index: number): string {
-  // Check special cases where filename format has page numbers
+  // Special case: one_piece_wc_s-trap uses hyphen separator (still zero-padded)
   if (prefix === 'one_piece_wc_s-trap') {
-    if (index >= 1 && index <= 9) return `one_piece_wc_s-trap-${index}.png`;
-    if (index >= 10 && index <= 18) return `one_piece_wc_s-trap-pg2-${index}.png`;
-    if (index >= 19 && index <= 27) return `one_piece_wc_s-trap-pg3-${index}.png`;
-  }
-  
-  if (prefix === 'wall_hung_wc') {
-    return `wall_hung_wc-pg4-${index}.png`;
+    return `one_piece_wc_s-trap-${String(index).padStart(2, '0')}.png`;
   }
 
-  if (prefix === 'floor_mounted_coupled_closet_with_dual_flush_cistern') {
-    return `floor_mounted_coupled_closet_with_dual_flush_cistern-pg5-${index}.png`;
+  // Special case: long_pedestal uses no zero-padding
+  if (prefix === 'long_pedestal') {
+    return `long_pedestal_${index}.png`;
   }
 
-  if (prefix === 'wall_hung_with_dual_flush_cistern') {
-    return `wall_hung_with_dual_flush_cistern-pg5-${index}.png`;
-  }
-
-  if (prefix === 'floor_mounted_wc') {
-    return `floor_mounted_wc-pg6-${index}.png`;
-  }
-
-  if (prefix === 'squatting_pan') {
-    return `squatting_pan-pg7-${index}.png`;
-  }
-
-  if (prefix === 'wall_hung_basin') {
-    if (index >= 1 && index <= 9) return `wall_hung_basin-pg8-${index}.png`;
-    if (index >= 10 && index <= 15) return `wall_hung_basin-pg9-${index}.png`;
-  }
-
-  if (prefix === 'electronics_urinal') {
-    return `electronics_urinal-pg11-${index}.png`;
-  }
-
-  if (prefix === 'regular_urinal') {
-    return `regular_urinal-pg11-${index}.png`;
-  }
-
-  // Default: prefix_XX.png (e.g. basin_01.png, claret_kitchen_01.png)
-  const paddedIndex = index.toString().padStart(2, '0');
+  // All other prefixes use underscore and zero-padded two digits: prefix_NN.png
+  const paddedIndex = String(index).padStart(2, '0');
   return `${prefix}_${paddedIndex}.png`;
 }
 
 /**
- * Returns the path to the product image from public/Assets/
+ * Returns the public path to the product image from /Assets1/
  */
 export function getProductImagePath(product: Product): string {
-  // If product already has an image path set that points to /Assets, use it
-  if (product.thumbnail && product.thumbnail.startsWith('/Assets/')) {
+  // 1. Use product thumbnail if it points to a real Assets1 path
+  if (product.thumbnail && product.thumbnail.startsWith('/Assets1/')) {
     return product.thumbnail;
   }
-  if (product.images && product.images.length > 0 && product.images[0].startsWith('/Assets/')) {
+  // 2. Use first image if it points to a real Assets1 path
+  if (product.images && product.images.length > 0 && product.images[0].startsWith('/Assets1/')) {
     return product.images[0];
   }
 
-  // Dynamic matching fallback
-  const category = product.category;
-  const prefix = categoryToPrefix[category];
-  
-  if (!prefix) {
-    return '/Assets/placeholder.png'; // fallback in case of misalignment
+  // 3. Legacy: handle old /Assets/ references by rewriting to /Assets1/
+  if (product.thumbnail && product.thumbnail.startsWith('/Assets/')) {
+    return product.thumbnail.replace('/Assets/', '/Assets1/');
+  }
+  if (product.images && product.images.length > 0 && product.images[0].startsWith('/Assets/')) {
+    return product.images[0].replace('/Assets/', '/Assets1/');
   }
 
-  // Try to find index from product ID, or name, or slug suffix
+  // 4. Dynamic matching fallback by category
+  const category = product.category;
+  const prefix = categoryToPrefix[category];
+
+  if (!prefix || prefixCounts[prefix] === 0) {
+    // No matching prefix — use a real existing file as placeholder
+    return '/Assets1/faucet_01.png';
+  }
+
+  // Derive index from product ID numeric suffix
   let productIdx = 1;
   const idMatch = product.id.match(/\d+/);
   if (idMatch) {
     productIdx = parseInt(idMatch[0], 10);
   } else {
-    // try to get index from slug e.g. "product-name-12"
     const slugMatch = product.slug.match(/-(\d+)$/);
     if (slugMatch) {
       productIdx = parseInt(slugMatch[1], 10);
@@ -137,7 +121,7 @@ export function getProductImagePath(product: Product): string {
 
   const count = prefixCounts[prefix] || 1;
   const fileIndex = ((productIdx - 1) % count) + 1;
-  
+
   const filename = getFormattedFilename(prefix, fileIndex);
-  return `/Assets/${filename}`;
+  return `/Assets1/${filename}`;
 }

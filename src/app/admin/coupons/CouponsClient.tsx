@@ -2,19 +2,20 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
 import { addCouponAction, toggleCouponStatusAction, deleteCouponAction } from '@/app/actions/couponActions';
 
 export default function CouponsClient({ initialCoupons }: { initialCoupons: any[] }) {
-  const router = useRouter();
   const [coupons, setCoupons] = useState(initialCoupons);
   const [code, setCode] = useState('');
+  const [discountType, setDiscountType] = useState<'percentage' | 'flat'>('percentage');
   const [discount, setDiscount] = useState('');
   const [minOrder, setMinOrder] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [usageLimit, setUsageLimit] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [search, setSearch] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const filteredCoupons = coupons.filter(c => 
     c.code.toLowerCase().includes(search.toLowerCase())
@@ -36,26 +37,47 @@ export default function CouponsClient({ initialCoupons }: { initialCoupons: any[
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!code || !discount) return alert('Code and Discount are required');
+    setSuccessMsg('');
+    setErrorMsg('');
+    if (!code || !discount) {
+      setErrorMsg('Coupon code and discount value are required.');
+      return;
+    }
 
     setIsSubmitting(true);
     
     try {
-      await addCouponAction({
+      const payload: any = {
         code: code.toUpperCase(),
-        percentage: Number(discount),
         min_order_value: minOrder ? Number(minOrder) : null,
         expiry_date: expiryDate ? new Date(expiryDate).toISOString() : null,
         usage_limit: usageLimit ? Number(usageLimit) : null,
-      });
+      };
+
+      if (discountType === 'percentage') {
+        payload.percentage = Number(discount);
+        payload.flat_discount = null;
+      } else {
+        payload.flat_discount = Number(discount);
+        payload.percentage = null;
+      }
+
+      const res = await addCouponAction(payload);
+
+      if (res && !res.success) {
+        setErrorMsg(res.error || 'Failed to create coupon');
+        return;
+      }
+
       setCode('');
       setDiscount('');
       setMinOrder('');
       setExpiryDate('');
       setUsageLimit('');
+      setSuccessMsg(`✓ Coupon "${payload.code}" created successfully!`);
       await refreshCoupons();
     } catch (error: any) {
-      alert('Error creating coupon: ' + error.message);
+      setErrorMsg('Error creating coupon: ' + error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -94,6 +116,12 @@ export default function CouponsClient({ initialCoupons }: { initialCoupons: any[
     return expiry < new Date();
   };
 
+  const formatDiscount = (coupon: any) => {
+    if (coupon.flat_discount) return `₹${coupon.flat_discount} off`;
+    if (coupon.percentage) return `${coupon.percentage}% off`;
+    return 'No discount';
+  };
+
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto pb-8 -mt-2">
       {/* Header */}
@@ -116,11 +144,25 @@ export default function CouponsClient({ initialCoupons }: { initialCoupons: any[
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Form (Spans 6 or 7) */}
+        {/* Left Column: Form */}
         <div className="lg:col-span-6 xl:col-span-7 bg-white rounded-3xl border border-gray-100 p-6 md:p-8 shadow-sm">
           <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
             + New Coupon
           </h2>
+
+          {/* Success/Error Banners */}
+          {successMsg && (
+            <div className="mb-4 bg-green-50 border border-green-200 text-green-800 rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2">
+              <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+              {successMsg}
+            </div>
+          )}
+          {errorMsg && (
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-800 rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2">
+              <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              {errorMsg}
+            </div>
+          )}
 
           <form onSubmit={handleCreate} className="space-y-6">
             <div>
@@ -144,18 +186,41 @@ export default function CouponsClient({ initialCoupons }: { initialCoupons: any[
               </div>
             </div>
 
+            {/* Discount Type Toggle */}
+            <div>
+              <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Discount Type *</label>
+              <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setDiscountType('percentage')}
+                  className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${discountType === 'percentage' ? 'bg-white text-sky-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  Percentage (%)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDiscountType('flat')}
+                  className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${discountType === 'flat' ? 'bg-white text-sky-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  Flat Amount (₹)
+                </button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Discount % *</label>
+                <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">
+                  {discountType === 'percentage' ? 'Discount % *' : 'Flat Discount (₹) *'}
+                </label>
                 <input
                   type="number"
                   required
                   min="1"
-                  max="100"
+                  max={discountType === 'percentage' ? 100 : undefined}
                   value={discount}
                   onChange={e => setDiscount(e.target.value)}
                   className="w-full bg-gray-50 border-0 rounded-xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-sky-500/20 outline-none"
-                  placeholder="e.g. 15"
+                  placeholder={discountType === 'percentage' ? 'e.g. 15' : 'e.g. 500'}
                 />
               </div>
               <div>
@@ -231,11 +296,11 @@ export default function CouponsClient({ initialCoupons }: { initialCoupons: any[
               const expired = isExpired(coupon.expiry_date);
               
               return (
-                <div key={coupon.id} className="bg-[#FAF9F6] border border-[#F2EFE9] rounded-2xl p-4 flex justify-between items-start hover:border-red-100 transition-colors">
+                <div key={coupon.id} className="bg-[#FAF9F6] border border-[#F2EFE9] rounded-2xl p-4 flex justify-between items-start hover:border-sky-100 transition-colors">
                   <div>
                     <h3 className="font-extrabold text-gray-900 text-sm">{coupon.code}</h3>
                     <p className="text-xs font-bold text-green-700 mt-1">
-                      {coupon.percentage}% off {coupon.min_order_value ? `· min ₹${coupon.min_order_value}` : ''}
+                      {formatDiscount(coupon)} {coupon.min_order_value ? `· min ₹${coupon.min_order_value}` : ''}
                     </p>
                     <p className="text-[10px] font-semibold text-gray-400 mt-1">
                       {coupon.usage_limit 
@@ -255,9 +320,6 @@ export default function CouponsClient({ initialCoupons }: { initialCoupons: any[
                         {coupon.is_active ? 'ACTIVE' : 'INACTIVE'}
                       </button>
                     )}
-                    <button className="text-[10px] font-extrabold text-blue-500 hover:text-blue-700 uppercase">
-                      Edit
-                    </button>
                     <button 
                       onClick={() => handleDelete(coupon.id)}
                       className="text-[10px] font-extrabold text-red-500 hover:text-red-700 uppercase"

@@ -173,17 +173,25 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             )}
 
             {/* Specifications */}
-            {product.specifications && Object.keys(product.specifications).length > 0 && (
-              <div className="mb-8 p-5 bg-white rounded-2xl border border-gray-200 space-y-2">
-                <h4 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-2">Specifications</h4>
-                {Object.entries(product.specifications).map(([key, val]) => (
-                  <div key={key} className="flex items-center justify-between text-xs py-1 border-b border-gray-50 last:border-none">
-                    <span className="font-semibold text-gray-500">{key}</span>
-                    <span className="font-bold text-gray-900">{val}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            {(() => {
+              const specs = { ...(product.specifications || {}) };
+              // Auto-derive Model/SKU from sizes[0].label if missing
+              if (!specs['Model / SKU Number'] && product.sizes && product.sizes.length > 0 && product.sizes[0].label) {
+                specs['Model / SKU Number'] = product.sizes[0].label.split('(')[0].trim();
+              }
+              if (Object.keys(specs).length === 0) return null;
+              return (
+                <div className="mb-8 p-5 bg-white rounded-2xl border border-gray-200 space-y-2">
+                  <h4 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-2">Specifications</h4>
+                  {Object.entries(specs).map(([key, val]) => (
+                    <div key={key} className="flex items-center justify-between text-xs py-1 border-b border-gray-50 last:border-none">
+                      <span className="font-semibold text-gray-500">{key}</span>
+                      <span className="font-bold text-gray-900">{val}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
