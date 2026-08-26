@@ -148,3 +148,52 @@ export async function deleteCategoryAction(id: string) {
     return { success: false, error: error.message };
   }
 }
+
+export async function seedCategoriesAction() {
+  try {
+    const supabase = await createClient();
+    
+    // Check if empty
+    const { count } = await supabase
+      .from('materials')
+      .select('id', { count: 'exact', head: true });
+      
+    if (count && count > 0) {
+      return { success: false, error: 'Database already has categories. Sync not required.' };
+    }
+
+    const defaultNames = [
+      'One Piece WC (S-Trap)',
+      'Wall Hung WC',
+      'Floor Mounted Coupled Closet',
+      'Wall Hung with Dual Flush Cistern',
+      'Floor Mounted WC (EWC)',
+      'Squatting Pan',
+      'Wall Hung Basin',
+      'Polymer Cistern Dual Flush',
+      'Polymer Cistern Single Flush',
+      'Urinals — Electronic',
+      'Urinals — Regular',
+      'Faucets — Claret Collection',
+      'Faucets — Jade Collection',
+      'Concealed Bodies',
+      'Hand Showers Collection',
+      'Health Faucet Collection'
+    ];
+
+    const insertData = defaultNames.map((name, index) => ({
+      name,
+      sort_order: index
+    }));
+
+    const { error } = await supabase.from('materials').insert(insertData as any);
+    if (error) throw error;
+
+    revalidatePath('/admin/categories');
+    revalidatePath('/products');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to seed categories:', error);
+    return { success: false, error: error.message };
+  }
+}

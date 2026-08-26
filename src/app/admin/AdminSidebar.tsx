@@ -94,6 +94,25 @@ export default function AdminSidebar({
       ),
     },
     {
+      name: "Categories",
+      href: "/admin/categories",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h7"
+          />
+        </svg>
+      ),
+    },
+    {
       name: "Billing (POS)",
       href: "/admin/billing",
       icon: (

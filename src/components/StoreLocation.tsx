@@ -38,20 +38,24 @@ export default function StoreLocation() {
   useEffect(() => {
     const updateStatus = () => {
       try {
-        const formatter = new Intl.DateTimeFormat("en-US", {
+        const dayFormatter = new Intl.DateTimeFormat("en-US", {
+          timeZone: "Asia/Kolkata",
+          weekday: "long",
+        });
+        const hourFormatter = new Intl.DateTimeFormat("en-US", {
           timeZone: "Asia/Kolkata",
           hour12: false,
-          weekday: "long",
           hour: "numeric",
+        });
+        const minuteFormatter = new Intl.DateTimeFormat("en-US", {
+          timeZone: "Asia/Kolkata",
           minute: "numeric",
         });
         
-        const formatted = formatter.format(new Date());
-        const [dayPart, timePart] = formatted.split(", ");
-        const [hourStr, minuteStr] = timePart.split(":");
-        const hours = parseInt(hourStr, 10);
-        const minutes = parseInt(minuteStr, 10);
-
+        const dayPart = dayFormatter.format(new Date());
+        const hours = parseInt(hourFormatter.format(new Date()), 10);
+        const minutes = parseInt(minuteFormatter.format(new Date()), 10);
+        
         const isSunday = dayPart === "Sunday";
         const isSaturday = dayPart === "Saturday";
         const timeVal = hours * 100 + minutes; // e.g. 900 for 9:00 AM, 2000 for 8:00 PM

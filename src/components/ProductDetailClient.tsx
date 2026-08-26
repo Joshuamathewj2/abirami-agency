@@ -2,56 +2,72 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { type Product, type Size } from '@/types';
-import SizeSelectorModal from './SizeSelectorModal';
+import { useUserStore } from '@/store/userStore';
 import { getProductImagePath } from '@/lib/image-utils';
 
-const SVG_PLACEHOLDER = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="100%" height="100%" fill="%23f1f5f9"/><text x="50%" y="50%" font-family="sans-serif" font-size="14" fill="%2394a3b8" dominant-baseline="middle" text-anchor="middle">Parryware Sanitaryware</text></svg>`;
-
 export default function ProductDetailClient({ product }: { product: Product }) {
+  const router = useRouter();
   const mainImage = getProductImagePath(product);
-
-  // Extract images safely
-  const productImages = product.images && product.images.length > 0 && !product.images[0].includes('placehold.co') && !product.images[0].includes('data:image/svg+xml')
-    ? product.images.map(img => img.startsWith('/Assets/') || img.startsWith('http') ? img : mainImage)
-    : [mainImage];
-
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
-  const [justAdded, setJustAdded] = useState(false);
   const { addItem } = useCart();
-  const { isInWishlist } = useWishlist();
-  
+  const { user } = useUserStore();
+
   const [isClient, setIsClient] = useState(false);
-  const [imageMap, setImageMap] = useState<Record<string, string>>({});
+  const [imgError, setImgError] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
 
   useEffect(() => setIsClient(true), []);
 
-  const getImageSrc = (originalSrc: string) => {
-    return imageMap[originalSrc] || originalSrc;
-  };
-
-  const handleImageError = (originalSrc: string) => {
-    if (originalSrc && !imageMap[originalSrc]) {
-      setImageMap(prev => ({
-        ...prev,
-        [originalSrc]: '/Assets/placeholder.png'
-      }));
-    }
-  };
-
   const sizes = product.sizes || [];
-  const [selectedVariant, setSelectedVariant] = useState<Size | null>(sizes[0] || null);
+  const primaryVariant = sizes[0] || null;
 
-  const displayPrice = selectedVariant ? selectedVariant.price : product.price;
-  const displayMrp = selectedVariant ? (selectedVariant.mrp || 0) : (product.mrp || 0);
+  const displayPrice = primaryVariant ? primaryVariant.price : product.price;
+  const displayMrp = primaryVariant ? (primaryVariant.mrp || 0) : (product.mrp || 0);
 
-  // If selected variant has a specific image URL or model code image, use it
-  const activeImage = productImages[selectedImageIndex] || mainImage;
-  const activeImageSrc = getImageSrc(activeImage);
+  const activeImageSrc = imgError ? '/Assets1/faucet_01.png' : mainImage;
+
+  const cleanDescription = product.description
+    ? product.description
+        .replace(/available in Chrome, Gold\/Emerald, Gold\/Jade/gi, '')
+        .replace(/Chrome, Gold\/Emerald, Gold\/Jade/gi, '')
+        .replace(/with multiple finish variants/gi, '')
+        .replace(/available in multiple finishes/gi, '')
+        .trim()
+    : '';
+
+  const handleAddToCart = () => {
+    if (justAdded) return;
+    
+    const defaultVariant = primaryVariant || {
+      id: 'default',
+      label: 'Standard',
+      dimensions: 'Standard',
+      price: product.price,
+      mrp: product.mrp || product.price,
+      inStock: true
+    };
+
+    addItem(product, defaultVariant as Size, 1);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 3000);
+  };
+
+  const handleBuyNow = () => {
+    const defaultVariant = primaryVariant || {
+      id: 'default',
+      label: 'Standard',
+      dimensions: 'Standard',
+      price: product.price,
+      mrp: product.mrp || product.price,
+      inStock: true
+    };
+
+    addItem(product, defaultVariant as Size, 1);
+    router.push(user ? '/cart' : '/login?redirect=/cart');
+  };
 
   return (
     <div className="bg-white min-h-screen">
@@ -68,35 +84,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain p-2 transition-transform duration-700 group-hover:scale-105"
-                onError={() => handleImageError(activeImage)}
+                onError={() => setImgError(true)}
               />
             </div>
-
-            {/* Thumbnails Gallery Strip */}
-            {productImages.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                {productImages.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedImageIndex(i)}
-                    className={`relative w-20 h-20 rounded-xl overflow-hidden bg-white shrink-0 border transition-all duration-200 ${
-                      selectedImageIndex === i 
-                        ? 'border-primary ring-2 ring-primary/20 opacity-100' 
-                        : 'border-gray-200 opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <Image
-                      src={getImageSrc(img)}
-                      alt={`${product.name} view ${i + 1}`}
-                      fill
-                      sizes="80px"
-                      className="object-contain p-1"
-                      onError={() => handleImageError(img)}
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Right: Product Details */}
@@ -119,7 +109,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
             <div 
               className="text-base md:text-lg text-gray-600 leading-relaxed mb-6 font-medium"
-              dangerouslySetInnerHTML={{ __html: product.description }}
+              dangerouslySetInnerHTML={{ __html: cleanDescription }}
             />
 
             {/* Stock Status */}
@@ -145,39 +135,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               <p className="text-xs text-gray-400 font-medium">Wholesale price in Chennai. Inclusive of all taxes.</p>
             </div>
 
-            {/* Variants / Model Codes Selector */}
-            {sizes.length > 0 && (
-              <div className="mb-8">
-                <label className="block text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">
-                  Select Model Code / Variant
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {sizes.map((s) => {
-                    const isSelected = selectedVariant?.id === s.id;
-                    return (
-                      <button
-                        key={s.id}
-                        onClick={() => setSelectedVariant(s)}
-                        className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all ${
-                          isSelected
-                            ? 'border-primary bg-primary text-white shadow-sm'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                        }`}
-                      >
-                        {s.label} ({s.dimensions})
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
             {/* Specifications */}
             {(() => {
               const specs = { ...(product.specifications || {}) };
-              // Auto-derive Model/SKU from sizes[0].label if missing
-              if (!specs['Model / SKU Number'] && product.sizes && product.sizes.length > 0 && product.sizes[0].label) {
-                specs['Model / SKU Number'] = product.sizes[0].label.split('(')[0].trim();
+              if (!specs['Model / SKU Number'] && primaryVariant?.label) {
+                specs['Model / SKU Number'] = primaryVariant.label.split('(')[0].trim();
               }
               if (Object.keys(specs).length === 0) return null;
               return (
@@ -193,28 +155,33 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               );
             })()}
 
+            {/* Success Feedback banner */}
+            {justAdded && (
+              <div className="mb-4 bg-green-50 border border-green-200 text-green-800 rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2 animate-fade-in">
+                <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                Product successfully added to cart!
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <button
-                onClick={() => setModalOpen(true)}
-                className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-lg shadow-sky-200 text-base flex items-center justify-center gap-2 active:scale-95"
+                onClick={handleAddToCart}
+                className="w-full bg-white border border-primary text-primary hover:bg-sky-50 font-bold py-4 px-8 rounded-2xl transition-all shadow-md text-base flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
               >
-                Buy Now / Add to Cart
+                Add to Cart
+              </button>
+              <button
+                onClick={handleBuyNow}
+                className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-lg shadow-sky-200 text-base flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+              >
+                Buy Now
               </button>
             </div>
 
           </div>
         </div>
       </div>
-
-      {/* Size / Variant Selector Modal */}
-      {modalOpen && (
-        <SizeSelectorModal
-          product={product}
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-        />
-      )}
     </div>
   );
 }

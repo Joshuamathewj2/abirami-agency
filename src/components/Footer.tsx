@@ -91,11 +91,11 @@ export default function Footer() {
       )}
 
       <div className="border-t border-white/10 print:border-gray-200">
-        <div className="w-full px-6 md:px-12 py-4 print:py-2 flex flex-col md:flex-row items-center justify-between gap-2 print:gap-1">
+        <div className="w-full px-6 py-4 print:py-2 grid grid-cols-1 md:grid-cols-3 items-center gap-2 md:gap-4">
           <p className="text-gray-400 print:text-gray-500 text-[11px] font-bold tracking-wider text-center md:text-left print:text-left">
             &copy; 2026 ALL RIGHTS RESERVED. ABIRAMI AGENCY - PARRYWARE SANITARYWARE.
           </p>
-          <p className="text-gray-400 print:text-gray-500 text-[11px] text-center font-bold tracking-wider uppercase">
+          <p className="text-gray-400 print:text-gray-500 text-[11px] text-center font-bold tracking-wider uppercase md:mx-auto">
             POWERED BY{' '}
             <a href="https://www.cenexasystems.com/" target="_blank" rel="noopener noreferrer" className="text-primary font-black hover:text-red-500 print:text-gray-700 transition-colors">
               CENEXA SYSTEMS

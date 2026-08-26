@@ -192,7 +192,7 @@ export default function CartPage() {
     setIsPlacingOrder(true);
 
     const phoneNumber =
-      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "917200377455";
+      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918610710434";
 
     // Use BMP-range or well-supported supplementary emoji only
     const e = {
@@ -216,8 +216,8 @@ export default function CartPage() {
     };
 
     let message = hasCustomItems
-      ? `${e.star} *New Custom Order Inquiry* ${e.bell}\n\n`
-      : `${e.star} *New Order Inquiry* ${e.bell}\n\n`;
+      ? `*Abirami Agency — New Order Inquiry* (Custom)\n\n`
+      : `*Abirami Agency — New Order Inquiry*\n\n`;
     message += `${e.person} *Customer Details:*\n`;
     message += `\u2022 ${e.phone} Name: ${name}\n`;
     message += `\u2022 ${e.mobile} Phone: ${phone}\n`;
@@ -300,8 +300,8 @@ export default function CartPage() {
         
         const displayId = res.ordId || (res.id ? res.id.substring(0, 8).toUpperCase() : 'PENDING');
         const finalMessage = message
-          .replace('*New Order Inquiry*', `*New Order Inquiry (${displayId})*`)
-          .replace('*New Custom Order Inquiry*', `*New Custom Order Inquiry (${displayId})*`);
+          .replace('*Abirami Agency — New Order Inquiry*', `*Abirami Agency — New Order Inquiry (${displayId})*`)
+          .replace('*Abirami Agency — New Order Inquiry* (Custom)', `*Abirami Agency — New Order Inquiry (${displayId})* (Custom)`);
           
         const whatsappUrl = `https://api.whatsapp.com/send/?phone=${phoneNumber}&text=${encodeURIComponent(finalMessage)}`;
         window.open(whatsappUrl, "_blank");
