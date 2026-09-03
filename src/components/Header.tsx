@@ -28,6 +28,22 @@ function HeaderContent() {
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const [expandedMobileSection, setExpandedMobileSection] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [dbCategories, setDbCategories] = useState<{ id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    async function loadDbCategories() {
+      try {
+        const { data } = await supabase.from('materials').select('id, name').order('name', { ascending: true });
+        if (data && data.length > 0) {
+          setDbCategories(data);
+        }
+      } catch (err) {
+        console.error('Failed to load categories in header:', err);
+      }
+    }
+    loadDbCategories();
+  }, []);
   const { totalItems: cartTotal } = useCart();
   const { totalItems: wishlistTotal } = useWishlist();
   const { user, profile, clearUser } = useUserStore();
@@ -39,10 +55,11 @@ function HeaderContent() {
     setIsClient(true);
   }, []);
 
-  // Close mega menu on route change
+  // Close mega menu and mobile menu on route change or search params update
   useEffect(() => {
     setMegaMenuOpen(false);
-  }, [pathname, currentCategory]);
+    setMobileOpen(false);
+  }, [pathname, currentCategory, searchParams]);
 
   const handleProductsMouseEnter = () => {
     if (megaMenuTimerRef.current) clearTimeout(megaMenuTimerRef.current);
@@ -198,7 +215,7 @@ function HeaderContent() {
       <nav className="w-full relative">
         <div className="flex items-center h-16 md:h-20 w-full justify-between gap-2 md:gap-4">
           {/* Logo Section */}
-          <Link href="/" className="flex items-center flex-shrink-0 z-10 pl-6 md:pl-8">
+          <Link href="/" className="flex items-center flex-shrink-0 z-10 pl-6 md:pl-8" onClick={() => setMobileOpen(false)}>
             <div className="flex flex-col items-start justify-center py-1">
               <span className="font-playfair text-xl md:text-2xl font-black text-primary-dark leading-none tracking-tight">
                 Abirami Agency
@@ -354,6 +371,7 @@ function HeaderContent() {
           <div className="flex items-center gap-5 flex-shrink-0 pr-6 md:pr-8">
             <Link
               href={isClient && !user ? "/login?redirect=/cart" : "/cart"}
+              onClick={() => setMobileOpen(false)}
               className="relative flex items-center gap-1.5 p-2 hover:bg-gray-100 rounded-xl transition-colors"
             >
               <span className="font-extrabold text-sm text-gray-700 uppercase tracking-wider block">Cart</span>
@@ -383,6 +401,7 @@ function HeaderContent() {
             {isClient && user ? (
               <Link
                 href="/user"
+                onClick={() => setMobileOpen(false)}
                 className="flex md:hidden items-center justify-center w-8.5 h-8.5 rounded-full bg-primary/10 text-primary border border-primary-light/20 overflow-hidden shadow-inner shrink-0"
                 title="Go to Dashboard"
               >
@@ -401,6 +420,7 @@ function HeaderContent() {
             ) : (
               <Link
                 href="/login"
+                onClick={() => setMobileOpen(false)}
                 className="flex md:hidden items-center justify-center w-8 h-8 rounded-full bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 transition-all shrink-0"
                 title="Login"
               >
@@ -541,7 +561,7 @@ function HeaderContent() {
                           active ? "text-[#0091FF] font-bold bg-sky-50/70" : "text-gray-700 hover:text-primary font-semibold text-sm"
                         }`}
                         onClick={() => {
-                          if (!mobileChildren.length) setMobileOpen(false);
+                          setMobileOpen(false);
                         }}
                       >
                         {item.label === "Inquiry" && (

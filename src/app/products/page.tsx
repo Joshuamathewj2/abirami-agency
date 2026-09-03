@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import SortSelect from "@/components/SortSelect";
+import CategorySidebar from "@/components/CategorySidebar";
 import { getProductsFromDB } from "@/lib/db";
 import { Metadata } from "next";
 
@@ -181,73 +182,13 @@ export default async function ProductsPage({
       <div className="container-main py-6 md:py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
-          <aside className="lg:w-72 shrink-0">
-            <div className="bg-white rounded-xl border border-gray-200 p-5 sticky top-28 shadow-sm">
-              <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-100">
-                <h3 className="font-bold text-gray-900 text-sm tracking-wide uppercase">
-                  {isFaucetsMode ? "Faucets & Fittings" : "Sanitaryware"}
-                </h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-primary">
-                  {isFaucetsMode ? "Faucets Mode" : "Sanitaryware Mode"}
-                </span>
-              </div>
-
-              <div className="mb-2 max-h-[520px] overflow-y-auto pr-1 space-y-1">
-                <Link
-                  href={allContextUrl}
-                  className={`flex items-center justify-between text-xs font-bold py-2.5 px-3 rounded-lg transition-colors ${
-                    !categoryFilter
-                      ? "bg-primary text-white"
-                      : "text-gray-700 hover:bg-sky-50 hover:text-primary"
-                  }`}
-                >
-                  <span>{isFaucetsMode ? "All Faucets & Fittings" : "All Sanitaryware"}</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${!categoryFilter ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"}`}>
-                    {contextProducts.length}
-                  </span>
-                </Link>
-
-                {groupCounts.map((group) => {
-                  const isSelected = Boolean(
-                    categoryFilter &&
-                      (categoryFilter.toLowerCase() === group.id.toLowerCase() ||
-                        categoryFilter.toLowerCase() === group.name.toLowerCase())
-                  );
-
-                  return (
-                    <Link
-                      key={group.id}
-                      href={`/products?category=${encodeURIComponent(group.id)}`}
-                      className={`flex items-center justify-between text-xs font-semibold py-2.5 px-3 rounded-lg transition-colors ${
-                        isSelected
-                          ? "bg-primary text-white shadow-sm"
-                          : "text-gray-700 hover:bg-sky-50 hover:text-primary"
-                      }`}
-                    >
-                      <span className="truncate max-w-[170px]">{group.name}</span>
-                      <span
-                        className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                          isSelected ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {group.count}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-
-              {/* Mode switch link at bottom */}
-              <div className="mt-4 pt-3 border-t border-gray-100">
-                <Link
-                  href={isFaucetsMode ? "/products" : "/products?category=Faucets%20%E2%80%94%20Claret%20Collection"}
-                  className="block text-center text-xs font-bold text-sky-600 hover:text-primary py-2 px-3 rounded-lg bg-sky-50 hover:bg-sky-100 transition-colors"
-                >
-                  Switch to {isFaucetsMode ? "Sanitaryware Categories →" : "Faucets & Fittings →"}
-                </Link>
-              </div>
-            </div>
-          </aside>
+          <CategorySidebar
+            isFaucetsMode={isFaucetsMode}
+            allContextUrl={allContextUrl}
+            categoryFilter={categoryFilter}
+            contextProductsCount={contextProducts.length}
+            groupCounts={groupCounts}
+          />
 
           {/* Product Grid */}
           <div className="flex-1">

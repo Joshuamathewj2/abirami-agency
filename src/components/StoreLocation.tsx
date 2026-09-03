@@ -6,88 +6,24 @@ import { motion } from "framer-motion";
 const STORE_LAT = 13.1534;
 const STORE_LNG = 80.2179;
 const STORE_NAME = "Abirami Agency Parryware";
-const STORE_ADDRESS = "Madavaram Red Hills Rd, Kilburn Nagar, Madhavaram, Chennai - 600060";
+const STORE_ADDRESS = "Madavaram Red Hills Rd, Kilburn Nagar, Madavaram, Chennai - 600060";
 
-// Builds a Google Maps embed URL with optional user location marker
-function buildMapSrc(userLat?: number, userLng?: number): string {
-  const storeMarker = `${STORE_LAT},${STORE_LNG}`;
-  // Embed API with two markers (store + user)
-  if (userLat !== undefined && userLng !== undefined) {
-    const userMarker = `${userLat},${userLng}`;
-    return (
-      `https://maps.google.com/maps?q=${encodeURIComponent(STORE_NAME)}&ll=${storeMarker}` +
-      `&z=15&output=embed`
-    );
-  }
+// Builds a Google Maps embed URL pinned to the store's location search query
+function buildMapSrc(): string {
   return (
-    `https://maps.google.com/maps?q=${encodeURIComponent(STORE_NAME + ", " + STORE_ADDRESS)}` +
-    `&z=15&ie=UTF8&iwloc=B&output=embed`
+    `https://maps.google.com/maps?q=Abirami+Agency+Parryware+Madavaram+Red+Hills+Rd+Chennai` +
+    `&z=16&output=embed`
   );
 }
+
+// Direct navigation link (opens Google Maps search for Abirami Agency Parryware)
+const MAPS_NAV_URL =
+  "https://www.google.com/maps/search/?api=1&query=Abirami+Agency+Parryware+Madavaram+Red+Hills+Rd+Chennai";
 
 export default function StoreLocation() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationStatus, setLocationStatus] = useState<"idle" | "loading" | "granted" | "denied">("idle");
-  const [status, setStatus] = useState<{ isOpen: boolean; text: string }>({
-    isOpen: true,
-    text: "Open Today • 9:00 AM – 8:00 PM"
-  });
   const requestedRef = useRef(false);
-
-  // Dynamic business hours check based on IST
-  useEffect(() => {
-    const updateStatus = () => {
-      try {
-        const dayFormatter = new Intl.DateTimeFormat("en-US", {
-          timeZone: "Asia/Kolkata",
-          weekday: "long",
-        });
-        const hourFormatter = new Intl.DateTimeFormat("en-US", {
-          timeZone: "Asia/Kolkata",
-          hour12: false,
-          hour: "numeric",
-        });
-        const minuteFormatter = new Intl.DateTimeFormat("en-US", {
-          timeZone: "Asia/Kolkata",
-          minute: "numeric",
-        });
-        
-        const dayPart = dayFormatter.format(new Date());
-        const hours = parseInt(hourFormatter.format(new Date()), 10);
-        const minutes = parseInt(minuteFormatter.format(new Date()), 10);
-        
-        const isSunday = dayPart === "Sunday";
-        const isSaturday = dayPart === "Saturday";
-        const timeVal = hours * 100 + minutes; // e.g. 900 for 9:00 AM, 2000 for 8:00 PM
-
-        const isOpen = !isSunday && timeVal >= 900 && timeVal < 2000;
-
-        let text = "";
-        if (isOpen) {
-          text = "Open Today • 9:00 AM – 8:00 PM";
-        } else if (isSunday) {
-          text = "Closed Today (Sunday) • Opens Mon 9:00 AM";
-        } else {
-          // Closed after hours on working day
-          if (isSaturday && timeVal >= 2000) {
-            text = "Closed Now • Opens Mon 9:00 AM";
-          } else if (timeVal < 900) {
-            text = "Closed Now • Opens today at 9:00 AM";
-          } else {
-            text = "Closed Now • Opens tomorrow at 9:00 AM";
-          }
-        }
-
-        setStatus({ isOpen, text });
-      } catch (e) {
-        console.error("Error evaluating IST business hours:", e);
-      }
-    };
-
-    updateStatus();
-    const interval = setInterval(updateStatus, 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Auto-request geolocation on mount (once)
   useEffect(() => {
@@ -130,141 +66,209 @@ export default function StoreLocation() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.5 }}
-      className="space-y-8 mt-12"
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.55, ease: "easeOut" }}
+      className="mt-12"
     >
-      {/* Map Card Wrapper */}
-      <div className="group/map relative bg-gradient-to-r from-blue-600 via-indigo-500 to-sky-400 p-[2px] rounded-3xl shadow-xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 ease-out">
-        <div className="relative w-full h-[400px] md:h-[500px] rounded-[22px] overflow-hidden bg-white/95 dark:bg-slate-950/95 backdrop-blur-md transition-transform duration-500 ease-out group-hover/map:scale-[1.01]">
+      {/* Two-panel split layout */}
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-stretch">
 
-          {/* Live Status pill */}
-          <div className="absolute top-4 left-4 z-20 bg-slate-950/90 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 text-[10px] md:text-xs font-semibold shadow-lg flex items-center gap-2 select-none">
-            <span className={`h-2.5 w-2.5 rounded-full ${status.isOpen ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]' : 'bg-rose-500 shadow-[0_0_8px_#f43f5e]'}`} />
-            <span className="text-gray-100 tracking-wide">{status.text}</span>
-          </div>
+        {/* ─── LEFT: Dark Info Card ─────────────────────────────────────── */}
+        <div
+          className="flex flex-col justify-between rounded-3xl p-8 lg:p-10 lg:w-[380px] xl:w-[420px] shrink-0"
+          style={{ background: "#0a0e14" }}
+        >
+          {/* Top: Label + Heading */}
+          <div>
+            <p className="text-sky-400 text-sm font-medium italic tracking-wide mb-4">
+              visit us
+            </p>
+            <h3 className="text-white font-extrabold text-3xl xl:text-4xl leading-tight mb-8">
+              Your{" "}
+              <span className="text-white">Premium</span>
+              {" "}Bathroom{" "}
+              <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: "linear-gradient(90deg, #38bdf8, #0ea5e9, #6366f1)",
+                }}
+              >
+                Destination.
+              </span>
+            </h3>
 
-          {/* "You Are Here" badge — only shown when location is granted */}
-          {locationStatus === "granted" && distanceKm && (
-            <div className="absolute top-4 right-4 z-20 bg-blue-600 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 animate-fade-in">
-              <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-              📍 You are here · {distanceKm} km away
-            </div>
-          )}
+            {/* Detail rows */}
+            <div className="space-y-6">
+              {/* Address */}
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-500 mb-1.5">
+                  ADDRESS
+                </p>
+                <p className="text-gray-200 text-sm leading-relaxed font-medium">
+                  {STORE_ADDRESS}
+                </p>
+              </div>
 
-          {/* Loading badge */}
-          {locationStatus === "loading" && (
-            <div className="absolute top-4 right-4 z-20 bg-slate-800/80 text-gray-300 text-[10px] md:text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
-              <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              Detecting your location…
-            </div>
-          )}
+              {/* Business Hours */}
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-500 mb-1.5">
+                  BUSINESS HOURS
+                </p>
+                <p className="text-gray-200 text-sm font-medium">
+                  Mon – Sat &nbsp;·&nbsp; 9:00 AM – 8:00 PM
+                </p>
+              </div>
 
-          {/* Google Maps iFrame — store pin */}
-          <iframe
-            src={buildMapSrc(userLocation?.lat, userLocation?.lng)}
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen={false}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="absolute inset-0 pointer-events-none grayscale-[20%] opacity-90"
-            title="Abirami Agency Parryware Location"
-          />
-
-          {/* Shine shimmer */}
-          <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-[22px]">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/map:translate-x-full transition-transform duration-1000 ease-out" />
-          </div>
-
-          {/* Clickable overlay to open in Maps */}
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(STORE_NAME + " " + STORE_ADDRESS)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="absolute inset-0 bg-black/5 hover:bg-black/15 transition-colors duration-500 flex items-center justify-center z-10"
-          >
-            <div className="relative group/btn">
-              <span className="animate-ping absolute -inset-1.5 rounded-full bg-blue-500/30 opacity-75 duration-1000 pointer-events-none" />
-              <span className="animate-ping absolute -inset-3.5 rounded-full bg-indigo-500/15 opacity-50 duration-[1500ms] pointer-events-none" />
-              <div className="relative bg-white px-8 py-4 rounded-full font-bold text-gray-900 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100/50 flex items-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(59,130,246,0.25)] hover:scale-105 hover:text-blue-600">
-                <svg className="w-5 h-5 text-blue-500 transition-transform duration-300 group-hover/btn:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Open in Maps
+              {/* Phone */}
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-500 mb-1.5">
+                  PHONE
+                </p>
+                <a
+                  href="tel:8610710434"
+                  className="text-sky-400 text-sm font-bold hover:text-sky-300 transition-colors block"
+                >
+                  +91 86107 10434
+                </a>
+                <a
+                  href="tel:7200377455"
+                  className="text-sky-400 text-sm font-bold hover:text-sky-300 transition-colors block mt-0.5"
+                >
+                  +91 72003 77455
+                </a>
               </div>
             </div>
-          </a>
-        </div>
-      </div>
-
-      {/* Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Address Card */}
-        <motion.div
-          whileHover={{ y: -4 }}
-          className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 flex items-start gap-4"
-        >
-          <div className="w-12 h-12 bg-sky-50 dark:bg-sky-950/40 rounded-xl flex items-center justify-center shrink-0 text-primary border border-sky-100 dark:border-sky-900/50">
-            <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
           </div>
-          <div>
-            <h4 className="font-extrabold text-gray-900 dark:text-white mb-1 text-base tracking-tight">Address</h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+
+          {/* Bottom: CTA Buttons */}
+          <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 mt-10">
+            {/* Primary: Call / WhatsApp */}
+            <a
+              href="https://wa.me/918610710434?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20Parryware%20products"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 bg-white text-gray-900 font-bold text-sm px-5 py-3 rounded-full hover:bg-gray-100 transition-colors shadow-md"
+            >
+              <svg className="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.131.558 4.131 1.532 5.87L.054 23.61a.5.5 0 00.612.612l5.74-1.478A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.032-1.387l-.361-.214-3.736.961.978-3.647-.235-.376A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/>
+              </svg>
+              WhatsApp Us
+            </a>
+
+            {/* Secondary: Directions */}
+            <a
+              href={MAPS_NAV_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 border border-white/15 text-gray-200 font-bold text-sm px-5 py-3 rounded-full hover:bg-white/8 hover:border-white/30 hover:text-white transition-all"
+              style={{ background: "rgba(255,255,255,0.05)" }}
+            >
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Get Directions
+            </a>
+          </div>
+        </div>
+
+        {/* ─── RIGHT: Map Panel ─────────────────────────────────────────── */}
+        <div className="flex-1 flex flex-col">
+          <div className="relative flex-1 min-h-[400px] lg:min-h-0 rounded-3xl overflow-hidden shadow-2xl flex flex-col justify-between">
+
+            {/* Google Maps iFrame — store pin always centred; functional behavior untouched */}
+            <iframe
+              src={buildMapSrc()}
+              width="100%"
+              height="100%"
+              style={{ border: 0, position: "absolute", inset: 0 }}
+              allowFullScreen={false}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="pointer-events-none grayscale-[15%]"
+              title="Abirami Agency Parryware Location"
+            />
+
+            {/* TOP OVERLAYS */}
+            <div className="relative z-20 p-3 sm:p-4 flex items-start justify-between gap-2 pointer-events-none">
+              {/* Top-Left: Light Live Location Info Card (Desktop/Tablet Overlay) */}
+              <div className="hidden sm:block bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-xl border border-gray-100/90 max-w-[230px] sm:max-w-[280px] pointer-events-auto">
+                <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold tracking-wider uppercase mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+                  LIVE LOCATION
+                </div>
+                <h4 className="font-bold text-gray-900 text-xs sm:text-sm leading-snug mb-1">
+                  Abirami Agency (Parryware)
+                </h4>
+                <p className="text-[11px] sm:text-xs text-gray-600 leading-relaxed font-medium">
+                  {STORE_ADDRESS}
+                </p>
+              </div>
+
+              {/* Top-Right: "You Are Here" badge / Geolocation status */}
+              <div className="pointer-events-auto shrink-0 ml-auto">
+                {locationStatus === "granted" && distanceKm && (
+                  <div className="flex items-center gap-1.5 bg-blue-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                    <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                    📍 You are here · {distanceKm} km away
+                  </div>
+                )}
+
+                {locationStatus === "loading" && (
+                  <div className="flex items-center gap-1.5 bg-gray-900/85 text-gray-300 text-[10px] sm:text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm">
+                    <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Detecting location…
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* CENTER OVERLAY: "Shop Here" floating badge pointing down to pin */}
+            <div className="relative z-20 flex justify-center items-center pointer-events-none my-auto">
+              <div className="bg-gray-950/90 text-white backdrop-blur-md border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xl flex items-center gap-1.5 transform -translate-y-4 animate-bounce">
+                <span className="w-2 h-2 rounded-full bg-sky-400" />
+                Shop Here
+              </div>
+            </div>
+
+            {/* BOTTOM OVERLAY: Slim horizontal "Open in Google Maps App" bar */}
+            <a
+              href={MAPS_NAV_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative z-20 w-full bg-gray-950/85 backdrop-blur-md text-white border-t border-white/10 px-4 py-3 flex items-center justify-center gap-2 hover:bg-gray-900 transition-colors duration-300 cursor-pointer"
+            >
+              <svg className="w-4 h-4 text-sky-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              <span className="text-xs sm:text-sm font-semibold tracking-wide">
+                Open in Google Maps App
+              </span>
+              <span className="text-sky-400 text-xs sm:text-sm font-bold">↗</span>
+            </a>
+
+          </div>
+
+          {/* Mobile-only Address Info Card (rendered below map on small screens) */}
+          <div className="sm:hidden mt-3 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-gray-100/90">
+            <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider uppercase mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+              LIVE LOCATION
+            </div>
+            <h4 className="font-bold text-gray-900 text-xs leading-snug mb-1">
+              Abirami Agency (Parryware)
+            </h4>
+            <p className="text-[11px] text-gray-600 leading-relaxed font-medium">
               {STORE_ADDRESS}
             </p>
           </div>
-        </motion.div>
-
-        {/* Business Hours Card */}
-        <motion.div
-          whileHover={{ y: -4 }}
-          className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 flex items-start gap-4"
-        >
-          <div className="w-12 h-12 bg-amber-50 dark:bg-amber-950/40 rounded-xl flex items-center justify-center shrink-0 text-amber-600 border border-amber-100 dark:border-amber-900/50">
-            <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h4 className="font-extrabold text-gray-900 dark:text-white mb-1 text-base tracking-tight">Business Hours</h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
-              Mon – Sat<br />9:00 AM – 8:00 PM
-            </p>
-            <p className="text-xs text-red-500 font-semibold mt-1">Closed on Sundays</p>
-          </div>
-        </motion.div>
-
-        {/* Phone Card */}
-        <motion.div
-          whileHover={{ y: -4 }}
-          className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300 flex items-start gap-4"
-        >
-          <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl flex items-center justify-center shrink-0 text-emerald-600 border border-emerald-100 dark:border-emerald-900/50">
-            <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-          </div>
-          <div>
-            <h4 className="font-extrabold text-gray-900 dark:text-white mb-1 text-base tracking-tight">Phone</h4>
-            <a href="tel:8610710434" className="text-sm text-primary font-bold hover:underline block hover:text-primary-dark">
-              +91 86107 10434
-            </a>
-            <a href="tel:7200377455" className="text-sm text-primary font-bold hover:underline block mt-1 hover:text-primary-dark">
-              +91 72003 77455
-            </a>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   );

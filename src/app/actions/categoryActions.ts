@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function getAllCategoriesAction() {
   try {
@@ -59,7 +59,9 @@ export async function updateCategoryAction(id: string, name: string, heroBannerU
       throw error;
     }
     
+    (revalidateTag as any)('categories');
     revalidatePath('/admin/categories');
+    revalidatePath('/admin/billing');
     revalidatePath('/products');
     return { success: true };
   } catch (error: any) {
@@ -89,6 +91,7 @@ export async function reorderCategoriesAction(orderedIds: string[]) {
       }
     }
     
+    (revalidateTag as any)('categories');
     revalidatePath('/admin/categories');
     return { success: true };
   } catch (error: any) {
@@ -111,7 +114,9 @@ export async function createCategoryAction(name: string) {
 
     if (error) throw error;
 
+    (revalidateTag as any)('categories');
     revalidatePath('/admin/categories');
+    revalidatePath('/admin/billing');
     revalidatePath('/products');
     return { success: true, data };
   } catch (error: any) {
@@ -140,7 +145,9 @@ export async function deleteCategoryAction(id: string) {
     const { error } = await supabase.from('materials').delete().eq('id', id);
     if (error) throw error;
 
+    (revalidateTag as any)('categories');
     revalidatePath('/admin/categories');
+    revalidatePath('/admin/billing');
     revalidatePath('/products');
     return { success: true };
   } catch (error: any) {
@@ -174,11 +181,20 @@ export async function seedCategoriesAction() {
       'Polymer Cistern Single Flush',
       'Urinals — Electronic',
       'Urinals — Regular',
-      'Faucets — Claret Collection',
-      'Faucets — Jade Collection',
+      'Faucets — Claret Collection > Basin',
+      'Faucets — Claret Collection > Bath',
+      'Faucets — Claret Collection > Kitchen',
+      'Faucets — Claret Collection > Utility',
+      'Faucets — Jade Collection > Basin',
+      'Faucets — Jade Collection > Bath',
+      'Faucets — Jade Collection > Kitchen',
+      'Faucets — Jade Collection > Utility',
       'Concealed Bodies',
       'Hand Showers Collection',
-      'Health Faucet Collection'
+      'Health Faucet Collection',
+      'Bottle Traps',
+      'Connection Hose',
+      'Waste Coupling'
     ];
 
     const insertData = defaultNames.map((name, index) => ({
@@ -189,7 +205,9 @@ export async function seedCategoriesAction() {
     const { error } = await supabase.from('materials').insert(insertData as any);
     if (error) throw error;
 
+    (revalidateTag as any)('categories');
     revalidatePath('/admin/categories');
+    revalidatePath('/admin/billing');
     revalidatePath('/products');
     return { success: true };
   } catch (error: any) {

@@ -1,17 +1,39 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { categories, navItems } from '@/lib/mock-data';
+import { categories as fallbackCategories, navItems } from '@/lib/mock-data';
+import { supabase } from '@/lib/supabase/client';
 
 export default function Footer() {
   const pathname = usePathname();
+  const [dbCategories, setDbCategories] = useState<{ id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const { data } = await supabase.from('materials').select('id, name').order('name', { ascending: true });
+        if (data && data.length > 0) {
+          setDbCategories(data);
+        }
+      } catch (err) {
+        console.error('Failed to load categories in footer:', err);
+      }
+    }
+    loadCategories();
+  }, []);
+
   if (pathname && pathname.startsWith('/admin')) {
     return null;
   }
   
   const isHomePage = pathname === '/';
   
+  const displayCategories = dbCategories.length > 0
+    ? dbCategories.map(c => ({ id: c.id, name: c.name, href: `/products?category=${encodeURIComponent(c.name)}` }))
+    : fallbackCategories;
+
   return (
     <footer className="bg-gray-950 text-white print:text-black">
       {isHomePage && (
@@ -49,7 +71,7 @@ export default function Footer() {
             <div>
               <h3 className="font-semibold text-lg mb-4">Categories</h3>
               <ul className="space-y-2.5">
-                {categories.slice(0, 8).map((cat) => (
+                {displayCategories.slice(0, 10).map((cat) => (
                   <li key={cat.id}>
                     <Link href={cat.href} className="text-gray-300 hover:text-primary-light text-sm transition-colors">
                       {cat.name}

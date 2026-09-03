@@ -1,83 +1,111 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
 import { useUserStore } from '@/store/userStore'
+import { RealtimeChannel } from '@supabase/supabase-js'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { setUser, setProfile, setIsLoading } = useUserStore()
   const pathname = usePathname()
+  const channelRef = useRef<RealtimeChannel | null>(null)
+  const currentUserIdRef = useRef<string | null>(null)
 
   useEffect(() => {
-    let profileSubscription: any = null
-
     const fetchLatestProfile = async (userId: string) => {
       const { data: profile } = await supabase
         .from('profiles')
         .select('id, email, full_name, role, phone, created_at')
         .eq('id', userId)
         .single()
-        
+
       if (profile) {
         setProfile(profile)
       }
     }
 
-    // Check active sessions and sets the user
+    const setupProfileSubscription = (userId: string) => {
+      // Avoid duplicate subscriptions if already subscribed to this user
+      if (currentUserIdRef.current === userId && channelRef.current) {
+        return
+      }
+
+      // Safely remove existing channel from Supabase client
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current)
+        channelRef.current = null
+      }
+
+      currentUserIdRef.current = userId
+
+      const newChannel = supabase
+        .channel(`profile:${userId}:${Date.now()}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'profiles',
+            filter: `id=eq.${userId}`,
+          },
+          (payload) => {
+            console.log('Real-time profile update received:', payload.new)
+            if (payload.new) {
+              setProfile(payload.new as any)
+            }
+          }
+        )
+        .subscribe()
+
+      channelRef.current = newChannel
+    }
+
+    const clearUserAndSubscription = () => {
+      setUser(null)
+      setProfile(null)
+      currentUserIdRef.current = null
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current)
+        channelRef.current = null
+      }
+    }
+
+    const handleUserSession = async (user: any) => {
+      if (!user) {
+        clearUserAndSubscription()
+        return
+      }
+
+      setUser(user)
+
+      const fullName = user.user_metadata?.full_name || user.user_metadata?.name || ''
+      const email = user.email || ''
+
+      try {
+        await supabase.from('profiles').upsert(
+          {
+            id: user.id,
+            email: email,
+            full_name: fullName,
+          },
+          { onConflict: 'id' }
+        )
+      } catch (profileError) {
+        console.error('Error during profile sync:', profileError)
+      }
+
+      await fetchLatestProfile(user.id)
+      setupProfileSubscription(user.id)
+    }
+
+    // Check active session on mount
     const initializeAuth = async () => {
       try {
         setIsLoading(true)
         const { data: { session }, error } = await supabase.auth.getSession()
-        
         if (error) throw error
-
-        if (session?.user) {
-          setUser(session.user)
-          
-          // Auto-sync/initialize profile for Google OAuth/external login
-          const fullName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || '';
-          const email = session.user.email || '';
-
-          try {
-            await supabase.from('profiles').upsert({
-              id: session.user.id,
-              email: email,
-              full_name: fullName,
-            }, { onConflict: 'id' });
-          } catch (profileError) {
-            console.error('Error during initializeAuth profile sync:', profileError);
-          }
-
-          await fetchLatestProfile(session.user.id)
-
-          // Subscribe to real-time changes on profiles table for this user
-          if (profileSubscription) {
-            profileSubscription.unsubscribe()
-          }
-
-          profileSubscription = supabase
-            .channel(`profile:${session.user.id}`)
-            .on(
-              'postgres_changes',
-              {
-                event: '*',
-                schema: 'public',
-                table: 'profiles',
-                filter: `id=eq.${session.user.id}`,
-              },
-              (payload) => {
-                console.log('Real-time profile update received:', payload.new)
-                if (payload.new) {
-                  setProfile(payload.new as any)
-                }
-              }
-            )
-            .subscribe()
-        } else {
-          setUser(null)
-          setProfile(null)
-        }
+        await handleUserSession(session?.user || null)
       } catch (error) {
         console.error('Error loading auth state:', error)
       } finally {
@@ -87,70 +115,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     initializeAuth()
 
-    // Listen for changes on auth state (log in, log out, etc.)
+    // Listen for auth state changes (login, logout, token refresh)
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setIsLoading(true)
-        
-        if (session?.user) {
-          setUser(session.user)
-          
-          // Auto-sync/initialize profile for Google OAuth/external login
-          const fullName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || '';
-          const email = session.user.email || '';
-
-          try {
-            await supabase.from('profiles').upsert({
-              id: session.user.id,
-              email: email,
-              full_name: fullName,
-            }, { onConflict: 'id' });
-          } catch (profileError) {
-            console.error('Error during onAuthStateChange profile sync:', profileError);
-          }
-
-          await fetchLatestProfile(session.user.id)
-
-          // Subscribe to real-time changes on profiles table for this user
-          if (profileSubscription) {
-            profileSubscription.unsubscribe()
-          }
-
-          profileSubscription = supabase
-            .channel(`profile:${session.user.id}`)
-            .on(
-              'postgres_changes',
-              {
-                event: '*',
-                schema: 'public',
-                table: 'profiles',
-                filter: `id=eq.${session.user.id}`,
-              },
-              (payload) => {
-                console.log('Real-time profile update received:', payload.new)
-                if (payload.new) {
-                  setProfile(payload.new as any)
-                }
-              }
-            )
-            .subscribe()
-        } else {
-          setUser(null)
-          setProfile(null)
-          if (profileSubscription) {
-            profileSubscription.unsubscribe()
-            profileSubscription = null
-          }
-        }
-        
+        await handleUserSession(session?.user || null)
         setIsLoading(false)
       }
     )
 
     return () => {
       authListener.subscription.unsubscribe()
-      if (profileSubscription) {
-        profileSubscription.unsubscribe()
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current)
+        channelRef.current = null
       }
     }
   }, [setUser, setProfile, setIsLoading, pathname])

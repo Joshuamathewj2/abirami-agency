@@ -260,4 +260,44 @@ body {
 }
 .btn-primary:active {
   transform: scale(0.97);
+}
+
+/* ──────────────────────────────────────────
+   Map overlay badge animations
+────────────────────────────────────────── */
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.92) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out both;
+}
+
+/* ──────────────────────────────────────────
+   Category Carousel — mobile containment
+   Scoped strictly to max-width 768px.
+   Desktop/laptop styles are NOT touched.
+────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .category-carousel-wrapper {
+    /* Scale the entire 3D stage proportionally so the card sits
+       centred with visible breathing room on both sides.
+       380px card × 0.72 ≈ 274px visible — leaves ~8% margin each side.
+       transform-origin: top keeps the controls bar in view without
+       clipping the top of the card. */
+    transform: scale(0.72);
+    transform-origin: center top;
+
+    /* Compensate the height so the section doesn't leave a large
+       empty gap below the scaled-down carousel. */
+    margin-bottom: -6rem;
+  }
 }

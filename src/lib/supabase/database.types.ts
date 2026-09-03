@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -198,32 +198,41 @@ export type Database = {
       }
       mattresses: {
         Row: {
+          capacity: string | null
+          catalog_page: string | null
           created_at: string | null
           description: string | null
           id: string
           is_active: boolean | null
           material_id: string
           name: string
+          specifications: Json | null
           updated_at: string | null
           warranty_years: number | null
         }
         Insert: {
+          capacity?: string | null
+          catalog_page?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
           is_active?: boolean | null
           material_id: string
           name: string
+          specifications?: Json | null
           updated_at?: string | null
           warranty_years?: number | null
         }
         Update: {
+          capacity?: string | null
+          catalog_page?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
           is_active?: boolean | null
           material_id?: string
           name?: string
+          specifications?: Json | null
           updated_at?: string | null
           warranty_years?: number | null
         }

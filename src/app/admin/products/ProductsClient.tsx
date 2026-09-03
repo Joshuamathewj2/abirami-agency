@@ -1,14 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Product } from '@/types';
 import ProductRow from './ProductRow';
 
 export default function ProductsClient({ initialProducts }: { initialProducts: Product[] }) {
+  const router = useRouter();
+  const [products, setProducts] = useState(initialProducts);
   const [search, setSearch] = useState('');
   
-  const filteredProducts = initialProducts.filter(product => {
+  const handleDelete = (deletedId: string) => {
+    setProducts(prev => prev.filter(p => p.id !== deletedId));
+    // Refresh server-component data in the background so the next hard navigation is fresh
+    router.refresh();
+  };
+
+  const filteredProducts = products.filter(product => {
     const q = search.toLowerCase();
     return (
       product.name.toLowerCase().includes(q) ||
@@ -84,7 +93,7 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
                   </tr>
                 ) : (
                   filteredProducts.map((product) => (
-                    <ProductRow key={product.id} product={product} />
+                    <ProductRow key={product.id} product={product} onDelete={handleDelete} />
                   ))
                 )}
               </tbody>

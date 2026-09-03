@@ -56,6 +56,8 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
     return true;
   });
 
+  console.log('[CLIENT InquiriesClient] initialInquiries count:', initialInquiries?.length, 'filteredInquiries count:', filteredInquiries?.length);
+
   const formatDate = (isoString: string) => {
     if (!isoString) return '-';
     const d = new Date(isoString);

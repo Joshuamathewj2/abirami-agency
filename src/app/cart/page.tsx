@@ -280,6 +280,16 @@ export default function CartPage() {
       message += `Please let me know the delivery details and next steps! ${e.sparkle}`;
     }
 
+    let currentUserId = user?.id || null;
+    if (!currentUserId) {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        currentUserId = authData?.user?.id || null;
+      } catch (e) {
+        console.warn('Failed resolving fallback user in CartPage:', e);
+      }
+    }
+
     const orderData = {
       customerName: name,
       customerPhone: phone,
@@ -289,7 +299,7 @@ export default function CartPage() {
       items: orderItems,
       totalAmount: finalTotalPrice,
       method: "WhatsApp",
-      userId: user?.id || null,
+      userId: currentUserId,
     };
 
     try {

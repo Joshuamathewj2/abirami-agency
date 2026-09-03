@@ -54,7 +54,7 @@ export default function BillingClient() {
   const [modalSelectedVariantId, setModalSelectedVariantId] = useState<string>('');
   const [modalSelectedColor, setModalSelectedColor] = useState<string>('');
 
-  // Whether we're using mock-data fallback (Supabase had no products)
+  const [dbCategories, setDbCategories] = useState<string[]>([]);
   const [usingFallback, setUsingFallback] = useState(false);
 
   // Fetch products and coupons on mount
@@ -62,8 +62,8 @@ export default function BillingClient() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Fetch Mattresses & coupons in parallel, using selective columns instead of wildcard *
-        const [mattressesResult, couponsResult] = await Promise.all([
+        // Fetch Mattresses, coupons, and materials in parallel
+        const [mattressesResult, couponsResult, materialsResult] = await Promise.all([
           supabase
             .from('mattresses')
             .select(`
@@ -71,15 +71,23 @@ export default function BillingClient() {
               name,
               is_active,
               materials ( name ),
-              product_images ( image_url, is_primary ),
-              variants ( id, size_name, length, width, height, price, stock )
+              product_images!product_images_mattress_id_fkey ( image_url, is_primary ),
+              variants!variants_mattress_id_fkey ( id, size_name, length, width, height, price, stock )
             `)
             .eq('is_active', true),
           supabase
             .from('coupons')
             .select('id, code, percentage, flat_discount, min_order_value, max_discount, usage_limit, usage_count, expiry_date, is_active')
-            .eq('is_active', true)
+            .eq('is_active', true),
+          supabase
+            .from('materials')
+            .select('name')
+            .order('name', { ascending: true })
         ]);
+
+        if (materialsResult.data) {
+          setDbCategories(materialsResult.data.map((m: any) => m.name));
+        }
 
         const mattresses = mattressesResult.data;
         const coupons = couponsResult.data;
@@ -319,17 +327,21 @@ export default function BillingClient() {
   const totalDiscount = discountAmount + manualDiscountAmount;
   const finalTotal = Math.max(0, subtotal - totalDiscount) + deliveryFee;
 
+  const [orderFeedback, setOrderFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
   const generateWhatsAppBill = async () => {
-    if (!phone) {
-      alert("Please enter the customer's WhatsApp number.");
+    setOrderFeedback(null);
+    let validItemCount = 0;
+    items.forEach((item) => {
+      if (item.name) validItemCount++;
+    });
+
+    if (validItemCount === 0) {
+      setOrderFeedback({ type: 'error', message: "Please add at least one item to the invoice." });
       return;
     }
 
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length !== 10) {
-      alert("Please enter a valid 10-digit mobile number.");
-      return;
-    }
+    const cleanPhone = phone ? phone.replace(/[^0-9]/g, '') : '';
     
     const em = {
       star:     String.fromCodePoint(0x2B50),
@@ -347,54 +359,42 @@ export default function BillingClient() {
       sparkle:  String.fromCodePoint(0x2728),
     };
 
-    // We still generate the full invoice details note for db storage!
-    let dbNotes = `${em.star} *INVOICE FROM ABIRAMI AGENCY* ${em.bell}\n\n`;
-    dbNotes += `${em.person} *Customer Details:*\n`;
-    dbNotes += `${em.phone} Name: ${customerName || 'Valued Customer'}\n`;
-    dbNotes += `${em.mobile} Mobile: ${phone}\n\n`;
-    dbNotes += `${em.cart} *Items Ordered:*\n\n`;
+    let billSummaryText = `${em.star} *INVOICE FROM ABIRAMI AGENCY* ${em.bell}\n\n`;
+    billSummaryText += `${em.person} *Customer Details:*\n`;
+    billSummaryText += `${em.phone} Name: ${customerName || 'Valued Customer'}\n`;
+    if (cleanPhone) billSummaryText += `${em.mobile} Mobile: ${cleanPhone}\n`;
+    billSummaryText += `\n${em.cart} *Items Purchased:*\n\n`;
     
-    let validItemCount = 0;
-    items.forEach((item) => {
+    items.forEach((item, index) => {
       if (item.name) {
-        validItemCount++;
-        const formattedName = item.name.split('\n').map((line, i) => i === 0 ? line : `   ${line}`).join('\n');
-        dbNotes += `${em.package} ${validItemCount}. ${formattedName}\n   \u2022 Qty: ${item.quantity}\n   \u2022 ${em.dollar} \u20B9${(item.price * item.quantity).toLocaleString('en-IN')}\n\n`;
+        billSummaryText += `${em.package} ${index + 1}. ${item.name}\n   \u2022 Qty: ${item.quantity}\n   \u2022 Price: \u20B9${(item.price * item.quantity).toLocaleString('en-IN')}\n\n`;
       }
     });
 
-    if (validItemCount === 0) {
-      alert("Please add at least one item to the invoice.");
-      return;
-    }
-    
-    dbNotes += `${em.star} *Bill Summary:*\n`;
-    dbNotes += `\u2022 Subtotal: \u20B9${subtotal.toLocaleString('en-IN')}\n`;
+    billSummaryText += `${em.star} *Bill Summary:*\n`;
+    billSummaryText += `\u2022 Subtotal: \u20B9${subtotal.toLocaleString('en-IN')}\n`;
     if (activeCouponObj && discountAmount > 0) {
-      dbNotes += `\u2022 ${em.ticket} Coupon: ${activeCouponObj.code} (-\u20B9${discountAmount.toLocaleString('en-IN')})\n`;
+      billSummaryText += `\u2022 ${em.ticket} Coupon (${activeCouponObj.code}): -\u20B9${discountAmount.toLocaleString('en-IN')}\n`;
     }
     if (manualDiscountAmount > 0) {
-      dbNotes += `\u2022 ${em.tag} Discount: -\u20B9${manualDiscountAmount.toLocaleString('en-IN')}\n`;
+      billSummaryText += `\u2022 ${em.tag} Discount: -\u20B9${manualDiscountAmount.toLocaleString('en-IN')}\n`;
     }
     if (deliveryFee > 0) {
-      dbNotes += `\u2022 ${em.truck} Delivery: \u20B9${deliveryFee.toLocaleString('en-IN')}\n`;
+      billSummaryText += `\u2022 ${em.truck} Delivery: \u20B9${deliveryFee.toLocaleString('en-IN')}\n`;
     }
-    dbNotes += `\n${em.money} *Total Amount: \u20B9${finalTotal.toLocaleString('en-IN')}*\n\n`;
-    dbNotes += `Thank you for choosing Abirami Agency! ${em.sparkle}`;
-
-    // Open a blank tab immediately to prevent popup blocking
-    const newTab = window.open('about:blank', '_blank');
+    billSummaryText += `\n${em.money} *Grand Total: \u20B9${finalTotal.toLocaleString('en-IN')}*\n\n`;
+    billSummaryText += `Thank you for shopping with Abirami Agency! ${em.sparkle}`;
 
     const orderData = {
       customerName: customerName || 'Walk-in Customer',
-      customerPhone: cleanPhone,
+      customerPhone: cleanPhone || 'Walk-in',
       customerAddress: `BILL TYPE: ${billingMode.toUpperCase()}`,
       couponId: activeCouponObj?.id || null,
       discountAmount: totalDiscount,
       totalAmount: finalTotal,
       userId: null,
       status: 'Completed',
-      notes: `${dbNotes}\nBILL TYPE: ${billingMode.toUpperCase()}`,
+      notes: `${billSummaryText}\nBILL TYPE: ${billingMode.toUpperCase()}`,
       items: items.map(i => ({
         productId: i.variantId || 'CUSTOM',
         name: i.name,
@@ -403,39 +403,52 @@ export default function BillingClient() {
       }))
     };
 
+    const newTab = window.open('about:blank', '_blank');
+
     try {
       const res = await placeOrderAction(orderData);
       if (res.success && res.invoiceId) {
         const invoiceUrl = `${window.location.origin}/invoice/${res.invoiceId}`;
-        const whatsappMessage = `Abirami Agency- Purchase Successful!\n\nHi ${customerName || 'Valued Customer'},\nThank you for shopping with us! You can view, download, or print your official digital invoice here:\n\n${invoiceUrl}\n\nHave a great day!`;
-        const whatsappUrl = `https://api.whatsapp.com/send/?phone=91${cleanPhone}&text=${encodeURIComponent(whatsappMessage)}`;
-        
+        const whatsappMessage = `Abirami Agency - Purchase Successful!\n\nHi ${customerName || 'Valued Customer'},\nThank you for shopping with us!\n\n${billSummaryText}\n\nView Digital Invoice: ${invoiceUrl}`;
+        const targetPhoneParam = cleanPhone.length === 10 ? `phone=91${cleanPhone}&` : '';
+        const whatsappUrl = `https://api.whatsapp.com/send/?${targetPhoneParam}text=${encodeURIComponent(whatsappMessage)}`;
+
         if (newTab) {
           newTab.location.href = whatsappUrl;
         } else {
           window.open(whatsappUrl, '_blank');
         }
+
+        setOrderFeedback({
+          type: 'success',
+          message: `✓ Order & Invoice ${res.invoiceId} successfully saved to Supabase!`
+        });
+
+        // Clear form automatically
+        setItems([{ name: '', price: 0, quantity: 1 }]);
+        setCustomerName('');
+        setPhone('');
+        setSelectedCoupon('');
+        setManualDiscountValue(0);
+        setDeliveryFee(0);
+        setAmountReceived(0);
       } else {
         if (newTab) newTab.close();
-        alert(res.error || "Failed to save POS order.");
+        setOrderFeedback({
+          type: 'error',
+          message: `❌ Database Save Failed: ${res.error || 'Failed to insert order into Supabase'}`
+        });
       }
-    } catch (err) {
-      console.error("Failed to save POS order", err);
+    } catch (err: any) {
       if (newTab) newTab.close();
-      alert("Failed to save POS order.");
+      setOrderFeedback({
+        type: 'error',
+        message: `❌ Database Exception: ${err?.message || 'Unexpected server error'}`
+      });
     }
-
-    // Clear form automatically for the next bill
-    setItems([{ name: '', price: 0, quantity: 1 }]);
-    setCustomerName('');
-    setPhone('');
-    setSelectedCoupon('');
-    setManualDiscountValue(0);
-    setDeliveryFee(0);
-    setAmountReceived(0);
   };
 
-  const categoriesList = [...new Set(dbProducts.map(p => p.category))].sort();
+  const categoriesList = [...new Set([...dbCategories, ...dbProducts.map(p => p.category)])].filter(Boolean).sort();
   const cleanPhoneInput = phone.replace(/[^0-9]/g, '');
   const isPhoneValid = cleanPhoneInput.length === 10;
 
@@ -856,6 +869,12 @@ export default function BillingClient() {
                   </div>
                 )}
               </div>
+
+              {orderFeedback && (
+                <div className={`p-3.5 rounded-xl text-xs font-bold ${orderFeedback.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'}`}>
+                  {orderFeedback.message}
+                </div>
+              )}
 
               {/* Large CTA Button */}
               <button

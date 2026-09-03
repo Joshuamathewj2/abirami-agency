@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Product } from '@/types';
 import { deleteProductAction, toggleVariantStockAction, updateVariantPriceAction, addVariantAction, deleteVariantAction } from '@/app/actions/productActions';
 
-export default function ProductRow({ product }: { product: Product }) {
+export default function ProductRow({ product, onDelete }: { product: Product; onDelete?: (id: string) => void }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
   const [editPrice, setEditPrice] = useState<string>('');
@@ -18,6 +18,7 @@ export default function ProductRow({ product }: { product: Product }) {
   const [newMrp, setNewMrp] = useState('');
 
   const [localVariants, setLocalVariants] = useState(product.sizes || []);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setLocalVariants(product.sizes || []);
@@ -118,17 +119,32 @@ export default function ProductRow({ product }: { product: Product }) {
             </Link>
             <button 
               type="button"
+              disabled={isDeleting}
               onClick={async () => {
-                if (window.confirm(`Are you sure you want to delete "${product.name}"? This action cannot be undone.`)) {
+                if (!window.confirm(`Are you sure you want to delete "${product.name}"? This action cannot be undone.`)) return;
+                setIsDeleting(true);
+                try {
                   await deleteProductAction(product.id);
+                  onDelete?.(product.id);
+                } catch (err) {
+                  console.error('Delete failed:', err);
+                  alert('Failed to delete product. Please try again.');
+                  setIsDeleting(false);
                 }
               }}
-              className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
+              className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               title="Delete Product"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
+              {isDeleting ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              )}
             </button>
           </div>
         </td>

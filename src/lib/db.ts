@@ -49,10 +49,10 @@ export const getProductsFromDB = unstable_cache(
       const { data: mattresses, error } = await supabaseAdmin
         .from('mattresses')
         .select(`
-          id, name, description, warranty_years, is_active,
+          id, name, description, is_active,
           materials ( name ),
-          product_images ( image_url, is_primary, sort_order ),
-          variants ( id, size_name, length, width, height, price, original_price, stock, sku )
+          product_images!product_images_mattress_id_fkey ( image_url, is_primary, sort_order ),
+          variants!variants_mattress_id_fkey ( id, size_name, length, width, height, price, original_price, stock, sku )
         `)
         .eq('is_active', true);
 
@@ -127,7 +127,7 @@ export const getProductsFromDB = unstable_cache(
       materials: [materialName],
       features: [],
       specifications: {
-        'Warranty': `${m.warranty_years || 0} Years`,
+        ...(m.warranty_years && m.warranty_years > 0 ? { 'Warranty': `${m.warranty_years} ${m.warranty_years === 1 ? 'Year' : 'Years'}` } : {}),
         ...parsed.extraSpecs
       }
     };
@@ -141,6 +141,25 @@ export const getProductsFromDB = unstable_cache(
   },
   ['products-catalog'],
   { revalidate: 60, tags: ['products'] }
+);
+
+export const getCategoriesFromDB = unstable_cache(
+  async (): Promise<{ id: string; name: string }[]> => {
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('materials')
+        .select('id, name')
+        .order('name', { ascending: true });
+
+      if (error || !data) return [];
+      return data;
+    } catch (err) {
+      console.error('Error fetching categories from DB:', err);
+      return [];
+    }
+  },
+  ['categories-list'],
+  { revalidate: 60, tags: ['categories'] }
 );
 
 // Below are placeholders for other operations.
@@ -165,48 +184,66 @@ export async function getOrdersFromDB() {
         .from('orders')
         .select(`
           *,
+          coupon:coupons(code),
           order_items (
-            *,
+            id,
+            product_name,
+            quantity,
+            unit_price,
             variant:variants (
               size_name,
-              mattress:mattresses (
-                name,
-                materials ( name )
-              )
-            )
-          )
-        `),
-      supabaseAdmin
-        .from('inquiries')
-        .select(`
-          *,
-          inquiry_items (
-            *,
-            variant:variants (
-              size_name,
-              mattress:mattresses (
+              mattress:mattresses!variants_mattress_id_fkey (
                 name,
                 materials ( name )
               )
             )
           )
         `)
+        .order('created_at', { ascending: false }),
+      supabaseAdmin
+        .from('inquiries')
+        .select(`
+          *,
+          coupon:coupons(code),
+          inquiry_items (
+            id,
+            product_name,
+            quantity,
+            unit_price,
+            variant:variants (
+              size_name,
+              mattress:mattresses!variants_mattress_id_fkey (
+                name,
+                materials ( name )
+              )
+            )
+          )
+        `)
+        .order('created_at', { ascending: false })
     ]);
     
-    const { data: posOrders, error: posError } = ordersResponse;
-    const { data: webInquiries, error: webError } = inquiriesResponse;
-    
-    if (posError) {
-      console.warn('Error fetching orders table from Supabase:', posError.message || JSON.stringify(posError));
+    const posOrders = (ordersResponse.data || []).map((o: any) => ({
+      ...o,
+      // Normalize inquiry_items from order_items so AnalyticsClient's `order.inquiry_items` access works
+      inquiry_items: o.order_items || [],
+    }));
+
+    const webInquiries = (inquiriesResponse.data || []);
+
+    // Deduplicate: orders table is source of truth; skip any inquiry whose ID already appears in orders
+    const orderIds = new Set(posOrders.map((o: any) => o.id));
+    const uniqueInquiries = webInquiries.filter((i: any) => !orderIds.has(i.id));
+
+    const allOrders = [...posOrders, ...uniqueInquiries].sort(
+      (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
+    if (ordersResponse.error) {
+      console.warn('Error fetching orders table from Supabase:', ordersResponse.error.message);
     }
-    if (webError) {
-      console.warn('Error fetching inquiries table from Supabase:', webError.message || JSON.stringify(webError));
+    if (inquiriesResponse.error) {
+      console.warn('Error fetching inquiries table from Supabase:', inquiriesResponse.error.message);
     }
-    
-    const allOrders = [
-      ...(posOrders || []),
-      ...(webInquiries || [])
-    ];
     
     return allOrders;
   } catch (err) {
@@ -248,18 +285,24 @@ export async function addOrderToDB(order: any) {
     console.error("Failed to generate INVOICE_ID", err);
   }
 
+  const channelTag = order.channel || (order.isWhatsApp ? 'whatsapp' : 'pos');
+  if (!finalNotes.includes('CHANNEL:')) {
+    finalNotes = `${finalNotes} | CHANNEL: ${channelTag}`;
+  }
+
   const { data: newOrder, error: orderError } = await supabaseAdmin
     .from('orders')
     .insert({
-      customer_name: order.customerName,
-      customer_phone: order.customerPhone,
+      user_id: order.userId || null,
+      customer_name: order.customerName || 'Walk-in Customer',
+      customer_phone: order.customerPhone || '',
       notes: finalNotes,
       invoice_id: generatedInvoiceId || undefined,
-      coupon_id: order.couponId,
-      discount_amount: order.discountAmount,
+      coupon_id: order.couponId || null,
+      discount_amount: order.discountAmount || 0,
       total_amount: order.totalAmount,
       status: order.status || 'Completed',
-      user_id: order.userId
+      bill_type: order.customerAddress?.includes('RETAIL') ? 'retail' : 'wholesale'
     })
     .select()
     .single();
@@ -270,12 +313,13 @@ export async function addOrderToDB(order: any) {
     const itemsToInsert = catalogItems.map((item: any) => ({
       order_id: newOrder.id,
       variant_id: getBaseId(item.productId),
+      product_name: item.name || item.productName || null,
       quantity: item.quantity,
       unit_price: item.price
     }));
 
     const { error: itemsError } = await supabaseAdmin.from('order_items').insert(itemsToInsert);
-    if (itemsError) throw new Error(itemsError.message);
+    if (itemsError) console.warn('Warning: Failed inserting order_items:', itemsError.message);
   }
 
   if (order.couponId) {
@@ -330,17 +374,22 @@ export async function addInquiryToDB(order: any) {
     console.error("Failed to generate INVOICE_ID", err);
   }
 
+  const channelTag = order.channel || (order.isWhatsApp ? 'whatsapp' : 'storefront');
+  if (!finalNotes.includes('CHANNEL:')) {
+    finalNotes = `${finalNotes} | CHANNEL: ${channelTag}`;
+  }
+
   const { data: inquiry, error: inquiryError } = await supabaseAdmin
     .from('inquiries')
     .insert({
-      customer_name: order.customerName,
-      customer_phone: order.customerPhone,
+      user_id: order.userId || null,
+      customer_name: order.customerName || 'Valued Customer',
+      customer_phone: order.customerPhone || '',
       notes: finalNotes,
-      coupon_id: order.couponId,
-      discount_amount: order.discountAmount,
+      coupon_id: order.couponId || null,
+      discount_amount: order.discountAmount || 0,
       total_amount: order.totalAmount,
-      status: order.status || 'Pending',
-      user_id: order.userId
+      status: order.status || 'Pending'
     })
     .select()
     .single();
@@ -351,6 +400,7 @@ export async function addInquiryToDB(order: any) {
     const itemsToInsert = catalogItems.map((item: any) => ({
       inquiry_id: inquiry.id,
       variant_id: getBaseId(item.productId),
+      product_name: item.productName || item.name || null,
       quantity: item.quantity,
       unit_price: item.price
     }));

@@ -6,18 +6,37 @@ import { createProductAction, updateProductAction } from '@/app/actions/productA
 import { Product } from '@/types';
 
 const CATEGORIES = [
-  'Water Closet',
-  'Bathroom Basin',
-  'Pedestals',
-  'Urinals',
-  'Taps',
-  'Showers',
-  'Allied Products'
+  'One Piece WC (S-Trap)',
+  'Wall Hung WC',
+  'Floor Mounted Coupled Closet',
+  'Wall Hung with Dual Flush Cistern',
+  'Floor Mounted WC (EWC)',
+  'Squatting Pan',
+  'Wall Hung Basin',
+  'Polymer Cistern Dual Flush',
+  'Polymer Cistern Single Flush',
+  'Urinals — Electronic',
+  'Urinals — Regular',
+  'Faucets — Claret Collection > Basin',
+  'Faucets — Claret Collection > Bath',
+  'Faucets — Claret Collection > Kitchen',
+  'Faucets — Claret Collection > Utility',
+  'Faucets — Jade Collection > Basin',
+  'Faucets — Jade Collection > Bath',
+  'Faucets — Jade Collection > Kitchen',
+  'Faucets — Jade Collection > Utility',
+  'Concealed Bodies',
+  'Hand Showers Collection',
+  'Health Faucet Collection',
+  'Bottle Traps',
+  'Connection Hose',
+  'Waste Coupling'
 ];
 
 export default function ProductForm({ initialProduct }: { initialProduct?: Product }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Extract initial values for edit mode
   const initialSku = initialProduct?.specifications?.['Model / SKU Number'] || '';
@@ -32,10 +51,29 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
 
 
   // Form State
+  const [categoriesList, setCategoriesList] = useState<string[]>(['Water Closet', 'Bathroom Basin', 'Urinals', 'Taps', 'Showers']);
   const [existingImages, setExistingImages] = useState<string[]>(initialProduct?.images || []);
   const [images, setImages] = useState<File[]>([]);
   const [primaryImageIndex, setPrimaryImageIndex] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const { getAllCategoriesAction } = await import('@/app/actions/categoryActions');
+        const res = await getAllCategoriesAction();
+        if (res.success && res.data) {
+          const names = res.data.map((c: any) => c.name);
+          if (names.length > 0) {
+            setCategoriesList(names);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load dynamic categories in form:', err);
+      }
+    }
+    loadCategories();
+  }, []);
 
   const handleImageDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -90,6 +128,7 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMessage(null);
     try {
       const formData = new FormData(e.currentTarget);
       images.forEach(img => formData.append('images', img));
@@ -105,9 +144,11 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
       
       router.push('/admin/products');
       router.refresh();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Failed to save product");
+      const msg = err?.message || 'An unexpected error occurred. Check the browser console for details.';
+      setErrorMessage(msg);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsSubmitting(false);
     }
@@ -115,6 +156,18 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {errorMessage && (
+        <div role="alert" className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3.5 text-sm text-red-800">
+          <svg className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+          <div>
+            <p className="font-bold mb-0.5">Failed to save product</p>
+            <p className="font-mono text-xs break-all">{errorMessage}</p>
+          </div>
+          <button type="button" onClick={() => setErrorMessage(null)} className="ml-auto flex-shrink-0 text-red-400 hover:text-red-600 font-bold text-base leading-none">✕</button>
+        </div>
+      )}
       {/* 1. Basic Info Section */}
       <section className="bg-white/50 rounded-2xl p-6 border border-gray-100 shadow-sm space-y-6">
         <h3 className="text-base font-bold text-gray-900 flex items-center gap-2">
@@ -147,10 +200,10 @@ export default function ProductForm({ initialProduct }: { initialProduct?: Produ
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Category</label>
             <select 
               name="category" 
-              defaultValue={initialProduct?.category || 'Water Closet & Sanitaryware'} 
+              defaultValue={initialProduct?.category || (categoriesList[0] || 'Water Closet')} 
               className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition cursor-pointer"
             >
-              {CATEGORIES.map(cat => (
+              {categoriesList.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>

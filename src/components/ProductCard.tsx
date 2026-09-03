@@ -55,11 +55,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   }, [imageSrc]);
 
   const handleError = () => {
-    if (src !== '/Assets1/faucet_01.png') {
-      setSrc('/Assets1/faucet_01.png');
-    } else {
-      setImgError(true);
-    }
+    setImgError(true);
   };
 
   const inWishlist = isClient ? isInWishlist(product.id) : false;

@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { addProductToDB, deleteProductFromDB } from '@/lib/db';
 import { Product } from '@/types';
 
@@ -9,22 +9,25 @@ import { createClient } from '@/lib/supabase/server';
 export async function createProductAction(formData: FormData, oldVariants?: any[]) {
   const supabase = await createClient();
   
-  const name = formData.get('name') as string;
-  const category = formData.get('category') as string;
-  const description = formData.get('description') as string;
+  const name = (formData.get('name') as string)?.trim() || null;
+  const category = (formData.get('category') as string)?.trim() || null;
+  const description = (formData.get('description') as string)?.trim() || null;
   const primaryImageIndex = parseInt(formData.get('primaryImageIndex') as string || '0');
   
+  if (!name) throw new Error('Product name is required');
+  if (!category) throw new Error('Category is required');
+
   // New Parryware Fields
-  const subCategory = formData.get('subCategory') as string || '';
-  const sku = formData.get('sku') as string || '';
+  const subCategory = (formData.get('subCategory') as string)?.trim() || null;
+  const sku = (formData.get('sku') as string)?.trim() || null;
   const basePrice = Number(formData.get('base_price')) || 0;
   const colorPrice = Number(formData.get('color_price')) || basePrice;
   const selectedColorsJson = formData.get('selectedColors') as string;
   const selectedColors = selectedColorsJson ? JSON.parse(selectedColorsJson) : [];
   
-  const capacity = formData.get('capacity') as string || '';
-  const dimensions = formData.get('dimensions') as string || '';
-  const catalogPage = formData.get('catalog_page') as string || '';
+  const capacity = (formData.get('capacity') as string)?.trim() || null;
+  const dimensions = (formData.get('dimensions') as string)?.trim() || '';
+  const catalogPage = (formData.get('catalog_page') as string)?.trim() || null;
 
   const specifications: Record<string, string> = {};
   if (capacity) specifications['Capacity'] = capacity;
@@ -52,19 +55,29 @@ export async function createProductAction(formData: FormData, oldVariants?: any[
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `products/${fileName}`;
       
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      
       const { error: uploadError } = await supabase.storage
         .from('product-images')
-        .upload(filePath, file);
+        .upload(filePath, buffer, {
+          contentType: file.type,
+          upsert: true,
+        });
         
-      if (!uploadError) {
-        const { data: { publicUrl } } = supabase.storage
-          .from('product-images')
-          .getPublicUrl(filePath);
-          
-        uploadedUrls.push({ url: publicUrl, isPrimary: i === primaryImageIndex });
-      } else {
-        console.error('Failed to upload image:', uploadError);
+      if (uploadError) {
+        throw new Error(`Image upload failed (file ${i + 1}): ${uploadError.message}`);
       }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      if (!publicUrl) {
+        throw new Error(`Failed to obtain public URL for uploaded image (file ${i + 1})`);
+      }
+
+      uploadedUrls.push({ url: publicUrl, isPrimary: i === primaryImageIndex });
     }
   }
 
@@ -90,21 +103,28 @@ export async function createProductAction(formData: FormData, oldVariants?: any[
       name,
       description: serializedDescription,
       material_id: material.id,
-      is_active: true
+      is_active: true,
+      specifications,
+      catalog_page: catalogPage,
+      capacity: capacity
     })
     .select('id')
     .single();
 
-  if (mattressError || !mattress) throw new Error('Failed to create product record');
+  if (mattressError) throw new Error(`Mattress insert error: ${mattressError.message}`);
+  if (!mattress) throw new Error('No record returned after mattress insert');
 
   // 4. Insert into product_images
-  const imageInserts = uploadedUrls.map((img, idx) => ({
-    mattress_id: mattress.id,
-    image_url: img.url,
-    is_primary: img.isPrimary,
-    sort_order: idx
-  }));
-  await supabase.from('product_images').insert(imageInserts);
+  if (uploadedUrls && uploadedUrls.length > 0) {
+    const imageInserts = uploadedUrls.map((img, idx) => ({
+      mattress_id: mattress.id,
+      image_url: img.url,
+      is_primary: img.isPrimary,
+      sort_order: idx
+    }));
+    const { error: imgInsertError } = await supabase.from('product_images').insert(imageInserts);
+    if (imgInsertError) throw new Error(`Image record insert error: ${imgInsertError.message}`);
+  }
 
   // 5. Generate and Insert a single primary variant
   const dimParts = dimensions.toLowerCase().replace(/mm/g, '').split('x').map(p => parseInt(p.trim()) || 0);
@@ -115,20 +135,23 @@ export async function createProductAction(formData: FormData, oldVariants?: any[
   const mrpPrice = colorPrice || basePrice; // use colorPrice field as MRP (re-purposed field)
   const variantSku = sku || `PAR-${Date.now().toString(36).toUpperCase()}`;
   
-  await supabase.from('variants').insert([{
+  const { error: variantError } = await supabase.from('variants').insert([{
     mattress_id: mattress.id,
     size_name: sku || 'Standard',
     length,
     width,
     height,
     price: basePrice,
-    original_price: mrpPrice,
+    original_price: mrpPrice || null,
     stock: 10,
     sku: variantSku
   }]);
+  if (variantError) throw new Error(`Variant insert error: ${variantError.message}`);
 
 
+  (revalidateTag as any)('products');
   revalidatePath('/admin/products');
+  revalidatePath('/admin/inventory');
   revalidatePath('/products');
 }
 
@@ -152,7 +175,9 @@ export async function deleteProductAction(productId: string) {
     throw new Error('Failed to delete product: ' + error.message);
   }
 
+  (revalidateTag as any)('products');
   revalidatePath('/admin/products');
+  revalidatePath('/admin/inventory');
   revalidatePath('/products');
 }
 
@@ -160,6 +185,7 @@ export async function toggleVariantStockAction(productId: string, variantId: str
   const supabase = await createClient();
   const newStock = inStock ? 0 : 10;
   await supabase.from('variants').update({ stock: newStock }).eq('id', variantId);
+  (revalidateTag as any)('products');
   revalidatePath('/admin/products');
   revalidatePath('/products');
 }
@@ -170,6 +196,7 @@ export async function updateVariantPriceAction(productId: string, variantId: str
     price: newPrice,
     original_price: newMrp 
   }).eq('id', variantId);
+  (revalidateTag as any)('products');
   revalidatePath('/admin/products');
   revalidatePath('/products');
 }
@@ -195,6 +222,7 @@ export async function addVariantAction(productId: string, variantData: { label: 
     sku: `VAR-${Math.random().toString(36).substring(7).toUpperCase()}`
   });
   
+  (revalidateTag as any)('products');
   revalidatePath('/admin/products');
   revalidatePath('/products');
 }
@@ -202,6 +230,7 @@ export async function addVariantAction(productId: string, variantData: { label: 
 export async function deleteVariantAction(variantId: string) {
   const supabase = await createClient();
   await supabase.from('variants').delete().eq('id', variantId);
+  (revalidateTag as any)('products');
   revalidatePath('/admin/products');
   revalidatePath('/products');
 }
@@ -209,22 +238,25 @@ export async function deleteVariantAction(variantId: string) {
 export async function updateProductAction(productId: string, formData: FormData) {
   const supabase = await createClient();
   
-  const name = formData.get('name') as string;
-  const category = formData.get('category') as string;
-  const description = formData.get('description') as string;
+  const name = (formData.get('name') as string)?.trim() || null;
+  const category = (formData.get('category') as string)?.trim() || null;
+  const description = (formData.get('description') as string)?.trim() || null;
   const primaryImageIndex = parseInt(formData.get('primaryImageIndex') as string || '0');
   
+  if (!name) throw new Error('Product name is required');
+  if (!category) throw new Error('Category is required');
+
   // New Parryware Fields
-  const subCategory = formData.get('subCategory') as string || '';
-  const sku = formData.get('sku') as string || '';
+  const subCategory = (formData.get('subCategory') as string)?.trim() || null;
+  const sku = (formData.get('sku') as string)?.trim() || null;
   const basePrice = Number(formData.get('base_price')) || 0;
   const colorPrice = Number(formData.get('color_price')) || basePrice;
   const selectedColorsJson = formData.get('selectedColors') as string;
   const selectedColors = selectedColorsJson ? JSON.parse(selectedColorsJson) : [];
   
-  const capacity = formData.get('capacity') as string || '';
-  const dimensions = formData.get('dimensions') as string || '';
-  const catalogPage = formData.get('catalog_page') as string || '';
+  const capacity = (formData.get('capacity') as string)?.trim() || null;
+  const dimensions = (formData.get('dimensions') as string)?.trim() || '';
+  const catalogPage = (formData.get('catalog_page') as string)?.trim() || null;
 
   const specifications: Record<string, string> = {};
   if (capacity) specifications['Capacity'] = capacity;
@@ -261,17 +293,29 @@ export async function updateProductAction(productId: string, formData: FormData)
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `products/${fileName}`;
       
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      
       const { error: uploadError } = await supabase.storage
         .from('product-images')
-        .upload(filePath, file);
+        .upload(filePath, buffer, {
+          contentType: file.type,
+          upsert: true,
+        });
         
-      if (!uploadError) {
-        const { data: { publicUrl } } = supabase.storage
-          .from('product-images')
-          .getPublicUrl(filePath);
-          
-        uploadedUrls.push({ url: publicUrl, isPrimary: (existingImages.length + i) === primaryImageIndex });
+      if (uploadError) {
+        throw new Error(`Image upload failed (file ${i + 1}): ${uploadError.message}`);
       }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      if (!publicUrl) {
+        throw new Error(`Failed to obtain public URL for uploaded image (file ${i + 1})`);
+      }
+        
+      uploadedUrls.push({ url: publicUrl, isPrimary: (existingImages.length + i) === primaryImageIndex });
     }
   }
 
@@ -283,14 +327,19 @@ export async function updateProductAction(productId: string, formData: FormData)
   }
 
   // 3. Update mattress
-  await supabase
+  const { error: updateError } = await supabase
     .from('mattresses')
     .update({
       name,
       description: serializedDescription,
-      material_id: material?.id
+      material_id: material?.id,
+      specifications,
+      catalog_page: catalogPage,
+      capacity: capacity
     })
     .eq('id', productId);
+
+  if (updateError) throw new Error(`Mattress update error: ${updateError.message}`);
 
   // 4. Update images
   // Delete old images
@@ -304,7 +353,8 @@ export async function updateProductAction(productId: string, formData: FormData)
       is_primary: img.isPrimary,
       sort_order: idx
     }));
-    await supabase.from('product_images').insert(imageInserts);
+    const { error: imgInsertError } = await supabase.from('product_images').insert(imageInserts);
+    if (imgInsertError) throw new Error(`Image record insert error: ${imgInsertError.message}`);
   }
 
   // 5. Update variants gracefully (handling foreign key constraints)
@@ -369,6 +419,7 @@ export async function updateProductAction(productId: string, formData: FormData)
     }
   }
 
+  (revalidateTag as any)('products');
   revalidatePath('/admin/products');
   revalidatePath('/products');
   revalidatePath(`/product/${productId}`);

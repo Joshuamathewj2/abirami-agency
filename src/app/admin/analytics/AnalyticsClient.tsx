@@ -34,9 +34,17 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
   };
   const currentWeek = getWeekNumber(now);
 
-  // Only include completed orders to match the Orders Management page and exclude pending WhatsApp requests
+  // Only include completed/paid orders in revenue analytics.
+  // Pending and Contacted WhatsApp inquiries are tracked in WhatsApp Center
+  // but must NOT inflate revenue figures until the sale is confirmed.
+  const COMPLETED_STATUSES = ['Completed', 'Paid', 'Closed', 'completed', 'paid', 'closed'];
+
   const validInitialInquiries = useMemo(() => {
-    return (initialInquiries || []).filter(order => order?.status?.toLowerCase() === 'completed');
+    return (initialInquiries || []).filter(order =>
+      order &&
+      (order.total_amount > 0 || order.created_at) &&
+      COMPLETED_STATUSES.includes(order.status || '')
+    );
   }, [initialInquiries]);
 
   const isToday = useCallback((d: Date) => !isNaN(d.getTime()) && d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(), [now.getDate(), now.getMonth(), now.getFullYear()]);
@@ -89,7 +97,8 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
       completedBills++;
       
       const notes = order.notes || '';
-      if (notes.includes('OFFLINE') || notes.includes('MANUAL')) {
+      const isOffline = notes.includes('CHANNEL: pos') || notes.includes('OFFLINE') || notes.includes('MANUAL') || order.bill_type === 'retail' || order.bill_type === 'wholesale';
+      if (isOffline) {
         offlineBills += amt;
         offlineBillsCount++;
       } else {
@@ -97,8 +106,9 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
         onlineBillsCount++;
       }
 
-      const items = order.order_items || order.inquiry_items || [];
-      if (items && Array.isArray(items)) {
+      // Try structured items first (order_items or inquiry_items), then fall back to notes parsing
+      const items = order.inquiry_items || order.order_items || [];
+      if (items && Array.isArray(items) && items.length > 0) {
          items.forEach((item: any) => {
            const qty = item.quantity || 1;
            const price = item.unit_price || item.price || 0;
@@ -113,39 +123,49 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
            productRevenue[productName].revenue += itemRev;
            productRevenue[productName].qty += qty;
          });
-      }
-
-      const customMatch = notes.match(/Custom Items:\s*(.*?)(?:\n|\||$)/i);
-      if (customMatch && customMatch[1]) {
-        const parts = customMatch[1].split(', ');
-        parts.forEach((part: string) => {
-           const nameMatch = part.match(/^(.*?)\s*\(Qty:/);
-           const qtyMatch = part.match(/\(Qty:\s*(\d+)\)/);
-           const priceMatch = part.match(/@\s*₹([\d,]+)/);
-           if (nameMatch) {
-             const cName = nameMatch[1].trim();
-             const cQty = qtyMatch ? parseInt(qtyMatch[1], 10) : 1;
-             const itemRev = priceMatch ? parseInt(priceMatch[1].replace(/,/g, ''), 10) * cQty : (amt || 0);
-             totalItemsSold += cQty;
-             if (!productRevenue[cName]) productRevenue[cName] = { revenue: 0, qty: 0, isCustom: true };
-             productRevenue[cName].revenue += itemRev;
-             productRevenue[cName].qty += cQty;
-             productRevenue[cName].isCustom = true;
-           }
-        });
       } else {
-        // Fallback for WhatsApp receipt format if Custom Items tag is missing
-        const itemRegex = /📦\s*\d+\.\s*(.*?)\n\s*•\s*Qty:\s*(\d+)\n\s*•\s*💲\s*₹([\d,]+)/g;
-        let match;
-        while ((match = itemRegex.exec(notes)) !== null) {
-          const cName = match[1].trim();
-          const cQty = parseInt(match[2], 10) || 1;
-          const itemRev = parseInt(match[3].replace(/,/g, ''), 10); // Note: whatsapp receipt already multiplies by qty? No, "₹${(item.price * item.quantity)}"
-          totalItemsSold += cQty;
-          if (!productRevenue[cName]) productRevenue[cName] = { revenue: 0, qty: 0, isCustom: true };
-          productRevenue[cName].revenue += itemRev;
-          productRevenue[cName].qty += cQty;
-          productRevenue[cName].isCustom = true;
+        // Parse line items from WhatsApp invoice notes as fallback
+        const customMatch = notes.match(/Custom Items:\s*(.*?)(?:\n|\||$)/i);
+        if (customMatch && customMatch[1]) {
+          const parts = customMatch[1].split(', ');
+          parts.forEach((part: string) => {
+             const nameMatch = part.match(/^(.*?)\s*\(Qty:/);
+             const qtyMatch = part.match(/\(Qty:\s*(\d+)\)/);
+             const priceMatch = part.match(/@\s*₹([\d,]+)/);
+             if (nameMatch) {
+               const cName = nameMatch[1].trim();
+               const cQty = qtyMatch ? parseInt(qtyMatch[1], 10) : 1;
+               const itemRev = priceMatch ? parseInt(priceMatch[1].replace(/,/g, ''), 10) * cQty : (amt || 0);
+               totalItemsSold += cQty;
+               if (!productRevenue[cName]) productRevenue[cName] = { revenue: 0, qty: 0, isCustom: true };
+               productRevenue[cName].revenue += itemRev;
+               productRevenue[cName].qty += cQty;
+               productRevenue[cName].isCustom = true;
+             }
+          });
+        } else {
+          // WhatsApp receipt format: "📦 1. Product Name\n   • Qty: N\n   • Price: ₹X"
+          const itemRegex = /📦\s*\d+\.\s*(.*?)\n\s*•\s*Qty:\s*(\d+)\n\s*•\s*(?:Price|💲):\s*₹([\d,]+)/g;
+          let match;
+          while ((match = itemRegex.exec(notes)) !== null) {
+            const cName = match[1].trim();
+            const cQty = parseInt(match[2], 10) || 1;
+            const lineTotal = parseInt(match[3].replace(/,/g, ''), 10);
+            const unitPrice = cQty > 0 ? Math.round(lineTotal / cQty) : lineTotal;
+            totalItemsSold += cQty;
+            if (!productRevenue[cName]) productRevenue[cName] = { revenue: 0, qty: 0, isCustom: true };
+            productRevenue[cName].revenue += lineTotal;
+            productRevenue[cName].qty += cQty;
+            productRevenue[cName].isCustom = true;
+          }
+          // If still nothing parsed, attribute whole order amount to an aggregated product name
+          if (Object.keys(productRevenue).length === 0 && amt > 0) {
+            const fallbackName = 'Sanitaryware Order';
+            if (!productRevenue[fallbackName]) productRevenue[fallbackName] = { revenue: 0, qty: 0, isCustom: true };
+            productRevenue[fallbackName].revenue += amt;
+            productRevenue[fallbackName].qty += 1;
+            productRevenue[fallbackName].isCustom = true;
+          }
         }
       }
     });
@@ -273,7 +293,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
     ];
     
     const weekData = [
-      { name: 'MON', value: 0, fill: '#e5e5e5' }, { name: 'TUE', value: 0, fill: '#e5e5e5' }, { name: 'WED', value: 0, fill: '#dc2626' },
+      { name: 'MON', value: 0, fill: '#e5e5e5' }, { name: 'TUE', value: 0, fill: '#e5e5e5' }, { name: 'WED', value: 0, fill: '#0070ba' },
       { name: 'THU', value: 0, fill: '#e5e5e5' }, { name: 'FRI', value: 0, fill: '#e5e5e5' }, { name: 'SAT', value: 0, fill: '#e5e5e5' },
       { name: 'SUN', value: 0, fill: '#e5e5e5' }
     ];
@@ -292,7 +312,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
           const targetIdx = map[dayIndex];
           if (weekData[targetIdx]) {
             weekData[targetIdx].value += order.total_amount || 0;
-            weekData[targetIdx].fill = '#dc2626'; // active color
+            weekData[targetIdx].fill = '#0070ba'; // active color
           }
         }
       }
@@ -383,7 +403,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                     onClick={() => setPeriod(p === 'ALL TIME' ? 'All Time' : p === 'TODAY' ? 'Today' : p === 'THIS WEEK' ? 'This Week' : p === 'THIS MONTH' ? 'This Month' : p === 'THIS YEAR' ? 'This Year' : 'Custom')}
                     className={`px-4 py-1.5 rounded-full transition-colors ${
                       period.toUpperCase() === p 
-                        ? 'bg-[#dc2626] text-white' 
+                        ? 'bg-[#0070ba] text-white' 
                         : 'hover:bg-slate-100'
                     }`}
                   >
@@ -411,12 +431,12 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
               key={t}
               onClick={() => setActiveTab(t)}
               className={`pb-3 text-xs font-bold uppercase tracking-wider transition-colors relative ${
-                activeTab === t ? 'text-[#dc2626]' : 'text-slate-500 hover:text-slate-800'
+                activeTab === t ? 'text-[#0070ba]' : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               {t}
               {activeTab === t && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#dc2626]"></span>
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0070ba]"></span>
               )}
             </button>
           ))}
@@ -599,7 +619,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
               </div>
 
               <div 
-                className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between h-[120px] cursor-pointer hover:border-red-200 hover:shadow transition-all"
+                className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between h-[120px] cursor-pointer hover:border-blue-200 hover:shadow transition-all"
                 onClick={() => setIsTopProductModalOpen(true)}
               >
                 <div className="flex justify-between items-start">
@@ -626,7 +646,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                 
                 {/* Year Trend */}
                 <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-                  <h2 className="text-sm font-bold text-slate-700">Revenue Trend This Year <span className="text-[#dc2626]">{currentYear}</span></h2>
+                  <h2 className="text-sm font-bold text-slate-700">Revenue Trend This Year <span className="text-[#0070ba]">{currentYear}</span></h2>
                   <div className="flex items-center gap-3 mt-2 mb-6">
                     <span className="text-2xl font-black text-slate-900">₹{yearlyTotalRevenue.toLocaleString('en-IN')}</span>
                     <span className="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded">Avg ₹{Math.round(yearlyTotalRevenue/12).toLocaleString('en-IN')}/mo</span>
@@ -646,13 +666,13 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                         <RechartsTooltip 
                           cursor={false}
                           contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '8px 12px' }}
-                          itemStyle={{ fontWeight: 800, color: '#dc2626', fontSize: '14px' }}
+                          itemStyle={{ fontWeight: 800, color: '#0070ba', fontSize: '14px' }}
                           labelStyle={{ display: 'none' }}
                           formatter={(val: any) => [`₹${Number(val).toLocaleString('en-IN')}`, 'Revenue']}
                         />
                         <Bar 
                           dataKey="value" 
-                          fill="#dc2626" 
+                          fill="#0070ba" 
                           radius={[4, 4, 0, 0]} 
                           barSize={16}
                           activeBar={false}
@@ -666,7 +686,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
 
                 {/* Week Trend */}
                 <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-                  <h2 className="text-sm font-bold text-slate-700">Revenue This Week <span className="text-[#dc2626]">(Week {currentWeek} of {currentYear})</span></h2>
+                  <h2 className="text-sm font-bold text-slate-700">Revenue This Week <span className="text-[#0070ba]">(Week {currentWeek} of {currentYear})</span></h2>
                   <p className="text-[10px] text-slate-500 mt-1 mb-6">₹{weeklyTotalRevenue.toLocaleString('en-IN')} total</p>
                   
                   <div className="h-[220px] w-full overflow-x-auto overflow-y-hidden no-scrollbar [&_.recharts-wrapper]:outline-none [&_svg]:outline-none [&_.recharts-rectangle]:outline-none">
@@ -683,7 +703,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                         <RechartsTooltip 
                           cursor={false}
                           contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '8px 12px' }}
-                          itemStyle={{ fontWeight: 800, color: '#dc2626', fontSize: '14px' }}
+                          itemStyle={{ fontWeight: 800, color: '#0070ba', fontSize: '14px' }}
                           labelStyle={{ display: 'none' }}
                           formatter={(val: any) => [`₹${Number(val).toLocaleString('en-IN')}`, 'Revenue']}
                         />
@@ -716,12 +736,12 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                   <div className="space-y-5">
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-[10px] font-bold text-[#dc2626] uppercase tracking-widest">OFFLINE</span>
+                        <span className="text-[10px] font-bold text-[#0070ba] uppercase tracking-widest">OFFLINE</span>
                         <span className="text-sm font-black text-slate-900">{offlineBillsCount}</span>
                       </div>
                       <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
                         <div 
-                          className="bg-[#dc2626] h-2.5 rounded-full transition-all duration-500" 
+                          className="bg-[#0070ba] h-2.5 rounded-full transition-all duration-500" 
                           style={{ width: `${offlineBillsCount + onlineBillsCount > 0 ? (offlineBillsCount / (offlineBillsCount + onlineBillsCount)) * 100 : 0}%` }}
                         ></div>
                       </div>
@@ -752,17 +772,17 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                         <div className="flex items-center gap-3 mb-1.5">
                           <span className="text-xs font-bold text-slate-400 w-3">{idx + 1}</span>
                           <div className="flex-1 min-w-0">
-                            {item.isCustom && <div className="text-[9px] font-black text-[#dc2626] uppercase tracking-widest leading-none mb-0.5">CUSTOM</div>}
+                            {item.isCustom && <div className="text-[9px] font-black text-[#0070ba] uppercase tracking-widest leading-none mb-0.5">CUSTOM</div>}
                             <span className="text-xs font-bold text-slate-700 block truncate">{item.name}</span>
                           </div>
                           <div className="flex flex-col items-end justify-center">
-                            <span className="text-xs font-black text-[#dc2626]">₹{item.revenue.toLocaleString('en-IN')}</span>
+                            <span className="text-xs font-black text-[#0070ba]">₹{item.revenue.toLocaleString('en-IN')}</span>
                             <span className="text-[9px] text-slate-400">{item.qty} pcs</span>
                           </div>
                         </div>
                         <div className="w-full bg-transparent h-1.5 pl-6 pr-8">
                           <div className="bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-[#dc2626] h-1.5 rounded-full" style={{ width: `${(item.revenue / maxItemRev) * 100}%` }}></div>
+                            <div className="bg-[#0070ba] h-1.5 rounded-full" style={{ width: `${(item.revenue / maxItemRev) * 100}%` }}></div>
                           </div>
                         </div>
                       </div>
@@ -933,7 +953,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                             <td className="py-4 px-4 text-xs font-bold text-slate-700">{invId}</td>
                             <td className="py-4 px-4 text-xs text-slate-600 font-medium">{tx.customer_phone || 'N/A'}</td>
                             <td className="py-4 px-4 text-xs font-bold text-center">
-                              <span className={`px-2 py-1 rounded text-[9px] uppercase tracking-wider ${source === 'ONLINE' ? 'bg-emerald-50 text-emerald-600' : 'bg-[#dc2626]/10 text-[#dc2626]'}`}>
+                              <span className={`px-2 py-1 rounded text-[9px] uppercase tracking-wider ${source === 'ONLINE' ? 'bg-emerald-50 text-emerald-600' : 'bg-[#0070ba]/10 text-[#0070ba]'}`}>
                                 {source}
                               </span>
                             </td>
@@ -964,12 +984,12 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                   <div className="space-y-5">
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-[10px] font-bold text-[#dc2626] uppercase tracking-widest">OFFLINE</span>
+                        <span className="text-[10px] font-bold text-[#0070ba] uppercase tracking-widest">OFFLINE</span>
                         <span className="text-sm font-black text-slate-900">{todayOfflineBillsCount}</span>
                       </div>
                       <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
                         <div 
-                          className="bg-[#dc2626] h-2.5 rounded-full transition-all duration-500" 
+                          className="bg-[#0070ba] h-2.5 rounded-full transition-all duration-500" 
                           style={{ width: `${todayOfflineBillsCount + todayOnlineBillsCount > 0 ? (todayOfflineBillsCount / (todayOfflineBillsCount + todayOnlineBillsCount)) * 100 : 0}%` }}
                         ></div>
                       </div>
@@ -1003,17 +1023,17 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                         <div className="flex items-center gap-3 mb-1.5">
                           <span className="text-xs font-bold text-slate-400 w-3">{idx + 1}</span>
                           <div className="flex-1 min-w-0">
-                            {item.isCustom && <div className="text-[9px] font-black text-[#dc2626] uppercase tracking-widest leading-none mb-0.5">CUSTOM</div>}
+                            {item.isCustom && <div className="text-[9px] font-black text-[#0070ba] uppercase tracking-widest leading-none mb-0.5">CUSTOM</div>}
                             <span className="text-xs font-bold text-slate-700 block truncate">{item.name}</span>
                           </div>
                           <div className="flex flex-col items-end justify-center">
-                            <span className="text-xs font-black text-[#dc2626]">₹{item.revenue.toLocaleString('en-IN')}</span>
+                            <span className="text-xs font-black text-[#0070ba]">₹{item.revenue.toLocaleString('en-IN')}</span>
                             <span className="text-[9px] text-slate-400">{item.qty} pcs</span>
                           </div>
                         </div>
                         <div className="w-full bg-transparent h-1.5 pl-6 pr-8">
                           <div className="bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                              <div className="bg-[#dc2626] h-1.5 rounded-full" style={{ width: `${(item.revenue / maxTodayItemRev) * 100}%` }}></div>
+                              <div className="bg-[#0070ba] h-1.5 rounded-full" style={{ width: `${(item.revenue / maxTodayItemRev) * 100}%` }}></div>
                             </div>
                           </div>
                         </div>
@@ -1041,7 +1061,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                   placeholder="Search product..."
                   value={productSearch}
                   onChange={(e) => setProductSearch(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 pl-9 text-xs font-semibold focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-50"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 pl-9 text-xs font-semibold focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-50"
                 />
                 <svg className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -1077,12 +1097,12 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                             <span className="text-xs font-bold text-slate-700">{item.qty} pcs</span>
                           </td>
                           <td className="py-3 px-6 text-right">
-                            <span className="text-xs font-black text-[#dc2626]">₹{item.revenue.toLocaleString('en-IN')}</span>
+                            <span className="text-xs font-black text-[#0070ba]">₹{item.revenue.toLocaleString('en-IN')}</span>
                           </td>
                           <td className="py-3 px-6">
                             <div className="flex items-center justify-end gap-2">
                               <div className="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden flex-shrink-0">
-                                <div className="bg-[#dc2626] h-1.5 rounded-full" style={{ width: `${marketShare}%` }}></div>
+                                <div className="bg-[#0070ba] h-1.5 rounded-full" style={{ width: `${marketShare}%` }}></div>
                               </div>
                               <span className="text-[10px] font-bold text-slate-500 w-8 text-right">{marketShare}%</span>
                             </div>
@@ -1113,9 +1133,9 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
               <div className="bg-[#FAF9F6] rounded-xl p-4 border border-slate-100">
                 <div className="flex justify-between items-start mb-2">
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Discounts Given</span>
-                  <span className="text-[#dc2626] font-bold">%</span>
+                  <span className="text-[#0070ba] font-bold">%</span>
                 </div>
-                <h3 className="text-2xl font-black text-[#dc2626]">₹{couponData.totalDiscountGiven.toLocaleString('en-IN')}</h3>
+                <h3 className="text-2xl font-black text-[#0070ba]">₹{couponData.totalDiscountGiven.toLocaleString('en-IN')}</h3>
               </div>
 
               <div className="bg-[#FAF9F6] rounded-xl p-4 border border-slate-100">
@@ -1168,7 +1188,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                             <td className="py-4 px-4">{c.id}</td>
                             <td className="py-4 px-4">{c.mobile}</td>
                             <td className="py-4 px-4 text-right">₹{c.total.toLocaleString('en-IN')}</td>
-                            <td className="py-4 px-4 text-right text-[#dc2626]">-₹{c.discount}</td>
+                            <td className="py-4 px-4 text-right text-[#0070ba]">-₹{c.discount}</td>
                           </tr>
                         ))
                       ) : (
@@ -1202,7 +1222,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
               {topItems.length > 0 ? topItems.map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-red-100 text-[#dc2626] flex items-center justify-center text-xs font-bold">{idx + 1}</span>
+                    <span className="w-6 h-6 rounded-full bg-blue-100 text-[#0070ba] flex items-center justify-center text-xs font-bold">{idx + 1}</span>
                     <div>
                       <h4 className="text-sm font-bold text-slate-800 truncate max-w-[180px]">{item.name}</h4>
                       <p className="text-xs text-slate-500">{item.qty} pcs sold</p>
@@ -1228,7 +1248,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             <div className="flex flex-col items-center text-center mt-2">
-              <div className="w-12 h-12 rounded-full bg-red-100 text-[#dc2626] flex items-center justify-center text-xl font-bold mb-4">
+              <div className="w-12 h-12 rounded-full bg-blue-100 text-[#0070ba] flex items-center justify-center text-xl font-bold mb-4">
                 {selectedMetric.icon}
               </div>
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">{selectedMetric.title}</h3>
@@ -1242,7 +1262,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
             <div className="mt-6 flex justify-center">
               <button
                 onClick={() => setSelectedMetric(null)}
-                className="w-full bg-[#dc2626] hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors shadow-sm"
+                className="w-full bg-[#0070ba] hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors shadow-sm"
               >
                 Close Details
               </button>

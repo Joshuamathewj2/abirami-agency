@@ -266,6 +266,7 @@ export default function CategoryCarousel({
   return (
     <div
       className={cn(
+        "category-carousel-wrapper",
         "relative flex flex-col items-center justify-center w-full select-none",
         "overflow-hidden",
         className

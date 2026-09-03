@@ -27,7 +27,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const displayPrice = primaryVariant ? primaryVariant.price : product.price;
   const displayMrp = primaryVariant ? (primaryVariant.mrp || 0) : (product.mrp || 0);
 
-  const activeImageSrc = imgError ? '/Assets1/faucet_01.png' : mainImage;
+  const activeImageSrc = imgError ? 'https://placehold.co/800x600/0091FF/white?text=Product+Image' : mainImage;
 
   const cleanDescription = product.description
     ? product.description
@@ -141,11 +141,20 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               if (!specs['Model / SKU Number'] && primaryVariant?.label) {
                 specs['Model / SKU Number'] = primaryVariant.label.split('(')[0].trim();
               }
-              if (Object.keys(specs).length === 0) return null;
+              const validEntries = Object.entries(specs).filter(([key, val]) => {
+                if (key.toLowerCase() === 'warranty') {
+                  const strVal = String(val || '').trim().toLowerCase();
+                  if (!val || strVal === '0' || strVal === '0 years' || strVal === '0 year' || strVal === '0 months' || strVal === '0y' || strVal === '0m' || strVal === 'null' || strVal === 'undefined') {
+                    return false;
+                  }
+                }
+                return true;
+              });
+              if (validEntries.length === 0) return null;
               return (
                 <div className="mb-8 p-5 bg-white rounded-2xl border border-gray-200 space-y-2">
                   <h4 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-2">Specifications</h4>
-                  {Object.entries(specs).map(([key, val]) => (
+                  {validEntries.map(([key, val]) => (
                     <div key={key} className="flex items-center justify-between text-xs py-1 border-b border-gray-50 last:border-none">
                       <span className="font-semibold text-gray-500">{key}</span>
                       <span className="font-bold text-gray-900">{val}</span>

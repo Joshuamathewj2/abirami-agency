@@ -230,9 +230,8 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
         
         {/* Header Section */}
         <div className="bg-[#f0f9ff] border-b border-gray-200 p-8 sm:p-12 print:p-4 flex flex-col items-center text-center">
-          <img src="/logo.svg" alt="Abirami Agency Logo" className="h-16 w-auto object-contain mb-3" />
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Abirami Agency</h1>
-          <p className="text-xs text-primary font-bold tracking-wider mt-1 mb-4">INVOICE: {order.invoice_id || order.id}</p>
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">Abirami Agency</h1>
+          <p className="text-xs text-primary font-bold tracking-wider mt-2 mb-4">INVOICE: {order.invoice_id || order.id}</p>
           
           <div className="flex flex-col items-center gap-2 text-sm text-gray-600 font-semibold">
             <div className="text-center w-full leading-relaxed">

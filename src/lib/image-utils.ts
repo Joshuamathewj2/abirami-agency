@@ -81,21 +81,25 @@ function getFormattedFilename(prefix: string, index: number): string {
  * Returns the public path to the product image from /Assets1/
  */
 export function getProductImagePath(product: Product): string {
-  // 1. Use product thumbnail if it points to a real Assets1 path
-  if (product.thumbnail && product.thumbnail.startsWith('/Assets1/')) {
-    return product.thumbnail;
-  }
-  // 2. Use first image if it points to a real Assets1 path
-  if (product.images && product.images.length > 0 && product.images[0].startsWith('/Assets1/')) {
-    return product.images[0];
-  }
+  const isValidUrl = (url?: string | null): boolean => {
+    if (!url) return false;
+    return (
+      url.startsWith('http://') ||
+      url.startsWith('https://') ||
+      url.startsWith('data:') ||
+      url.startsWith('blob:') ||
+      url.startsWith('/Assets1/') ||
+      url.startsWith('/Assets/')
+    );
+  };
 
-  // 3. Legacy: handle old /Assets/ references by rewriting to /Assets1/
-  if (product.thumbnail && product.thumbnail.startsWith('/Assets/')) {
-    return product.thumbnail.replace('/Assets/', '/Assets1/');
+  // 1. Use product thumbnail if it's a valid path/URL
+  if (isValidUrl(product.thumbnail)) {
+    return product.thumbnail.startsWith('/Assets/') ? product.thumbnail.replace('/Assets/', '/Assets1/') : product.thumbnail;
   }
-  if (product.images && product.images.length > 0 && product.images[0].startsWith('/Assets/')) {
-    return product.images[0].replace('/Assets/', '/Assets1/');
+  // 2. Use first image if it's a valid path/URL
+  if (product.images && product.images.length > 0 && isValidUrl(product.images[0])) {
+    return product.images[0].startsWith('/Assets/') ? product.images[0].replace('/Assets/', '/Assets1/') : product.images[0];
   }
 
   // 4. Dynamic matching fallback by category

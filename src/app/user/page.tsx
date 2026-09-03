@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getUserOrdersAction } from '@/app/actions/orderActions';
@@ -14,9 +16,23 @@ export default function UserDashboardPage() {
 
   useEffect(() => {
     setIsClient(true);
-    if (user && user.id) {
-      getUserOrdersAction(user.id).then(setOrders);
-    }
+    const fetchUserOrders = async () => {
+      let activeUserId = user?.id;
+      if (!activeUserId) {
+        const { data: authData } = await supabase.auth.getUser();
+        activeUserId = authData?.user?.id;
+      }
+
+      console.log('[CLIENT UserDashboardPage] Logged-in userId:', activeUserId);
+
+      if (activeUserId) {
+        const resOrders = await getUserOrdersAction(activeUserId);
+        console.log('[CLIENT UserDashboardPage] Fetched orders count:', resOrders?.length, 'orders:', resOrders);
+        setOrders(resOrders || []);
+      }
+    };
+
+    fetchUserOrders();
   }, [user, profile]);
 
   const handleLogout = async () => {
