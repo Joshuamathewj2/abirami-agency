@@ -293,7 +293,6 @@ export async function addOrderToDB(order: any) {
   const { data: newOrder, error: orderError } = await supabaseAdmin
     .from('orders')
     .insert({
-      user_id: order.userId || null,
       customer_name: order.customerName || 'Walk-in Customer',
       customer_phone: order.customerPhone || '',
       notes: finalNotes,

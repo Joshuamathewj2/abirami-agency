@@ -403,8 +403,6 @@ export default function BillingClient() {
       }))
     };
 
-    const newTab = window.open('about:blank', '_blank');
-
     try {
       const res = await placeOrderAction(orderData);
       if (res.success && res.invoiceId) {
@@ -413,11 +411,7 @@ export default function BillingClient() {
         const targetPhoneParam = cleanPhone.length === 10 ? `phone=91${cleanPhone}&` : '';
         const whatsappUrl = `https://api.whatsapp.com/send/?${targetPhoneParam}text=${encodeURIComponent(whatsappMessage)}`;
 
-        if (newTab) {
-          newTab.location.href = whatsappUrl;
-        } else {
-          window.open(whatsappUrl, '_blank');
-        }
+        window.open(whatsappUrl, '_blank');
 
         setOrderFeedback({
           type: 'success',
@@ -433,14 +427,12 @@ export default function BillingClient() {
         setDeliveryFee(0);
         setAmountReceived(0);
       } else {
-        if (newTab) newTab.close();
         setOrderFeedback({
           type: 'error',
           message: `❌ Database Save Failed: ${res.error || 'Failed to insert order into Supabase'}`
         });
       }
     } catch (err: any) {
-      if (newTab) newTab.close();
       setOrderFeedback({
         type: 'error',
         message: `❌ Database Exception: ${err?.message || 'Unexpected server error'}`
@@ -878,6 +870,7 @@ export default function BillingClient() {
 
               {/* Large CTA Button */}
               <button
+                type="button"
                 onClick={generateWhatsAppBill}
                 className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-extrabold py-4 px-6 rounded-2xl transition-all shadow-md flex items-center justify-center gap-2.5 text-xs md:text-sm uppercase tracking-wider transform hover:scale-[1.01] active:scale-[0.99]"
               >
