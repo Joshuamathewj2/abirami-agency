@@ -302,11 +302,11 @@ export default function AdminLayout({
       {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Navbar */}
-        <header className="bg-white border-b border-gray-200 h-16 sticky top-0 z-40 px-4 sm:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <header className="bg-white border-b border-gray-200 h-16 sticky top-0 z-40 px-3 sm:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               type="button"
-              className="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary md:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:text-gray-900 focus:outline-none md:hidden shrink-0"
               onClick={() => setIsMobileMenuOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
@@ -314,26 +314,26 @@ export default function AdminLayout({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
-            <Link href="/admin" className="md:hidden flex items-center gap-2">
-              <span className="font-playfair text-lg font-black text-primary-dark">Abirami Agency</span>
-              <span className="text-[10px] font-bold text-sky-600 uppercase tracking-wider mt-0.5">Parryware</span>
+            <Link href="/admin" className="md:hidden flex items-center gap-1.5 shrink-0">
+              <span className="font-playfair text-sm sm:text-lg font-black text-primary-dark whitespace-nowrap">Abirami Agency</span>
+              <span className="text-[9px] sm:text-[10px] font-bold text-sky-600 uppercase tracking-wider bg-sky-50 px-1.5 py-0.5 rounded whitespace-nowrap">Parryware</span>
             </Link>
             <h1 className="text-lg font-bold text-gray-800 tracking-tight hidden sm:block">Dashboard</h1>
           </div>
           
-          <div className="flex items-center gap-6 flex-row-reverse sm:flex-row">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <Link href="/" className="text-xs sm:text-sm font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1 whitespace-nowrap bg-gray-50 hover:bg-gray-100 px-2 sm:px-3 py-1.5 rounded-lg">
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+              View Store
+            </Link>
             <button
               onClick={handleSignOut}
-              className="text-xs font-bold text-red-500 hover:text-red-700 transition-colors flex items-center gap-1 bg-red-50 px-3 py-1.5 rounded-lg"
+              className="text-xs font-bold text-red-500 hover:text-red-700 transition-colors flex items-center gap-1 bg-red-50 hover:bg-red-100 px-2.5 sm:px-3 py-1.5 rounded-lg whitespace-nowrap"
               title="Sign Out of Admin"
             >
               Sign Out
             </button>
-            <Link href="/" className="text-sm font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-              View Store
-            </Link>
-            <div className="w-9 h-9 rounded-full bg-sky-100 flex items-center justify-center text-primary font-bold shadow-inner uppercase">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-sky-100 hidden sm:flex items-center justify-center text-primary font-bold text-xs sm:text-sm shadow-inner uppercase shrink-0">
               {currentUser?.email ? currentUser.email.charAt(0) : 'A'}
             </div>
           </div>

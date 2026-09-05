@@ -164,15 +164,20 @@ export async function deleteProductAction(productId: string) {
 
   const supabase = await createClient();
   
-  // Delete related records first to avoid foreign key constraints
-  await supabase.from('product_images').delete().eq('mattress_id', productId);
-  await supabase.from('variants').delete().eq('mattress_id', productId);
-  
-  // Delete the mattress
-  const { error } = await supabase.from('mattresses').delete().eq('id', productId);
+  // Soft-delete: mark is_active = false to preserve historical order references
+  const { error } = await supabase
+    .from('mattresses')
+    .update({ is_active: false })
+    .eq('id', productId);
   
   if (error) {
-    throw new Error('Failed to delete product: ' + error.message);
+    console.error('Delete product failed Supabase error:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint
+    });
+    throw new Error(`Failed to delete product: ${error.message}`);
   }
 
   (revalidateTag as any)('products');

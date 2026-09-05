@@ -126,9 +126,9 @@ export default function ProductRow({ product, onDelete }: { product: Product; on
                 try {
                   await deleteProductAction(product.id);
                   onDelete?.(product.id);
-                } catch (err) {
+                } catch (err: any) {
                   console.error('Delete failed:', err);
-                  alert('Failed to delete product. Please try again.');
+                  alert(err?.message ? `Delete failed: ${err.message}` : 'Failed to delete product. Please try again.');
                   setIsDeleting(false);
                 }
               }}
