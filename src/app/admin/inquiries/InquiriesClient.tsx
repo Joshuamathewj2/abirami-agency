@@ -270,6 +270,7 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
                   <option value="Pending">Pending</option>
                   <option value="Quote Sent">Quote Sent</option>
                   <option value="Paid">Paid</option>
+                  <option value="Completed">Completed</option>
                   <option value="Closed">Closed</option>
                 </select>
               </div>

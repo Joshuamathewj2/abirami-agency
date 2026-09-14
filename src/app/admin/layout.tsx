@@ -314,9 +314,9 @@ export default function AdminLayout({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
-            <Link href="/admin" className="md:hidden flex items-center gap-1.5 shrink-0">
-              <span className="font-playfair text-sm sm:text-lg font-black text-primary-dark whitespace-nowrap">Abirami Agency</span>
-              <span className="text-[9px] sm:text-[10px] font-bold text-sky-600 uppercase tracking-wider bg-sky-50 px-1.5 py-0.5 rounded whitespace-nowrap">Parryware</span>
+            <Link href="/admin" className="md:hidden flex flex-col items-start shrink-0">
+              <span className="font-playfair text-sm sm:text-lg font-black text-primary-dark whitespace-nowrap leading-tight">Abirami Agency</span>
+              <span className="text-[9px] sm:text-[10px] font-bold text-sky-600 uppercase tracking-wider bg-sky-50 px-1.5 py-0.5 rounded whitespace-nowrap mt-0.5">Parryware</span>
             </Link>
             <h1 className="text-lg font-bold text-gray-800 tracking-tight hidden sm:block">Dashboard</h1>
           </div>
