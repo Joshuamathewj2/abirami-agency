@@ -37,7 +37,7 @@ export function HeroSection() {
   return (
     <section
       ref={ref}
-      className="relative w-full min-h-screen lg:min-h-screen bg-white text-slate-900 grid grid-cols-1 lg:grid-cols-2 items-stretch mt-0 pt-0 overflow-hidden"
+      className="relative w-full bg-white text-slate-900 grid grid-cols-1 lg:grid-cols-2 items-start mt-0 pt-0 overflow-hidden"
     >
       {/* Background Video / Image Container (Subtle Backdrop on Mobile, Right Column on Desktop) */}
       {/* Mobile backdrop (absolute, full-bleed, fades out via gradient) */}
@@ -57,15 +57,14 @@ export function HeroSection() {
       </div>
 
       {/* Desktop right column — padded, constrained, rounded video frame */}
-      <div className="hidden lg:flex items-center justify-center lg:order-last z-10 py-10 pr-10 pl-6">
-        <div className="relative w-full max-w-xl max-h-[520px] rounded-3xl overflow-hidden shadow-xl">
+      <div className="hidden lg:flex items-center justify-center lg:order-last z-10 pt-4 md:pt-6 lg:pt-8 pb-8 lg:pb-12 pr-8 lg:pr-12 pl-4 lg:pl-6">
+        <div className="relative w-full max-w-xl aspect-video rounded-3xl overflow-hidden shadow-xl">
           <video
             autoPlay
             muted
             loop
             playsInline
-            className="w-full h-full object-cover"
-            style={{ maxHeight: "520px" }}
+            className="w-full h-full object-cover block"
           >
             <source src="/freelance1.mp4" type="video/mp4" />
           </video>
@@ -84,7 +83,7 @@ export function HeroSection() {
       </div>
 
       {/* Left Column (Text & CTAs) */}
-      <div className="relative z-20 lg:bg-white flex flex-col justify-center min-h-screen lg:min-h-screen pt-20 pb-20 sm:pt-24 sm:pb-24 lg:py-32 pl-5 md:pl-8 lg:pl-16 xl:pl-[calc((100vw-1280px)/2+4rem)] pr-5 md:pr-8 lg:pr-16 lg:order-first">
+      <div className="relative z-20 lg:bg-white flex flex-col pt-4 md:pt-6 lg:pt-8 pb-8 sm:pb-10 lg:pb-12 pl-5 md:pl-8 lg:pl-16 xl:pl-[calc((100vw-1280px)/2+4rem)] pr-5 md:pr-8 lg:pr-16 lg:order-first">
         <div className="w-full max-w-xl">
           <motion.div
             className="flex flex-col items-start"
