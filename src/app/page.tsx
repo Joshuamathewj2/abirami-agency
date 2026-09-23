@@ -234,42 +234,31 @@ export default async function Home() {
       </section>
 
       {/* ────────────────── CTA ────────────────── */}
-      <section className="py-16 md:py-28 bg-[#0c1a2e] text-white relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="aurora-blob-1 absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-primary/15 blur-[100px]" />
-          <div className="aurora-blob-2 absolute -bottom-32 -right-32 w-[500px] h-[500px] rounded-full bg-sky-900/20 blur-[100px]" />
-          <div
-            className="dot-pattern absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)",
-              backgroundSize: "28px 28px",
-            }}
-          />
-        </div>
-        <div className="container-main text-center relative z-10">
+      <section className="py-16 md:py-24 bg-slate-50 border-t border-slate-200">
+        <div className="container-main text-center">
           <FadeCard>
-            <h2 className="text-3xl md:text-6xl font-black mb-4 md:mb-6 tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-black mb-4 md:mb-5 tracking-tight text-slate-900">
               Ready to Transform Your Bathroom?
             </h2>
-            <p className="text-white/60 max-w-xl mx-auto mb-6 md:mb-12 text-base md:text-xl font-medium">
+            <p className="text-slate-600 max-w-xl mx-auto mb-8 md:mb-10 text-base md:text-lg font-medium">
               Contact us today for wholesale prices and fast delivery across Tamil Nadu.
             </p>
-            <div className="flex flex-col md:flex-row gap-3 md:gap-5 justify-center max-w-md mx-auto md:max-w-none">
-              <div className="grid grid-cols-2 gap-3 md:flex md:flex-row md:gap-5 w-full md:w-auto">
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4 justify-center max-w-md mx-auto md:max-w-none">
+              <div className="grid grid-cols-2 gap-3 md:flex md:flex-row md:gap-4 w-full md:w-auto">
                 <a
                   href="tel:8610710434"
-                  className="inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-primary text-white py-3 px-2.5 sm:px-4 text-xs sm:text-sm md:px-10 md:py-5 md:text-lg rounded-xl md:rounded-full font-bold hover:bg-primary-dark transition-all hover:scale-105 shadow-[0_0_40px_rgba(14,165,233,0.4)] hover:shadow-[0_0_60px_rgba(14,165,233,0.6)] whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-2.5 sm:px-4 text-xs sm:text-sm md:px-8 md:py-4 md:text-base rounded-xl font-bold transition-all shadow-sm whitespace-nowrap"
                 >
-                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   Call 86107 10434
                 </a>
                 <a
                   href="tel:7200377455"
-                  className="inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-primary text-white py-3 px-2.5 sm:px-4 text-xs sm:text-sm md:px-10 md:py-5 md:text-lg rounded-xl md:rounded-full font-bold hover:bg-primary-dark transition-all hover:scale-105 shadow-[0_0_40px_rgba(14,165,233,0.4)] hover:shadow-[0_0_60px_rgba(14,165,233,0.6)] whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-2.5 sm:px-4 text-xs sm:text-sm md:px-8 md:py-4 md:text-base rounded-xl font-bold transition-all shadow-sm whitespace-nowrap"
                 >
-                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   Call 72003 77455
@@ -277,7 +266,7 @@ export default async function Home() {
               </div>
               <Link
                 href="/contact"
-                className="w-full md:w-auto inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 py-3 px-4 text-sm md:px-10 md:py-5 md:text-lg rounded-xl md:rounded-full font-bold transition-all"
+                className="w-full md:w-auto inline-flex items-center justify-center bg-white border border-slate-300 text-slate-800 hover:bg-slate-50 py-3 px-4 text-sm md:px-8 md:py-4 md:text-base rounded-xl font-bold transition-all"
               >
                 Send Inquiry
               </Link>

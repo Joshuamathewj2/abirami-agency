@@ -79,26 +79,52 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Role-based access control for admin routes:
-  // If user is logged in, is accessing an admin path, and is NOT in dev mode / bypass email / has cookie, check role
-  if (user && isAdminPath) {
-    if (isDev || hasAdminCookie) {
+  // Role-based access control for admin routes (Stealth Admin Access):
+  if (isAdminPath) {
+    // Completely remove/redirect any access to dedicated admin login route
+    if (pathname === '/admin/login' || pathname.startsWith('/admin/login/')) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+
+    // Allow cookie-based admin session
+    if (hasAdminCookie) {
       return supabaseResponse;
     }
 
-    let role = user.user_metadata?.role?.toUpperCase();
+    // If not logged in, silently redirect to home page (stealth: no hint of admin)
+    if (!user) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
 
-    // Fallback for existing users without role in metadata
-    if (!role) {
+    // Check if user is an authorized admin via email list or metadata role
+    const adminEmails = (process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+      .split(',')
+      .map(e => e.trim().toLowerCase())
+      .filter(Boolean);
+    const userEmail = (user.email || '').toLowerCase();
+    const isEmailAdmin = adminEmails.length > 0 && adminEmails.includes(userEmail);
+
+    const appRole = (user.app_metadata?.role || '').toLowerCase();
+    const userRole = (user.user_metadata?.role || '').toLowerCase();
+    let isRoleAdmin = appRole === 'admin' || userRole === 'admin';
+
+    if (!isRoleAdmin && !isEmailAdmin) {
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', user.id)
         .single();
-      role = profile?.role?.toUpperCase();
+      if (profile?.role?.toLowerCase() === 'admin') {
+        isRoleAdmin = true;
+      }
     }
 
-    // If role is not ADMIN, we let it proceed to /admin, where Layout will securely show the Customer Access Denied screen.
+    if (isEmailAdmin || isRoleAdmin) {
+      return supabaseResponse;
+    }
+
+    // If unauthorized, silently redirect to home page
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return supabaseResponse

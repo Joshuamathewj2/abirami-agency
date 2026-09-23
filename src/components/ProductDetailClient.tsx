@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-import { useWishlist } from '@/context/WishlistContext';
 import { type Product, type Size } from '@/types';
 import { useUserStore } from '@/store/userStore';
 import { getProductImagePath } from '@/lib/image-utils';
@@ -17,7 +16,13 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
   const [isClient, setIsClient] = useState(false);
   const [imgError, setImgError] = useState(false);
-  const [justAdded, setJustAdded] = useState(false);
+  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [addedItemDetails, setAddedItemDetails] = useState<{
+    name: string;
+    variant: string;
+    price: number;
+    quantity: number;
+  } | null>(null);
 
   useEffect(() => setIsClient(true), []);
 
@@ -39,8 +44,6 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     : '';
 
   const handleAddToCart = () => {
-    if (justAdded) return;
-    
     const defaultVariant = primaryVariant || {
       id: 'default',
       label: 'Standard',
@@ -51,8 +54,20 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     };
 
     addItem(product, defaultVariant as Size, 1);
-    setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 3000);
+
+    const modelOrSku = product.specifications?.['Model / SKU Number'];
+    const collectionName = product.specifications?.['Collection'] || product.subCategory;
+    const variantDesc = primaryVariant?.label
+      ? (modelOrSku && !primaryVariant.label.includes(modelOrSku) ? `${primaryVariant.label} | ${modelOrSku}` : primaryVariant.label)
+      : (collectionName ? (modelOrSku ? `${collectionName} | ${modelOrSku}` : collectionName) : (modelOrSku ? `${product.category} | ${modelOrSku}` : 'Standard'));
+
+    setAddedItemDetails({
+      name: product.name,
+      variant: variantDesc,
+      price: displayPrice,
+      quantity: 1,
+    });
+    setIsCartModalOpen(true);
   };
 
   const handleBuyNow = () => {
@@ -164,14 +179,6 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               );
             })()}
 
-            {/* Success Feedback banner */}
-            {justAdded && (
-              <div className="mb-4 bg-green-50 border border-green-200 text-green-800 rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2 animate-fade-in">
-                <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                Product successfully added to cart!
-              </div>
-            )}
-
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <button
@@ -191,6 +198,81 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           </div>
         </div>
       </div>
+
+      {/* Added to Cart Modal */}
+      {isCartModalOpen && addedItemDetails && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setIsCartModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full mx-4 relative shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsCartModalOpen(false)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
+              aria-label="Close"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Success Icon */}
+            <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-4 border border-emerald-100">
+              <svg className="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+
+            {/* Header & Subtext */}
+            <h3 className="text-2xl font-bold text-slate-900 text-center">
+              Added to Cart!
+            </h3>
+            <p className="text-sm text-slate-500 text-center mt-1 mb-6">
+              You&apos;ve successfully added this item to your cart.
+            </p>
+
+            {/* Item Recap Card */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center mb-6">
+              <div className="min-w-0 pr-3 text-left">
+                <p className="font-semibold text-slate-900 line-clamp-1 text-sm">
+                  {addedItemDetails.name}
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5 truncate">
+                  {addedItemDetails.variant}
+                </p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="font-semibold text-slate-900 text-sm">
+                  ₹{addedItemDetails.price.toLocaleString('en-IN')}
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Qty: {addedItemDetails.quantity}
+                </p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div>
+              <button
+                onClick={() => setIsCartModalOpen(false)}
+                className="w-full py-3.5 rounded-full border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-colors mb-3 text-sm cursor-pointer"
+              >
+                Continue Shopping
+              </button>
+              <button
+                onClick={() => router.push('/cart')}
+                className="w-full py-3.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm text-sm cursor-pointer"
+              >
+                Proceed to Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -300,4 +300,36 @@ body {
        empty gap below the scaled-down carousel. */
     margin-bottom: -6rem;
   }
-}
+}
+
+/* ──────────────────────────────────────────
+   No scrollbar utility
+────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ──────────────────────────────────────────
+   Print utility
+────────────────────────────────────────── */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+  .no-print, header, nav, footer, aside {
+    display: none !important;
+  }
+}
+
+

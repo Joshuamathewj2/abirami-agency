@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useUserStore } from "@/store/userStore";
 import { supabase } from "@/lib/supabase/client";
 import { placeInquiryAction } from "@/app/actions/orderActions";
+import BillGeneratedView from "@/components/BillGeneratedView";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } =
@@ -32,6 +33,20 @@ export default function CartPage() {
   // Form errors
   const [formError, setFormError] = useState("");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [generatedBill, setGeneratedBill] = useState<{
+    invoiceId: string;
+    grandTotal: number;
+    subtotal: number;
+    discountAmount: number;
+    amountReceived: number;
+    balanceReturned: number;
+    items: { name: string; quantity: number; unit?: string; price: number; total?: number }[];
+    whatsappUrl: string;
+    customerName: string;
+    customerPhone: string;
+    customerAddress: string;
+    paymentMode: string;
+  } | null>(null);
 
   // Pre-fill user info if logged in
   useEffect(() => {
@@ -122,6 +137,34 @@ export default function CartPage() {
     setCouponCode("");
     setCouponError("");
   };
+
+  if (generatedBill) {
+    return (
+      <div className="bg-slate-50 min-h-screen py-8">
+        <BillGeneratedView
+          invoiceId={generatedBill.invoiceId}
+          grandTotal={generatedBill.grandTotal}
+          subtotal={generatedBill.subtotal}
+          discountAmount={generatedBill.discountAmount}
+          deliveryFee={0}
+          amountReceived={generatedBill.amountReceived}
+          balanceReturned={generatedBill.balanceReturned}
+          items={generatedBill.items}
+          whatsappUrl={generatedBill.whatsappUrl}
+          onNewSale={() => {
+            setGeneratedBill(null);
+            window.location.href = '/products';
+          }}
+          brandTitle="Abirami Agency"
+          billingMode="online"
+          customerName={generatedBill.customerName}
+          customerPhone={generatedBill.customerPhone}
+          customerAddress={generatedBill.customerAddress}
+          paymentMode={generatedBill.paymentMode}
+        />
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -304,25 +347,43 @@ export default function CartPage() {
 
     try {
       const res = await placeInquiryAction(orderData);
-      if (res.success) {
-        clearCart();
-        setIsPlacingOrder(false);
-        
-        const displayId = res.ordId || (res.id ? res.id.substring(0, 8).toUpperCase() : 'PENDING');
+      if (res.success || (res as any).allowWhatsAppFallback) {
+        const displayId =
+          res.ordId ||
+          (res.id
+            ? `INV-${new Date().getFullYear()}-${res.id.substring(0, 5).toUpperCase()}`
+            : 'PENDING');
         const finalMessage = message
           .replace('*Abirami Agency — New Order Inquiry*', `*Abirami Agency — New Order Inquiry (${displayId})*`)
           .replace('*Abirami Agency — New Order Inquiry* (Custom)', `*Abirami Agency — New Order Inquiry (${displayId})* (Custom)`);
-          
+
         const whatsappUrl = `https://api.whatsapp.com/send/?phone=${phoneNumber}&text=${encodeURIComponent(finalMessage)}`;
-        window.open(whatsappUrl, "_blank");
-      } else if ((res as any).allowWhatsAppFallback) {
-        // DB save failed but we still open WhatsApp so the sale is not lost
+
+        const billItems = items.map((item) => ({
+          name: `${item.product.name} (${item.selectedSize.label})`,
+          quantity: item.quantity,
+          unit: 'piece',
+          price: item.selectedSize.price,
+          total: item.selectedSize.price * item.quantity,
+        }));
+
+        setGeneratedBill({
+          invoiceId: displayId,
+          grandTotal: finalTotalPrice,
+          subtotal: totalPrice,
+          discountAmount: appliedCoupon?.discountAmount || 0,
+          amountReceived: finalTotalPrice,
+          balanceReturned: 0,
+          items: billItems,
+          whatsappUrl,
+          customerName: name,
+          customerPhone: phone,
+          customerAddress: address,
+          paymentMode: 'WhatsApp / Pay on Delivery',
+        });
+
         clearCart();
         setIsPlacingOrder(false);
-        setFormError(`Note: ${res.error}`);
-        const finalMessage = message;
-        const whatsappUrl = `https://api.whatsapp.com/send/?phone=${phoneNumber}&text=${encodeURIComponent(finalMessage)}`;
-        window.open(whatsappUrl, "_blank");
       } else {
         setFormError(res.error || "Failed to place order in database");
         setIsPlacingOrder(false);
@@ -692,7 +753,7 @@ export default function CartPage() {
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.128.552 4.195 1.6 6.02L.031 24l6.108-1.597c1.764.954 3.754 1.458 5.892 1.458 6.646 0 12.031-5.385 12.031-12.031C24 5.385 18.677 0 12.031 0zm0 21.854c-1.802 0-3.568-.485-5.114-1.403l-.367-.217-3.794.994.994-3.794-.217-.367C2.569 15.539 2.083 13.785 2.083 12.031c0-5.498 4.475-9.972 9.948-9.972 5.497 0 9.947 4.474 9.947 9.972s-4.45 9.823-9.947 9.823zm5.45-7.447c-.299-.15-1.765-.87-2.036-.97-.272-.1-.47-.15-.668.15-.2.299-.77 1-.944 1.2-.175.2-.349.225-.648.075-.299-.15-1.26-.464-2.4-1.485-.888-.795-1.487-1.776-1.663-2.075-.175-.3 0-.462.15-.61.135-.135.299-.35.45-.525.15-.174.2-.299.299-.499.1-.2.05-.375-.025-.525-.075-.15-.668-1.611-.914-2.204-.239-.58-.484-.502-.668-.511-.174-.01-.375-.01-.575-.01-.2 0-.525.075-.8.375-.275.3-1.05 1.025-1.05 2.5s1.074 2.898 1.224 3.098c.15.2 2.112 3.22 5.114 4.516.715.309 1.272.493 1.706.63.722.228 1.38.196 1.897.119.58-.087 1.765-.722 2.014-1.42.249-.698.249-1.298.174-1.42-.075-.123-.274-.198-.574-.348z" />
                 </svg>
-                {isPlacingOrder ? "Processing..." : "Order via WhatsApp"}
+                {isPlacingOrder ? "Processing..." : "COMPLETE SALE"}
               </button>
             ) : (
               <Link

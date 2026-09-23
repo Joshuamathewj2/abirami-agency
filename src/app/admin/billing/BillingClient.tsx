@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { placeOrderAction } from '@/app/actions/orderActions';
+import BillGeneratedView from '@/components/BillGeneratedView';
 
 interface DBProduct {
   id: string;
@@ -36,6 +37,22 @@ export default function BillingClient() {
   const [manualDiscountValue, setManualDiscountValue] = useState<number>(0);
   const [deliveryFee, setDeliveryFee] = useState<number>(0);
   const [amountReceived, setAmountReceived] = useState<number>(0);
+  const [generatedBill, setGeneratedBill] = useState<{
+    invoiceId: string;
+    grandTotal: number;
+    subtotal: number;
+    discountAmount: number;
+    deliveryFee: number;
+    amountReceived: number;
+    balanceReturned: number;
+    items: { name: string; quantity: number; unit?: string; price: number; total?: number }[];
+    whatsappUrl: string;
+    billingMode: 'offline' | 'online';
+    customerName: string;
+    customerPhone: string;
+    customerAddress: string;
+    paymentMode: string;
+  } | null>(null);
 
   // Database products & coupons state
   const [dbProducts, setDbProducts] = useState<DBProduct[]>([]);
@@ -411,21 +428,38 @@ export default function BillingClient() {
         const targetPhoneParam = cleanPhone.length === 10 ? `phone=91${cleanPhone}&` : '';
         const whatsappUrl = `https://api.whatsapp.com/send/?${targetPhoneParam}text=${encodeURIComponent(whatsappMessage)}`;
 
-        window.open(whatsappUrl, '_blank');
+        const balance = Math.max(0, amountReceived - finalTotal);
+        const currentItems = items
+          .filter(it => it.name)
+          .map(it => ({
+            name: it.name,
+            quantity: it.quantity,
+            unit: 'piece',
+            price: it.price,
+            total: it.price * it.quantity,
+          }));
+
+        setGeneratedBill({
+          invoiceId: res.invoiceId,
+          grandTotal: finalTotal,
+          subtotal: subtotal,
+          discountAmount: totalDiscount,
+          deliveryFee: deliveryFee,
+          amountReceived: amountReceived > 0 ? amountReceived : finalTotal,
+          balanceReturned: amountReceived > 0 ? balance : 0,
+          items: currentItems,
+          whatsappUrl,
+          billingMode,
+          customerName: customerName || 'Walk-in Customer',
+          customerPhone: cleanPhone || '',
+          customerAddress: 'Madhavaram, Chennai',
+          paymentMode: billingMode === 'online' ? 'Online / UPI' : 'Cash',
+        });
 
         setOrderFeedback({
           type: 'success',
           message: `✓ Order & Invoice ${res.invoiceId} successfully saved to Supabase!`
         });
-
-        // Clear form automatically
-        setItems([{ name: '', price: 0, quantity: 1 }]);
-        setCustomerName('');
-        setPhone('');
-        setSelectedCoupon('');
-        setManualDiscountValue(0);
-        setDeliveryFee(0);
-        setAmountReceived(0);
       } else {
         setOrderFeedback({
           type: 'error',
@@ -443,6 +477,43 @@ export default function BillingClient() {
   const categoriesList = [...new Set([...dbCategories, ...dbProducts.map(p => p.category)])].filter(Boolean).sort();
   const cleanPhoneInput = phone.replace(/[^0-9]/g, '');
   const isPhoneValid = cleanPhoneInput.length === 10;
+
+  const handleNewSale = () => {
+    setGeneratedBill(null);
+    setItems([{ name: '', price: 0, quantity: 1 }]);
+    setCustomerName('');
+    setPhone('');
+    setSelectedCoupon('');
+    setManualDiscountValue(0);
+    setDeliveryFee(0);
+    setAmountReceived(0);
+    setOrderFeedback(null);
+  };
+
+  if (generatedBill) {
+    return (
+      <div className="bg-slate-50 min-h-screen py-2">
+        <BillGeneratedView
+          invoiceId={generatedBill.invoiceId}
+          grandTotal={generatedBill.grandTotal}
+          subtotal={generatedBill.subtotal}
+          discountAmount={generatedBill.discountAmount}
+          deliveryFee={generatedBill.deliveryFee}
+          amountReceived={generatedBill.amountReceived}
+          balanceReturned={generatedBill.balanceReturned}
+          items={generatedBill.items}
+          whatsappUrl={generatedBill.whatsappUrl}
+          onNewSale={handleNewSale}
+          brandTitle="Abirami Agency"
+          billingMode={generatedBill.billingMode}
+          customerName={generatedBill.customerName}
+          customerPhone={generatedBill.customerPhone}
+          customerAddress={generatedBill.customerAddress}
+          paymentMode={generatedBill.paymentMode}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 max-w-[1600px] mx-auto pb-8">

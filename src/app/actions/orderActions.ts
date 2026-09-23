@@ -389,3 +389,40 @@ export async function getInvoiceAction(id: string) {
     return { success: false, error: 'Failed to fetch invoice' };
   }
 }
+
+export async function deleteOrderAction(orderId: string) {
+  try {
+    const { supabaseAdmin } = await import('@/lib/db');
+
+    // 1. Delete dependent child records first to satisfy foreign key constraints
+    await Promise.allSettled([
+      supabaseAdmin.from('order_items').delete().eq('order_id', orderId),
+      supabaseAdmin.from('inquiry_items').delete().eq('inquiry_id', orderId),
+    ]);
+
+    // 2. Delete parent record from orders and inquiries using Service Role client
+    const [ordersRes, inquiriesRes] = await Promise.all([
+      supabaseAdmin.from('orders').delete().eq('id', orderId),
+      supabaseAdmin.from('inquiries').delete().eq('id', orderId),
+    ]);
+
+    if (ordersRes.error && inquiriesRes.error) {
+      console.error('Database deletion error:', ordersRes.error, inquiriesRes.error);
+      throw new Error(ordersRes.error.message || inquiriesRes.error.message || 'Failed to delete order');
+    }
+
+    revalidatePath('/admin/inquiries');
+    revalidatePath('/admin/orders');
+    revalidatePath('/admin/analytics');
+    revalidatePath('/admin/pos-analytics');
+    revalidatePath('/admin/whatsapp');
+    revalidatePath('/admin/billing');
+    revalidatePath('/admin/dashboard');
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Delete order failed:', error);
+    return { success: false, error: error?.message || 'Failed to delete order' };
+  }
+}
+
