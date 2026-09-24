@@ -355,14 +355,14 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[1100px]">
           <thead>
-            <tr className="border-b border-slate-100 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest bg-slate-50/60">
-              <th className="px-4 py-3.5">ORDER ID</th>
-              <th className="px-4 py-3.5">DATE &amp; TIME</th>
-              <th className="px-4 py-3.5">CUSTOMER NAME</th>
-              <th className="px-4 py-3.5">MOBILE NUMBER</th>
-              <th className="px-4 py-3.5">SOURCE</th>
-              <th className="px-4 py-3.5">TOTAL DUE</th>
-              <th className="px-4 py-3.5">ACTIONS</th>
+            <tr className="border-b border-slate-200 bg-slate-50/60">
+              <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">ORDER ID</th>
+              <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">DATE &amp; TIME</th>
+              <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">CUSTOMER NAME</th>
+              <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">MOBILE NUMBER</th>
+              <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">SOURCE</th>
+              <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">TOTAL DUE</th>
+              <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">ACTIONS</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50 text-xs font-medium">
@@ -377,31 +377,31 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
                 return (
                   <tr key={inq.id} className="hover:bg-slate-50/60 transition-colors">
                     {/* ORDER ID */}
-                    <td className="px-4 py-3.5">
-                      <span className="font-bold text-slate-800">{invoiceId}</span>
+                    <td className="py-3 px-4 border-b border-slate-100 align-middle">
+                      <span className="text-xs font-semibold text-blue-600 tracking-tight font-mono">{invoiceId}</span>
                     </td>
 
                     {/* DATE & TIME */}
-                    <td className="px-4 py-3.5 whitespace-nowrap">
-                      <span className="block font-semibold text-slate-800">{date}</span>
-                      <span className="block text-[10px] text-slate-400 font-medium mt-0.5">{time}</span>
+                    <td className="py-3 px-4 border-b border-slate-100 align-middle whitespace-nowrap">
+                      <span className="block text-xs font-normal text-slate-600 leading-tight">{date}</span>
+                      <span className="block text-[11px] text-slate-400 leading-tight mt-0.5">{time}</span>
                     </td>
 
                     {/* CUSTOMER NAME */}
-                    <td className="px-4 py-3.5 font-bold text-slate-900">
+                    <td className="py-3 px-4 border-b border-slate-100 align-middle text-xs font-bold text-slate-900 tracking-wide uppercase">
                       {inq.customer_name || '-'}
                     </td>
 
                     {/* MOBILE NUMBER */}
-                    <td className="px-4 py-3.5 text-slate-600 font-semibold">
+                    <td className="py-3 px-4 border-b border-slate-100 align-middle text-xs font-normal text-slate-600 tabular-nums">
                       {inq.customer_phone || '-'}
                     </td>
 
                     {/* SOURCE badge */}
-                    <td className="px-4 py-3.5">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded border text-[10px] font-extrabold uppercase tracking-wider ${
+                    <td className="py-3 px-4 border-b border-slate-100 align-middle">
+                      <span className={`inline-flex items-center text-[11px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full border ${
                         source === 'ONLINE'
-                          ? 'border-emerald-300 text-emerald-700 bg-emerald-50'
+                          ? 'border-cyan-300 text-cyan-700 bg-cyan-50'
                           : 'border-rose-300 text-rose-700 bg-rose-50'
                       }`}>
                         {source}
@@ -409,19 +409,19 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
                     </td>
 
                     {/* TOTAL DUE */}
-                    <td className="px-4 py-3.5 font-black text-teal-600">
-                      ₹{totalAmt.toLocaleString('en-IN')}.00
+                    <td className="py-3 px-4 border-b border-slate-100 align-middle text-xs font-bold text-slate-900">
+                      ₹{Math.round(totalAmt).toLocaleString('en-IN')}
                     </td>
 
                     {/* ACTIONS */}
-                    <td className="px-4 py-3.5">
+                    <td className="py-3 px-4 border-b border-slate-100 align-middle">
                       <div className="flex items-center gap-1.5 flex-nowrap">
                         {/* WhatsApp */}
                         <a
                           href={`https://wa.me/${cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-emerald-500 hover:bg-emerald-600 text-white rounded text-[10px] font-bold px-2.5 py-1 transition-colors whitespace-nowrap cursor-pointer"
+                          className="bg-emerald-500 hover:bg-emerald-600 text-white py-1 px-2.5 text-[11px] font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer"
                           title="Open WhatsApp"
                         >
                           WhatsApp
@@ -432,7 +432,7 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
                           href={`/invoice/${inq.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-cyan-500 hover:bg-cyan-600 text-white rounded text-[10px] font-bold px-2.5 py-1 transition-colors whitespace-nowrap"
+                          className="bg-cyan-500 hover:bg-cyan-600 text-white py-1 px-2.5 text-[11px] font-medium rounded-md transition-colors whitespace-nowrap"
                           title="View Invoice"
                         >
                           Invoice
@@ -441,7 +441,7 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
                         {/* DETAILS */}
                         <button
                           onClick={() => handleOpenDetails(inq)}
-                          className="border border-slate-300 text-slate-700 hover:bg-slate-50 rounded text-[10px] font-bold px-2.5 py-1 transition-colors whitespace-nowrap cursor-pointer"
+                          className="border border-slate-300 text-slate-700 hover:bg-slate-50 py-1 px-2.5 text-[11px] font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer"
                           title="Order Details"
                         >
                           DETAILS
@@ -451,7 +451,7 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
                         <button
                           disabled={deletingId === inq.id}
                           onClick={() => handleDelete(inq.id)}
-                          className="border border-rose-300 text-rose-600 hover:bg-rose-50 rounded text-[10px] font-bold px-2.5 py-1 transition-colors whitespace-nowrap cursor-pointer disabled:opacity-50"
+                          className="border border-rose-300 text-rose-600 hover:bg-rose-50 py-1 px-2.5 text-[11px] font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer disabled:opacity-50"
                           title="Delete Order Permanently"
                         >
                           {deletingId === inq.id ? 'Deleting...' : 'DELETE'}

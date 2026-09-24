@@ -414,17 +414,17 @@ export default function WhatsAppCenterPage() {
         </div>
         
         <div className="overflow-auto max-h-[calc(100vh-250px)]">
-          <table className="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
-            <thead className="bg-white border-b border-gray-100 text-xs font-black text-gray-400 uppercase tracking-widest sticky top-0 z-10">
+          <table className="w-full text-left whitespace-nowrap min-w-[900px]">
+            <thead className="bg-white border-b border-slate-200 sticky top-0 z-10">
               <tr>
-                <th className="px-6 py-4">ORD / INVOICE ID</th>
-                <th className="px-6 py-4">Customer</th>
-                <th className="px-6 py-4">Phone</th>
-                <th className="px-6 py-4 text-center">Products</th>
-                <th className="px-6 py-4">Total Amount</th>
-                <th className="px-6 py-4 hidden lg:table-cell">Date & Time</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Details</th>
+                <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">ORD / INVOICE ID</th>
+                <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">Customer</th>
+                <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">Phone</th>
+                <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200 text-center">Products</th>
+                <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">Total Amount</th>
+                <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200 hidden lg:table-cell">Date & Time</th>
+                <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200">Status</th>
+                <th className="text-[11px] font-bold text-slate-400 uppercase tracking-wider py-3 px-4 border-b border-slate-200 text-right">Details</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -438,22 +438,43 @@ export default function WhatsAppCenterPage() {
                       className={`hover:bg-gray-50 transition-colors cursor-pointer ${isExpanded ? 'bg-gray-50' : ''}`}
                       onClick={() => setExpandedId(isExpanded ? null : req.id)}
                     >
-                      <td className="px-6 py-4 text-xs font-bold text-sky-600">
-                        {req.invoiceId !== 'N/A' ? req.invoiceId : req.ordId}
+                      {/* ORD / INVOICE ID */}
+                      <td className="py-3.5 px-4 border-b border-slate-100 align-middle">
+                        <span className="text-xs font-semibold text-blue-600 font-mono tracking-tight">
+                          {req.invoiceId !== 'N/A' ? req.invoiceId : req.ordId}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 font-bold text-gray-900">{req.customer}</td>
-                      <td className="px-6 py-4 text-gray-600 font-semibold">{req.phone}</td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs">
+
+                      {/* Customer */}
+                      <td className="py-3.5 px-4 border-b border-slate-100 align-middle text-xs font-bold text-slate-900 tracking-wide uppercase">
+                        {req.customer}
+                      </td>
+
+                      {/* Phone */}
+                      <td className="py-3.5 px-4 border-b border-slate-100 align-middle text-xs font-normal text-slate-600 tabular-nums">
+                        {req.phone}
+                      </td>
+
+                      {/* Products badge */}
+                      <td className="py-3.5 px-4 border-b border-slate-100 align-middle text-center">
+                        <span className="inline-flex items-center justify-center text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">
                           {req.items.length} {req.items.length === 1 ? 'item' : 'items'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 font-bold text-gray-900">₹{req.totalAmount.toLocaleString('en-IN')}</td>
-                      <td className="px-6 py-4 text-gray-500 text-xs hidden lg:table-cell">
-                        {req.date.split(',')[0]}<br/>
-                        <span className="text-gray-400">{req.date.split(',')[1]}</span>
+
+                      {/* Total Amount */}
+                      <td className="py-3.5 px-4 border-b border-slate-100 align-middle text-xs font-bold text-slate-900">
+                        ₹{req.totalAmount.toLocaleString('en-IN')}
                       </td>
-                      <td className="px-6 py-4">
+
+                      {/* Date & Time */}
+                      <td className="py-3.5 px-4 border-b border-slate-100 align-middle hidden lg:table-cell whitespace-nowrap">
+                        <span className="block text-xs font-normal text-slate-600 leading-tight">{req.date.split(',')[0]}</span>
+                        <span className="block text-[11px] text-slate-400 leading-tight mt-0.5">{req.date.split(',').slice(1).join(',').trim()}</span>
+                      </td>
+
+                      {/* Status */}
+                      <td className="py-3.5 px-4 border-b border-slate-100 align-middle">
                         <select 
                           value={req.status}
                           onClick={(e) => e.stopPropagation()}
@@ -461,7 +482,7 @@ export default function WhatsAppCenterPage() {
                             e.stopPropagation();
                             updateStatus(req.id, e.target.value as RequestStatus);
                           }}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-bold border outline-none cursor-pointer appearance-none ${getStatusColor(req.status)}`}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border outline-none cursor-pointer appearance-none ${getStatusColor(req.status)}`}
                           style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.25em 1.25em', paddingRight: '2rem' }}
                         >
                           <option value="Pending">Pending</option>
@@ -472,13 +493,15 @@ export default function WhatsAppCenterPage() {
                           <option value="Closed">Closed</option>
                         </select>
                       </td>
-                      <td className="px-6 py-4 text-right">
+
+                      {/* Details toggle */}
+                      <td className="py-3.5 px-4 border-b border-slate-100 align-middle text-right">
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
                             setExpandedId(isExpanded ? null : req.id);
                           }}
-                          className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-colors ${isExpanded ? 'bg-gray-900 text-white' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
+                          className={`py-1 px-2.5 rounded-md text-[11px] font-medium transition-colors ${isExpanded ? 'bg-slate-900 text-white' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
                         >
                           {isExpanded ? 'Close' : 'View'}
                         </button>
