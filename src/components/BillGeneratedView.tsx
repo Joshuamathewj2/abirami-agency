@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Printer } from 'lucide-react';
 
 export interface BillItem {
@@ -25,6 +25,7 @@ export interface BillGeneratedViewProps {
   onNewSale: () => void;
   brandTitle?: string;
   billingMode?: 'offline' | 'online';
+  onSourceChange?: (source: 'offline' | 'online') => void;
   customerName?: string;
   customerPhone?: string;
   customerAddress?: string;
@@ -38,26 +39,29 @@ export default function BillGeneratedView({
   subtotal,
   discountAmount = 0,
   deliveryFee = 0,
-  amountReceived,
-  balanceReturned,
   items,
   whatsappUrl,
   onNewSale,
   brandTitle = 'Abirami Agency',
   billingMode = 'offline',
+  onSourceChange,
   customerName,
   customerPhone,
   customerAddress,
   date,
   paymentMode,
 }: BillGeneratedViewProps) {
-  // If amountReceived is undefined or 0, fallback to grandTotal
-  const finalReceived =
-    amountReceived !== undefined && amountReceived > 0 ? amountReceived : grandTotal;
-  const finalBalance =
-    balanceReturned !== undefined
-      ? balanceReturned
-      : Math.max(0, finalReceived - grandTotal);
+  // Interactive reactive source toggle (defaults to 'offline' for POS, 'online' for Cart)
+  const [orderSource, setOrderSource] = useState<'offline' | 'online'>(
+    billingMode || 'offline'
+  );
+
+  const handleSourceToggle = (source: 'offline' | 'online') => {
+    setOrderSource(source);
+    if (onSourceChange) {
+      onSourceChange(source);
+    }
+  };
 
   const calculatedSubtotal = items.reduce((acc, it) => {
     const line = it.total !== undefined ? it.total : it.price * it.quantity;
@@ -106,31 +110,42 @@ export default function BillGeneratedView({
           SCREEN UI (Hidden when printing via print:hidden)
       ══════════════════════════════════════════════════════════════════ */}
       <div className="w-full max-w-2xl mx-auto py-6 sm:py-10 px-4 sm:px-6 space-y-6 print:hidden">
-        {/* Top Brand Bar */}
+        {/* Top Brand Bar with Interactive OFFLINE (POS) / ONLINE ORDER Toggle */}
         <div className="flex justify-between items-center">
           <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
             {brandTitle}
           </h1>
-          <div className="inline-flex items-center gap-1.5 p-1 bg-slate-100 rounded-full border border-slate-200">
-            <span
-              className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all ${
-                billingMode === 'offline'
+          <div className="inline-flex items-center gap-1 p-1 bg-slate-100 rounded-full border border-slate-200">
+            {/* OFFLINE (POS) Button */}
+            <button
+              type="button"
+              onClick={() => handleSourceToggle('offline')}
+              className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                orderSource === 'offline'
                   ? 'bg-rose-500 text-white shadow-sm'
-                  : 'text-slate-500'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               OFFLINE (POS)
-            </span>
-            <span
-              className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1.5 ${
-                billingMode === 'online'
-                  ? 'bg-white text-emerald-600 shadow-sm'
-                  : 'text-slate-500'
+            </button>
+
+            {/* ONLINE ORDER Button */}
+            <button
+              type="button"
+              onClick={() => handleSourceToggle('online')}
+              className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                orderSource === 'online'
+                  ? 'bg-emerald-500 text-white shadow-sm font-black'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+              <span
+                className={`w-2 h-2 rounded-full inline-block ${
+                  orderSource === 'online' ? 'bg-white' : 'bg-emerald-500'
+                }`}
+              />
               ONLINE ORDER
-            </span>
+            </button>
           </div>
         </div>
 
@@ -153,38 +168,21 @@ export default function BillGeneratedView({
           </button>
         </div>
 
-        {/* PAYMENT RECEIPT Card */}
+        {/* BILL SUMMARY Card (Simplified Unpaid Order Display) */}
         <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-4">
           <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-            PAYMENT RECEIPT
+            BILL SUMMARY
           </div>
 
           <div className="flex justify-between items-center text-slate-900">
-            <span className="text-base font-semibold text-slate-700">Grand Total</span>
-            <span className="text-xl sm:text-2xl font-black text-slate-900">
+            <span className="text-base font-bold text-slate-700">Total Amount</span>
+            <span className="text-2xl font-black text-slate-900">
               {formatCurrency(grandTotal)}
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center text-slate-600">
-            <span className="text-sm font-medium text-slate-600">Amount Received</span>
-            <span className="text-base font-bold text-slate-800">
-              {formatCurrency(finalReceived)}
-            </span>
-          </div>
-
-          {/* Highlighted Row: Balance Returned */}
-          <div className="bg-sky-50 rounded-xl p-4 flex justify-between items-center text-blue-600">
-            <span className="font-bold text-sm sm:text-base text-blue-700">
-              Balance Returned
-            </span>
-            <span className="font-black text-xl text-blue-700">
-              {formatCurrency(finalBalance)}
             </span>
           </div>
         </div>
 
-        {/* Action Buttons Row */}
+        {/* Action Buttons Row (Retained intact) */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* PRINT RECEIPT */}
           <button
@@ -313,12 +311,6 @@ export default function BillGeneratedView({
               <span className="font-semibold text-slate-500">Date &amp; Time:</span>{' '}
               <span className="font-medium text-slate-900">{formattedDate}</span>
             </p>
-            <p className="text-slate-700">
-              <span className="font-semibold text-slate-500">Payment Mode:</span>{' '}
-              <span className="font-bold text-slate-900 uppercase">
-                {paymentMode || (billingMode === 'online' ? 'Online / UPI' : 'Cash')}
-              </span>
-            </p>
           </div>
         </div>
 
@@ -379,7 +371,7 @@ export default function BillGeneratedView({
           </table>
         </div>
 
-        {/* 4. Financial Totals & Balance Breakdown (Right-Aligned Block) */}
+        {/* 4. Financial Totals & Payment Status Breakdown (Right-Aligned Block) */}
         <div className="flex justify-end my-2">
           <div className="w-64 space-y-1 text-xs">
             <div className="flex justify-between text-slate-600 py-0.5">
@@ -403,26 +395,10 @@ export default function BillGeneratedView({
               </span>
             </div>
 
-            {/* Grand Total Double Border */}
+            {/* Total Amount Double Border */}
             <div className="border-t-2 border-b-2 border-double border-slate-900 py-1 my-1 flex justify-between items-center font-bold text-slate-900">
-              <span className="uppercase tracking-wider text-xs">Grand Total:</span>
+              <span className="uppercase tracking-wider text-xs">Total Amount:</span>
               <span className="text-sm font-black">{formatCurrency(grandTotal)}</span>
-            </div>
-
-            {/* Payment Summary */}
-            <div className="pt-0.5 space-y-0.5 text-slate-600 text-[11px]">
-              <div className="flex justify-between">
-                <span>Amount Received:</span>
-                <span className="font-semibold text-slate-800">
-                  {formatCurrency(finalReceived)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Balance Returned:</span>
-                <span className="font-semibold text-slate-800">
-                  {formatCurrency(finalBalance)}
-                </span>
-              </div>
             </div>
           </div>
         </div>

@@ -506,6 +506,7 @@ export default function BillingClient() {
           onNewSale={handleNewSale}
           brandTitle="Abirami Agency"
           billingMode={generatedBill.billingMode}
+          onSourceChange={(source) => setGeneratedBill((prev) => (prev ? { ...prev, billingMode: source } : null))}
           customerName={generatedBill.customerName}
           customerPhone={generatedBill.customerPhone}
           customerAddress={generatedBill.customerAddress}
