@@ -3,8 +3,6 @@
 import React, { useState } from 'react';
 import { Printer } from 'lucide-react';
 
-import PrintableReceipt, { PrintableReceiptOrder } from '@/components/PrintableReceipt';
-
 export interface BillItem {
   name: string;
   sku?: string;
@@ -31,21 +29,14 @@ export interface BillGeneratedViewProps {
   customerName?: string;
   customerPhone?: string;
   customerAddress?: string;
-  address?: string;
   date?: string;
   paymentMode?: string;
   isGst?: boolean;
-  is_gst?: boolean;
   gstRate?: number;
-  gst_rate?: number;
   taxableAmount?: number;
-  taxable_amount?: number;
   cgstAmount?: number;
-  cgst_amount?: number;
   sgstAmount?: number;
-  sgst_amount?: number;
   customerGstin?: string;
-  customer_gstin?: string;
 }
 
 export default function BillGeneratedView({
@@ -54,8 +45,6 @@ export default function BillGeneratedView({
   subtotal,
   discountAmount = 0,
   deliveryFee = 0,
-  amountReceived,
-  balanceReturned,
   items,
   whatsappUrl,
   onNewSale,
@@ -65,21 +54,8 @@ export default function BillGeneratedView({
   customerName,
   customerPhone,
   customerAddress,
-  address,
   date,
   paymentMode,
-  isGst,
-  is_gst,
-  gstRate,
-  gst_rate,
-  taxableAmount,
-  taxable_amount,
-  cgstAmount,
-  cgst_amount,
-  sgstAmount,
-  sgst_amount,
-  customerGstin,
-  customer_gstin,
 }: BillGeneratedViewProps) {
   // Interactive reactive source toggle (defaults to 'offline' for POS, 'online' for Cart)
   const [orderSource, setOrderSource] = useState<'offline' | 'online'>(
@@ -280,29 +256,176 @@ export default function BillGeneratedView({
       {/* ══════════════════════════════════════════════════════════════════
           PRINT-ONLY DEDICATED INVOICE TEMPLATE (hidden print:block)
       ══════════════════════════════════════════════════════════════════ */}
-      <div className="hidden print:block w-full">
-        <PrintableReceipt
-          order={{
-            invoiceId: cleanInvoiceId,
-            date: formattedDate,
-            grandTotal,
-            subtotal: finalSubtotal,
-            discountAmount,
-            deliveryFee,
-            items,
-            customerName: customerName || 'Walk-in Customer',
-            customerPhone: customerPhone || '',
-            customerAddress: customerAddress || address || '',
-            address: address || customerAddress || '',
-            customerGstin: customerGstin || customer_gstin || '',
-            is_gst: isGst ?? is_gst ?? false,
-            gstRate: gstRate ?? gst_rate ?? 18,
-            taxable_amount: taxableAmount ?? taxable_amount,
-            cgst_amount: cgstAmount ?? cgst_amount,
-            sgst_amount: sgstAmount ?? sgst_amount,
-            paymentMode,
-          }}
-        />
+      <div
+        id="printable-receipt"
+        className="hidden print:block w-full max-w-[190mm] mx-auto bg-white text-slate-900 font-sans text-xs p-4 leading-normal"
+        style={{ pageBreakInside: 'avoid' }}
+      >
+        {/* 1. Header (Business & Shop Details) */}
+        <div className="text-center pb-2">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-slate-950">
+            ABIRAMI AGENCY
+          </h1>
+          <p className="text-[11px] font-bold text-slate-700 uppercase tracking-wide mt-0.5">
+            Authorised Parryware Wholesaler &amp; Sanitaryware Dealers
+          </p>
+          <p className="text-[11px] text-slate-600 mt-1">
+            Madavaram Red Hills Rd, Kilburn Nagar, Madhavaram, Chennai - 600060
+          </p>
+          <p className="text-[11px] text-slate-600">
+            Phone: +91 86107 10434 / +91 72003 77455 | Tamil Nadu, India
+          </p>
+
+          {/* Receipt Title Divider */}
+          <div className="my-2.5 py-1 border-y border-slate-400 text-center font-black tracking-widest text-xs uppercase bg-slate-50">
+            RETAIL INVOICE / CASH BILL
+          </div>
+        </div>
+
+        {/* 2. Invoice Metadata & Customer Information (2-Column Grid) */}
+        <div className="grid grid-cols-2 gap-4 pb-2.5 border-b border-slate-300 text-xs">
+          {/* Left Column (Billed To) */}
+          <div className="space-y-0.5">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5">
+              BILLED TO:
+            </span>
+            <p className="font-bold text-slate-900 text-sm">
+              {customerName || 'Walk-in Customer'}
+            </p>
+            {customerPhone && (
+              <p className="text-slate-700">
+                <span className="font-semibold text-slate-500">Phone:</span> {customerPhone}
+              </p>
+            )}
+            {customerAddress && (
+              <p className="text-slate-600 leading-snug">
+                <span className="font-semibold text-slate-500">Address:</span> {customerAddress}
+              </p>
+            )}
+          </div>
+
+          {/* Right Column (Invoice Details) */}
+          <div className="text-right space-y-0.5">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block mb-0.5">
+              INVOICE DETAILS:
+            </span>
+            <p className="text-slate-700">
+              <span className="font-semibold text-slate-500">Invoice No:</span>{' '}
+              <span className="font-black text-slate-900">#{cleanInvoiceId}</span>
+            </p>
+            <p className="text-slate-700">
+              <span className="font-semibold text-slate-500">Date &amp; Time:</span>{' '}
+              <span className="font-medium text-slate-900">{formattedDate}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* 3. Itemized Product Table (Traditional Accounting Format) */}
+        <div className="my-3">
+          <table className="w-full border-collapse border border-slate-300 text-xs">
+            <thead>
+              <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
+                <th className="w-10 text-center border-r border-slate-300 py-1.5 px-1">
+                  S.No
+                </th>
+                <th className="text-left border-r border-slate-300 py-1.5 px-2.5">
+                  Item Description / Model / SKU
+                </th>
+                <th className="w-16 text-center border-r border-slate-300 py-1.5 px-1">
+                  Qty
+                </th>
+                <th className="w-24 text-right border-r border-slate-300 py-1.5 px-2">
+                  Unit Price
+                </th>
+                <th className="w-28 text-right py-1.5 px-2.5">
+                  Total Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {items.map((item, idx) => {
+                const itemTotal =
+                  item.total !== undefined ? item.total : item.price * item.quantity;
+                return (
+                  <tr key={idx} className="hover:bg-slate-50/50">
+                    <td className="text-center border-r border-slate-300 py-1.5 px-1 font-medium text-slate-600">
+                      {idx + 1}
+                    </td>
+                    <td className="border-r border-slate-300 py-1.5 px-2.5">
+                      <span className="font-bold text-slate-900 block leading-tight">
+                        {item.name}
+                      </span>
+                      {item.sku && (
+                        <span className="text-[10px] text-slate-500 block">
+                          SKU: {item.sku}
+                        </span>
+                      )}
+                    </td>
+                    <td className="text-center border-r border-slate-300 py-1.5 px-1 font-semibold text-slate-800">
+                      {item.quantity} {item.unit || 'pc'}
+                    </td>
+                    <td className="text-right border-r border-slate-300 py-1.5 px-2 font-medium text-slate-800">
+                      {formatCurrency(item.price)}
+                    </td>
+                    <td className="text-right py-1.5 px-2.5 font-bold text-slate-900">
+                      {formatCurrency(itemTotal)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* 4. Financial Totals & Payment Status Breakdown (Right-Aligned Block) */}
+        <div className="flex justify-end my-2">
+          <div className="w-64 space-y-1 text-xs">
+            <div className="flex justify-between text-slate-600 py-0.5">
+              <span>Subtotal:</span>
+              <span className="font-semibold text-slate-800">
+                {formatCurrency(finalSubtotal)}
+              </span>
+            </div>
+
+            {discountAmount > 0 && (
+              <div className="flex justify-between text-emerald-700 font-semibold py-0.5">
+                <span>Discount Applied:</span>
+                <span>- {formatCurrency(discountAmount)}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between text-slate-600 py-0.5">
+              <span>Delivery / Freight:</span>
+              <span className="font-semibold text-slate-800">
+                {deliveryFee > 0 ? formatCurrency(deliveryFee) : 'FREE'}
+              </span>
+            </div>
+
+            {/* Total Amount Double Border */}
+            <div className="border-t-2 border-b-2 border-double border-slate-900 py-1 my-1 flex justify-between items-center font-bold text-slate-900">
+              <span className="uppercase tracking-wider text-xs">Total Amount:</span>
+              <span className="text-sm font-black">{formatCurrency(grandTotal)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. Footer & Legal Terms */}
+        <div className="mt-6 pt-3 border-t border-slate-300 flex justify-between items-end text-xs">
+          <div className="max-w-xs text-[10px] text-slate-500 leading-relaxed space-y-0.5">
+            <p className="font-bold text-slate-700 uppercase">Terms &amp; Conditions:</p>
+            <p>1. Goods once sold will not be taken back without valid bill.</p>
+            <p>2. Parryware warranty as per manufacturer standard policy.</p>
+            <p className="mt-1 font-bold text-slate-800">Thank you for your business!</p>
+          </div>
+
+          <div className="text-center">
+            <div className="h-12 border-b border-dashed border-slate-400 w-44 mb-1 mx-auto" />
+            <p className="text-[10px] font-bold text-slate-800 uppercase tracking-wider">
+              Authorised Signatory / Stamp
+            </p>
+            <p className="text-[9px] text-slate-500 font-medium">For Abirami Agency</p>
+          </div>
+        </div>
       </div>
     </>
   );

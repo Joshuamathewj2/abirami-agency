@@ -88,13 +88,6 @@ export type Database = {
           created_at: string | null
           customer_name: string
           customer_phone: string
-          customer_address?: string | null
-          customer_gstin?: string | null
-          is_gst?: boolean | null
-          gst_rate?: number | null
-          taxable_amount?: number | null
-          cgst_amount?: number | null
-          sgst_amount?: number | null
           discount_amount: number | null
           id: string
           notes: string | null
@@ -107,13 +100,6 @@ export type Database = {
           created_at?: string | null
           customer_name: string
           customer_phone: string
-          customer_address?: string | null
-          customer_gstin?: string | null
-          is_gst?: boolean | null
-          gst_rate?: number | null
-          taxable_amount?: number | null
-          cgst_amount?: number | null
-          sgst_amount?: number | null
           discount_amount?: number | null
           id?: string
           notes?: string | null
@@ -126,13 +112,6 @@ export type Database = {
           created_at?: string | null
           customer_name?: string
           customer_phone?: string
-          customer_address?: string | null
-          customer_gstin?: string | null
-          is_gst?: boolean | null
-          gst_rate?: number | null
-          taxable_amount?: number | null
-          cgst_amount?: number | null
-          sgst_amount?: number | null
           discount_amount?: number | null
           id?: string
           notes?: string | null
@@ -315,13 +294,6 @@ export type Database = {
           created_at: string
           customer_name: string
           customer_phone: string
-          customer_address?: string | null
-          customer_gstin?: string | null
-          is_gst?: boolean | null
-          gst_rate?: number | null
-          taxable_amount?: number | null
-          cgst_amount?: number | null
-          sgst_amount?: number | null
           discount_amount: number | null
           id: string
           notes: string | null
@@ -334,13 +306,6 @@ export type Database = {
           created_at?: string
           customer_name: string
           customer_phone: string
-          customer_address?: string | null
-          customer_gstin?: string | null
-          is_gst?: boolean | null
-          gst_rate?: number | null
-          taxable_amount?: number | null
-          cgst_amount?: number | null
-          sgst_amount?: number | null
           discount_amount?: number | null
           id?: string
           notes?: string | null
@@ -353,13 +318,6 @@ export type Database = {
           created_at?: string
           customer_name?: string
           customer_phone?: string
-          customer_address?: string | null
-          customer_gstin?: string | null
-          is_gst?: boolean | null
-          gst_rate?: number | null
-          taxable_amount?: number | null
-          cgst_amount?: number | null
-          sgst_amount?: number | null
           discount_amount?: number | null
           id?: string
           notes?: string | null

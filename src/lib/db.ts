@@ -290,49 +290,23 @@ export async function addOrderToDB(order: any) {
     finalNotes = `${finalNotes} | CHANNEL: ${channelTag}`;
   }
 
-  const insertPayload: any = {
-    customer_name: order.customerName || 'Walk-in Customer',
-    customer_phone: order.customerPhone || '',
-    customer_address: order.address || order.customerAddress || '',
-    notes: finalNotes,
-    invoice_id: generatedInvoiceId || undefined,
-    coupon_id: order.couponId || null,
-    discount_amount: order.discountAmount || 0,
-    total_amount: order.totalAmount,
-    status: order.status || 'Completed',
-    bill_type: order.customerAddress?.includes('RETAIL') ? 'retail' : 'wholesale',
-    is_gst: order.is_gst ?? false,
-    gst_rate: order.gst_rate ?? 0,
-    taxable_amount: order.taxable_amount ?? 0,
-    cgst_amount: order.cgst_amount ?? 0,
-    sgst_amount: order.sgst_amount ?? 0,
-    customer_gstin: order.customer_gstin || null,
-  };
-
-  let newOrder;
-  const { data: insertedData, error: orderError } = await supabaseAdmin
+  const { data: newOrder, error: orderError } = await supabaseAdmin
     .from('orders')
-    .insert(insertPayload)
+    .insert({
+      customer_name: order.customerName || 'Walk-in Customer',
+      customer_phone: order.customerPhone || '',
+      notes: finalNotes,
+      invoice_id: generatedInvoiceId || undefined,
+      coupon_id: order.couponId || null,
+      discount_amount: order.discountAmount || 0,
+      total_amount: order.totalAmount,
+      status: order.status || 'Completed',
+      bill_type: order.customerAddress?.includes('RETAIL') ? 'retail' : 'wholesale'
+    })
     .select()
     .single();
 
-  if (orderError) {
-    // If the remote table hasn't added the new GST columns yet, fall back without them
-    if (orderError.message?.includes('is_gst') || orderError.message?.includes('customer_address') || orderError.message?.includes('column')) {
-      const { is_gst, gst_rate, taxable_amount, cgst_amount, sgst_amount, customer_gstin, customer_address, ...fallbackPayload } = insertPayload;
-      const { data: retryData, error: retryError } = await supabaseAdmin
-        .from('orders')
-        .insert(fallbackPayload)
-        .select()
-        .single();
-      if (retryError) throw new Error(retryError.message);
-      newOrder = retryData;
-    } else {
-      throw new Error(orderError.message);
-    }
-  } else {
-    newOrder = insertedData;
-  }
+  if (orderError) throw new Error(orderError.message);
 
   if (catalogItems.length > 0) {
     const itemsToInsert = catalogItems.map((item: any) => ({

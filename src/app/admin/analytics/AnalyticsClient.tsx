@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client';
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell
 } from 'recharts';
@@ -11,10 +10,8 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
   const router = useRouter();
   const [period, setPeriod] = useState('All Time');
   const [activeTab, setActiveTab] = useState('REVENUE');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [gstFilter, setGstFilter] = useState<'ALL BILLS' | 'GST INVOICES' | 'NON-GST BILLS'>('ALL BILLS');
-  const [liveOrders, setLiveOrders] = useState<any[] | null>(null);
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
   const [isTopProductModalOpen, setIsTopProductModalOpen] = useState(false);
   const [todaySearch, setTodaySearch] = useState('');
   const [couponSearch, setCouponSearch] = useState('');
@@ -38,6 +35,8 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
   const currentWeek = getWeekNumber(now);
 
   // Only include completed/paid orders in revenue analytics.
+  // Pending and Contacted WhatsApp inquiries are tracked in WhatsApp Center
+  // but must NOT inflate revenue figures until the sale is confirmed.
   const COMPLETED_STATUSES = ['Completed', 'Paid', 'Closed', 'completed', 'paid', 'closed'];
 
   const validInitialInquiries = useMemo(() => {
@@ -48,123 +47,39 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
     );
   }, [initialInquiries]);
 
-  // Wire up Supabase backend filtering for date ranges & GST classification
-  useEffect(() => {
-    async function fetchFilteredOrders() {
-      try {
-        let query = supabase
-          .from('orders')
-          .select(`
-            *,
-            coupon:coupons(code),
-            order_items (
-              id,
-              product_name,
-              quantity,
-              unit_price,
-              variant:variants (
-                size_name,
-                mattress:mattresses!variants_mattress_id_fkey (
-                  name,
-                  materials ( name )
-                )
-              )
-            )
-          `);
-
-        if (startDate) {
-          query = query.gte('created_at', `${startDate}T00:00:00`);
-        }
-        if (endDate) {
-          query = query.lte('created_at', `${endDate}T23:59:59`);
-        }
-
-        if (gstFilter === 'GST INVOICES') {
-          query = query.eq('is_gst', true);
-        } else if (gstFilter === 'NON-GST BILLS') {
-          query = query.or('is_gst.is.null,is_gst.eq.false');
-        }
-
-        const { data, error } = await query.order('created_at', { ascending: false });
-        if (!error && data) {
-          const posOrders = data.map((o: any) => ({
-            ...o,
-            inquiry_items: o.order_items || [],
-          }));
-          setLiveOrders(posOrders);
-        }
-      } catch (err) {
-        console.warn('Supabase analytics live query error:', err);
-      }
-    }
-
-    if (startDate || endDate || gstFilter !== 'ALL BILLS') {
-      fetchFilteredOrders();
-    } else {
-      setLiveOrders(null);
-    }
-  }, [startDate, endDate, gstFilter]);
-
   const isToday = useCallback((d: Date) => !isNaN(d.getTime()) && d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(), [now.getDate(), now.getMonth(), now.getFullYear()]);
   const isThisMonth = useCallback((d: Date) => !isNaN(d.getTime()) && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(), [now.getMonth(), now.getFullYear()]);
 
   const filteredInquiries = useMemo(() => {
-    const ordersSource = liveOrders !== null ? liveOrders : validInitialInquiries;
-
-    return ordersSource.filter(order => {
+    return validInitialInquiries.filter(order => {
       if (!order.created_at) return false;
       const d = new Date(order.created_at);
-
-      // Date range filtering
-      if (startDate || endDate) {
-        if (startDate) {
-          const from = new Date(`${startDate}T00:00:00`);
-          if (d < from) return false;
-        }
-        if (endDate) {
-          const to = new Date(`${endDate}T23:59:59.999`);
-          if (d > to) return false;
-        }
-      } else {
-        if (period === 'Today') {
-          if (!isToday(d)) return false;
-        } else if (period === 'This Week') {
-          const nowRef = new Date();
-          const diffToMonday = nowRef.getDay() === 0 ? 6 : nowRef.getDay() - 1;
-          const startOfWeek = new Date(nowRef.getFullYear(), nowRef.getMonth(), nowRef.getDate() - diffToMonday);
-          startOfWeek.setHours(0, 0, 0, 0);
-          
-          const endOfWeek = new Date(startOfWeek);
-          endOfWeek.setDate(startOfWeek.getDate() + 6);
-          endOfWeek.setHours(23, 59, 59, 999);
-          
-          if (d < startOfWeek || d > endOfWeek) return false;
-        } else if (period === 'This Month') {
-          if (!isThisMonth(d)) return false;
-        } else if (period === 'This Year') {
-          if (d.getFullYear() !== now.getFullYear()) return false;
-        }
+      if (period === 'All Time') return true;
+      if (period === 'Today') return isToday(d);
+      if (period === 'This Week') {
+        const now = new Date();
+        const diffToMonday = now.getDay() === 0 ? 6 : now.getDay() - 1;
+        const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diffToMonday);
+        startOfWeek.setHours(0, 0, 0, 0);
+        
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+        
+        return d >= startOfWeek && d <= endOfWeek;
       }
-
-      // GST classification filter
-      const isOrderGst = Boolean(
-        order.is_gst === true ||
-        order.notes?.includes('IS_GST: true') ||
-        order.notes?.includes('TAX INVOICE') ||
-        order.notes?.includes('GST INVOICE')
-      );
-
-      if (gstFilter === 'GST INVOICES') {
-        if (!isOrderGst) return false;
-      } else if (gstFilter === 'NON-GST BILLS') {
-        if (isOrderGst) return false;
+      if (period === 'This Month') return isThisMonth(d);
+      if (period === 'This Year') return d.getFullYear() === now.getFullYear();
+      if (period === 'Custom' && customFrom && customTo) {
+        const from = new Date(customFrom);
+        const to = new Date(customTo);
+        to.setHours(23, 59, 59, 999);
+        return d >= from && d <= to;
       }
-
       return true;
     });
-  }, [liveOrders, validInitialInquiries, period, startDate, endDate, gstFilter, isToday, isThisMonth, now]);
+  }, [initialInquiries, period, customFrom, customTo]);
 
-  // Aggregate Stats
   // Aggregate Stats
   const stats = useMemo(() => {
     let totalRevenue = 0;
@@ -174,53 +89,12 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
     let offlineBillsCount = 0;
     let onlineBillsCount = 0;
     let totalItemsSold = 0;
-    let totalTaxableValue = 0;
-    let totalGstCollected = 0;
-    let totalCgst = 0;
-    let totalSgst = 0;
-    let gstBillsCount = 0;
-    let nonGstBillsCount = 0;
     const productRevenue: Record<string, { revenue: number, qty: number, isCustom?: boolean }> = {};
 
     filteredInquiries.forEach(order => {
       const amt = order.total_amount || 0;
       totalRevenue += amt;
       completedBills++;
-
-      const isOrderGst = Boolean(
-        order.is_gst === true ||
-        order.notes?.includes('IS_GST: true') ||
-        order.notes?.includes('TAX INVOICE') ||
-        order.notes?.includes('GST INVOICE')
-      );
-
-      if (isOrderGst) {
-        gstBillsCount++;
-        const gstRate = order.gst_rate || 18;
-        let taxable = order.taxable_amount;
-        let cgst = order.cgst_amount;
-        let sgst = order.sgst_amount;
-
-        if (taxable === undefined || taxable === null) {
-          const taxableMatch = order.notes?.match(/TAXABLE(?:_AMOUNT)?:\s*₹?([\d.]+)/i);
-          if (taxableMatch) {
-            taxable = parseFloat(taxableMatch[1]);
-          } else {
-            taxable = Math.round((amt / (1 + gstRate / 100)) * 100) / 100;
-          }
-        }
-        if (cgst === undefined || cgst === null || sgst === undefined || sgst === null) {
-          const gstTotal = Math.max(0, amt - taxable);
-          cgst = Math.round((gstTotal / 2) * 100) / 100;
-          sgst = Math.round((gstTotal / 2) * 100) / 100;
-        }
-        totalTaxableValue += taxable;
-        totalCgst += cgst;
-        totalSgst += sgst;
-        totalGstCollected += (cgst + sgst);
-      } else {
-        nonGstBillsCount++;
-      }
       
       const notes = order.notes || '';
       const isOffline = notes.includes('CHANNEL: pos') || notes.includes('OFFLINE') || notes.includes('MANUAL') || order.bill_type === 'retail' || order.bill_type === 'wholesale';
@@ -310,48 +184,10 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
       .map(k => ({ name: k, ...productRevenue[k] }))
       .sort((a, b) => b.revenue - a.revenue);
 
-    return { 
-      totalRevenue, 
-      completedBills, 
-      offlineBills, 
-      onlineBills, 
-      offlineBillsCount, 
-      onlineBillsCount, 
-      totalItemsSold, 
-      avgOrderValue, 
-      topProduct, 
-      topItems, 
-      maxItemRev, 
-      allProductsList,
-      totalTaxableValue,
-      totalGstCollected,
-      totalCgst,
-      totalSgst,
-      gstBillsCount,
-      nonGstBillsCount
-    };
+    return { totalRevenue, completedBills, offlineBills, onlineBills, offlineBillsCount, onlineBillsCount, totalItemsSold, avgOrderValue, topProduct, topItems, maxItemRev, allProductsList };
   }, [filteredInquiries]);
 
-  const { 
-    totalRevenue, 
-    completedBills, 
-    offlineBills, 
-    onlineBills, 
-    offlineBillsCount, 
-    onlineBillsCount, 
-    totalItemsSold, 
-    avgOrderValue, 
-    topProduct, 
-    topItems, 
-    maxItemRev, 
-    allProductsList,
-    totalTaxableValue,
-    totalGstCollected,
-    totalCgst,
-    totalSgst,
-    gstBillsCount,
-    nonGstBillsCount
-  } = stats;
+  const { totalRevenue, completedBills, offlineBills, onlineBills, offlineBillsCount, onlineBillsCount, totalItemsSold, avgOrderValue, topProduct, topItems, maxItemRev, allProductsList } = stats;
 
 
   const todayStats = useMemo(() => {
@@ -522,16 +358,6 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
 
   const filteredTodayTransactions = useMemo(() => {
     return todayTransactions.filter(tx => {
-      const isOrderGst = Boolean(
-        tx.is_gst === true ||
-        tx.notes?.includes('IS_GST: true') ||
-        tx.notes?.includes('TAX INVOICE') ||
-        tx.notes?.includes('GST INVOICE')
-      );
-
-      if (gstFilter === 'GST INVOICES' && !isOrderGst) return false;
-      if (gstFilter === 'NON-GST BILLS' && isOrderGst) return false;
-
       let invId = tx.invoice_id;
       if (!invId && tx.notes) {
         const match = tx.notes.match(/INVOICE_ID:\s*(INV-\d{4}-\w{4,8})/i);
@@ -545,7 +371,7 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
       const query = todaySearch.toLowerCase();
       return name.includes(query) || phone.includes(query) || searchId.includes(query);
     });
-  }, [todayTransactions, todaySearch, gstFilter]);
+  }, [todayTransactions, todaySearch]);
 
   const filteredCoupons = useMemo(() => {
     return couponData.coupons.filter(c => {
@@ -564,79 +390,37 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
           <div>
             <h1 className="text-3xl font-black text-slate-900 tracking-tight">POS Analytics</h1>
-            <p className="text-sm font-medium text-slate-500 mt-1">All bills — full store &amp; channel insights</p>
-
-            {/* GST Classification Pill Strip */}
-            <div className="mt-4 inline-flex items-center bg-white border border-slate-200 rounded-full p-1 shadow-sm">
-              {(['ALL BILLS', 'GST INVOICES', 'NON-GST BILLS'] as const).map((filterOption) => (
-                <button
-                  key={filterOption}
-                  onClick={() => setGstFilter(filterOption)}
-                  className={
-                    gstFilter === filterOption
-                      ? 'bg-blue-600 text-white font-bold px-4 py-1.5 rounded-full text-xs transition-all shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 px-4 py-1.5 rounded-full text-xs font-semibold'
-                  }
-                >
-                  {filterOption}
-                </button>
-              ))}
-            </div>
+            <p className="text-sm font-medium text-slate-500 mt-1">Real-time store & channel insights</p>
           </div>
           
-          <div className="flex flex-col items-start md:items-end gap-3 w-full md:w-auto">
-            {/* Period Selector Bar */}
-            <div className="flex flex-wrap items-center bg-white rounded-2xl md:rounded-full border border-slate-200 p-1 shadow-sm text-xs font-bold text-slate-600 gap-1 w-full md:w-auto">
-              <span className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-slate-400">Period:</span>
-              {['ALL TIME', 'TODAY', 'THIS WEEK', 'THIS MONTH', 'THIS YEAR'].map(p => (
-                <button
-                  key={p}
-                  onClick={() => {
-                    setStartDate('');
-                    setEndDate('');
-                    setPeriod(p === 'ALL TIME' ? 'All Time' : p === 'TODAY' ? 'Today' : p === 'THIS WEEK' ? 'This Week' : p === 'THIS MONTH' ? 'This Month' : 'This Year');
-                  }}
-                  className={`px-4 py-1.5 rounded-full transition-colors ${
-                    !startDate && !endDate && period.toUpperCase() === p 
-                      ? 'bg-[#0070ba] text-white' 
-                      : 'hover:bg-slate-100'
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
+          <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+            <>
+              <div className="flex flex-wrap items-center bg-white rounded-2xl md:rounded-full border border-slate-200 p-1 shadow-sm text-xs font-bold text-slate-600 gap-1 w-full md:w-auto">
+                <span className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-slate-400">Period:</span>
+                {['ALL TIME', 'TODAY', 'THIS WEEK', 'THIS MONTH', 'THIS YEAR', 'CUSTOM'].map(p => (
+                  <button
+                    key={p}
+                    onClick={() => setPeriod(p === 'ALL TIME' ? 'All Time' : p === 'TODAY' ? 'Today' : p === 'THIS WEEK' ? 'This Week' : p === 'THIS MONTH' ? 'This Month' : p === 'THIS YEAR' ? 'This Year' : 'Custom')}
+                    className={`px-4 py-1.5 rounded-full transition-colors ${
+                      period.toUpperCase() === p 
+                        ? 'bg-[#0070ba] text-white' 
+                        : 'hover:bg-slate-100'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
 
-            {/* "FROM / TO" Date Range Picker Pill */}
-            <div className="flex items-center gap-3 bg-white border border-slate-200 px-4 py-1.5 rounded-full shadow-sm text-xs font-semibold text-slate-700">
-              <div className="flex items-center gap-1.5">
-                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">FROM:</span>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="bg-transparent border-none text-xs font-semibold text-slate-800 focus:outline-none"
-                />
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">TO:</span>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="bg-transparent border-none text-xs font-semibold text-slate-800 focus:outline-none"
-                />
-              </div>
-              {(startDate || endDate) && (
-                <button
-                  onClick={() => { setStartDate(''); setEndDate(''); }}
-                  className="text-[10px] text-slate-400 hover:text-slate-600 font-bold ml-1"
-                  title="Clear custom date filter"
-                >
-                  ✕
-                </button>
+              {period === 'Custom' && (
+                <div className="flex flex-wrap items-center bg-white rounded-2xl md:rounded-full border border-slate-200 px-4 py-2 shadow-sm text-xs font-bold text-slate-700 gap-2 w-full md:w-auto">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400 mr-2">FROM:</span>
+                  <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} className="outline-none bg-transparent" />
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400 mx-3">TO:</span>
+                  <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} className="outline-none bg-transparent" />
+                </div>
               )}
-            </div>
+            </>
           </div>
         </div>
 
@@ -747,97 +531,6 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                 </div>
               </div>
             </div>
-
-            {/* GST Tax Breakdown Metric Cards (Active for ALL BILLS or GST INVOICES) */}
-            {gstFilter !== 'NON-GST BILLS' && (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div 
-                  onClick={() => setSelectedMetric({
-                    title: 'Taxable Value',
-                    value: `₹${Math.round(totalTaxableValue).toLocaleString('en-IN')}`,
-                    description: 'Pre-tax net sales value on GST orders',
-                    icon: '📊'
-                  })}
-                  className="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm flex flex-col justify-between h-[120px] cursor-pointer hover:border-pink-300 hover:shadow transition-all"
-                >
-                  <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Taxable Value</span>
-                    <span className="w-6 h-6 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs shrink-0 font-bold">₹</span>
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-slate-900 truncate" title={`₹${Math.round(totalTaxableValue).toLocaleString('en-IN')}`}>
-                      ₹{Math.round(totalTaxableValue).toLocaleString('en-IN')}
-                    </h3>
-                    <p className="text-[10px] text-pink-600 font-semibold mt-1 truncate">Net pre-tax sales</p>
-                  </div>
-                </div>
-
-                <div 
-                  onClick={() => setSelectedMetric({
-                    title: 'Total GST Collected',
-                    value: `₹${Math.round(totalGstCollected).toLocaleString('en-IN')}`,
-                    description: `CGST: ₹${Math.round(totalCgst).toLocaleString('en-IN')} | SGST: ₹${Math.round(totalSgst).toLocaleString('en-IN')}`,
-                    icon: '🏛️'
-                  })}
-                  className="bg-white rounded-2xl p-5 border border-purple-100 shadow-sm flex flex-col justify-between h-[120px] cursor-pointer hover:border-purple-300 hover:shadow transition-all"
-                >
-                  <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">GST Collected</span>
-                    <span className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs shrink-0 font-bold">🏛️</span>
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-purple-700 truncate" title={`₹${Math.round(totalGstCollected).toLocaleString('en-IN')}`}>
-                      ₹{Math.round(totalGstCollected).toLocaleString('en-IN')}
-                    </h3>
-                    <p className="text-[10px] text-slate-500 mt-1 truncate">
-                      CGST ₹{Math.round(totalCgst).toLocaleString('en-IN')} + SGST ₹{Math.round(totalSgst).toLocaleString('en-IN')}
-                    </p>
-                  </div>
-                </div>
-
-                <div 
-                  onClick={() => setSelectedMetric({
-                    title: 'GST Invoices',
-                    value: String(gstBillsCount),
-                    description: 'Tax invoices generated',
-                    icon: '📑'
-                  })}
-                  className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between h-[120px] cursor-pointer hover:border-slate-350 hover:shadow transition-all"
-                >
-                  <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">GST Invoices</span>
-                    <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">📑</span>
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-slate-900 truncate" title={String(gstBillsCount)}>
-                      {gstBillsCount}
-                    </h3>
-                    <p className="text-[10px] text-slate-400 mt-1 truncate">Official tax invoices</p>
-                  </div>
-                </div>
-
-                <div 
-                  onClick={() => setSelectedMetric({
-                    title: 'Non-GST Bills',
-                    value: String(nonGstBillsCount),
-                    description: 'Retail cash receipts',
-                    icon: '🧾'
-                  })}
-                  className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between h-[120px] cursor-pointer hover:border-slate-350 hover:shadow transition-all"
-                >
-                  <div className="flex justify-between items-start">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Non-GST Bills</span>
-                    <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs shrink-0 font-bold">🧾</span>
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-slate-900 truncate" title={String(nonGstBillsCount)}>
-                      {nonGstBillsCount}
-                    </h3>
-                    <p className="text-[10px] text-slate-400 mt-1 truncate">Retail cash receipts</p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Stat Cards - Row 2 */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
@@ -1063,48 +756,6 @@ export default function AnalyticsClient({ initialInquiries = [] }: { initialInqu
                         <div 
                           className="bg-emerald-600 h-2.5 rounded-full transition-all duration-500" 
                           style={{ width: `${offlineBillsCount + onlineBillsCount > 0 ? (onlineBillsCount / (offlineBillsCount + onlineBillsCount)) * 100 : 0}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Billing Classification Breakdown */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-sm font-bold text-slate-700">Billing Classification</h2>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{completedBills} Total</span>
-                  </div>
-                  
-                  <div className="space-y-5">
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                          GST Invoices
-                        </span>
-                        <span className="text-sm font-black text-slate-900">{gstBillsCount}</span>
-                      </div>
-                      <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                        <div 
-                          className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" 
-                          style={{ width: `${completedBills > 0 ? (gstBillsCount / completedBills) * 100 : 0}%` }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-slate-600"></span>
-                          Non-GST Bills
-                        </span>
-                        <span className="text-sm font-black text-slate-900">{nonGstBillsCount}</span>
-                      </div>
-                      <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                        <div 
-                          className="bg-slate-600 h-2.5 rounded-full transition-all duration-500" 
-                          style={{ width: `${completedBills > 0 ? (nonGstBillsCount / completedBills) * 100 : 0}%` }}
                         ></div>
                       </div>
                     </div>

@@ -40,7 +40,6 @@ export default function BillingClient() {
   const [manualDiscountType, setManualDiscountType] = useState<'%' | 'flat'>('flat');
   const [manualDiscountValue, setManualDiscountValue] = useState<number>(0);
   const [deliveryFee, setDeliveryFee] = useState<number>(0);
-  const [amountReceived, setAmountReceived] = useState<number>(0);
   const [generatedBill, setGeneratedBill] = useState<{
     invoiceId: string;
     grandTotal: number;
@@ -204,7 +203,6 @@ export default function BillingClient() {
       setSelectedCoupon('');
       setManualDiscountValue(0);
       setDeliveryFee(0);
-      setAmountReceived(0);
     }
   };
 
@@ -437,6 +435,8 @@ export default function BillingClient() {
       couponId: activeCouponObj?.id || null,
       discountAmount: totalDiscount,
       totalAmount: finalTotal,
+      amount_paid: finalTotal,
+      amount_received: finalTotal,
       userId: null,
       status: 'Completed',
       notes: `${billSummaryText}\nBILL TYPE: ${billingMode.toUpperCase()}${customerAddress.trim() ? `\nCUSTOMER_ADDRESS: ${customerAddress.trim()}` : ''}${isGstInvoice ? `\nIS_GST: true\nGST_RATE: ${gstRate}\nTAXABLE_AMOUNT: ${taxableValue}\nCGST: ${cgst}\nSGST: ${sgst}${customerGstin.trim() ? `\nCUSTOMER_GSTIN: ${customerGstin.trim()}` : ''}` : '\nIS_GST: false'}`,
@@ -462,7 +462,6 @@ export default function BillingClient() {
         const targetPhoneParam = cleanPhone.length === 10 ? `phone=91${cleanPhone}&` : '';
         const whatsappUrl = `https://api.whatsapp.com/send/?${targetPhoneParam}text=${encodeURIComponent(whatsappMessage)}`;
 
-        const balance = Math.max(0, amountReceived - finalTotal);
         const currentItems = items
           .filter(it => it.name)
           .map(it => ({
@@ -479,8 +478,8 @@ export default function BillingClient() {
           subtotal: subtotal,
           discountAmount: totalDiscount,
           deliveryFee: deliveryFee,
-          amountReceived: amountReceived > 0 ? amountReceived : finalTotal,
-          balanceReturned: amountReceived > 0 ? balance : 0,
+          amountReceived: finalTotal,
+          balanceReturned: 0,
           items: currentItems,
           whatsappUrl,
           billingMode,
@@ -530,7 +529,6 @@ export default function BillingClient() {
     setSelectedCoupon('');
     setManualDiscountValue(0);
     setDeliveryFee(0);
-    setAmountReceived(0);
     setOrderFeedback(null);
   };
 
@@ -554,7 +552,6 @@ export default function BillingClient() {
           customerName={generatedBill.customerName}
           customerPhone={generatedBill.customerPhone}
           customerAddress={generatedBill.customerAddress}
-          address={generatedBill.customerAddress}
           paymentMode={generatedBill.paymentMode}
           isGst={generatedBill.is_gst}
           gstRate={generatedBill.gst_rate}
@@ -1043,28 +1040,6 @@ export default function BillingClient() {
                         ₹{totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Cash Payment */}
-              <div className="border border-gray-200 bg-gray-50/50 rounded-2xl p-4 mt-2">
-                <h4 className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2">Cash Payment</h4>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5">Amount Received (₹)</label>
-                <input
-                  type="number"
-                  value={amountReceived === 0 ? '' : amountReceived}
-                  onChange={(e) => setAmountReceived(Number(e.target.value))}
-                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                  placeholder="0.00"
-                  className="w-full bg-white border border-sky-200 rounded-xl px-4 py-3 text-lg font-black text-gray-800 focus:ring-2 focus:ring-sky-500/20 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-                {amountReceived > 0 && (
-                  <div className="mt-3 flex justify-between items-center text-sm">
-                    <span className="font-bold text-gray-500">Balance:</span>
-                    <span className={`font-black ${amountReceived >= finalTotal ? 'text-green-600' : 'text-red-500'}`}>
-                      ₹{(amountReceived - finalTotal).toLocaleString('en-IN')}
-                    </span>
                   </div>
                 )}
               </div>
