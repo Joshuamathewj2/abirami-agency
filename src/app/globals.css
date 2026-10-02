@@ -314,21 +314,30 @@ body {
 }
 
 /* ──────────────────────────────────────────
-   Print utility
+   Print isolation utility
 ────────────────────────────────────────── */
 @media print {
+  header,
+  nav,
+  aside,
+  .admin-nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure the printable receipt starts cleanly at the top of page 1 */
   body {
+    margin: 0 !important;
+    padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+
   @page {
     size: A4 portrait;
-    margin: 12mm 15mm;
-  }
-  .no-print, header, nav, footer, aside {
-    display: none !important;
+    margin: 8mm 10mm;
   }
 }
 

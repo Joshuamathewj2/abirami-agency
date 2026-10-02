@@ -31,6 +31,10 @@ interface OrderItem {
 export default function BillingClient() {
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
+  const [customerAddress, setCustomerAddress] = useState('');
+  const [isGstInvoice, setIsGstInvoice] = useState(false);
+  const [gstRate, setGstRate] = useState<number>(18);
+  const [customerGstin, setCustomerGstin] = useState('');
   const [items, setItems] = useState<OrderItem[]>([{ name: '', price: 0, quantity: 1 }]);
   const [billingMode, setBillingMode] = useState<'offline' | 'online'>('offline');
   const [manualDiscountType, setManualDiscountType] = useState<'%' | 'flat'>('flat');
@@ -52,6 +56,12 @@ export default function BillingClient() {
     customerPhone: string;
     customerAddress: string;
     paymentMode: string;
+    is_gst?: boolean;
+    gst_rate?: number;
+    taxable_amount?: number;
+    cgst_amount?: number;
+    sgst_amount?: number;
+    customer_gstin?: string;
   } | null>(null);
 
   // Database products & coupons state
@@ -344,6 +354,16 @@ export default function BillingClient() {
   const totalDiscount = discountAmount + manualDiscountAmount;
   const finalTotal = Math.max(0, subtotal - totalDiscount) + deliveryFee;
 
+  // Calculation Engine (Inclusive GST)
+  const taxableValue = isGstInvoice
+    ? Number((finalTotal / (1 + gstRate / 100)).toFixed(2))
+    : finalTotal;
+  const totalGst = isGstInvoice
+    ? Number((finalTotal - taxableValue).toFixed(2))
+    : 0;
+  const cgst = isGstInvoice ? Number((totalGst / 2).toFixed(2)) : 0;
+  const sgst = isGstInvoice ? Number((totalGst - cgst).toFixed(2)) : 0;
+
   const [orderFeedback, setOrderFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const generateWhatsAppBill = async () => {
@@ -376,42 +396,56 @@ export default function BillingClient() {
       sparkle:  String.fromCodePoint(0x2728),
     };
 
-    let billSummaryText = `${em.star} *INVOICE FROM ABIRAMI AGENCY* ${em.bell}\n\n`;
+    let billSummaryText = `${em.star} *${isGstInvoice ? 'TAX INVOICE' : 'INVOICE'} FROM ABIRAMI AGENCY* ${em.bell}\n\n`;
     billSummaryText += `${em.person} *Customer Details:*\n`;
     billSummaryText += `${em.phone} Name: ${customerName || 'Valued Customer'}\n`;
     if (cleanPhone) billSummaryText += `${em.mobile} Mobile: ${cleanPhone}\n`;
+    if (customerAddress.trim()) billSummaryText += `Address: ${customerAddress.trim()}\n`;
+    if (isGstInvoice && customerGstin.trim()) billSummaryText += `GSTIN: ${customerGstin.trim()}\n`;
     billSummaryText += `\n${em.cart} *Items Purchased:*\n\n`;
     
     items.forEach((item, index) => {
       if (item.name) {
-        billSummaryText += `${em.package} ${index + 1}. ${item.name}\n   \u2022 Qty: ${item.quantity}\n   \u2022 Price: \u20B9${(item.price * item.quantity).toLocaleString('en-IN')}\n\n`;
+        billSummaryText += `${em.package} ${index + 1}. ${item.name}\n   • Qty: ${item.quantity}\n   • Price: ₹${(item.price * item.quantity).toLocaleString('en-IN')}\n\n`;
       }
     });
 
     billSummaryText += `${em.star} *Bill Summary:*\n`;
-    billSummaryText += `\u2022 Subtotal: \u20B9${subtotal.toLocaleString('en-IN')}\n`;
+    billSummaryText += `• Subtotal: ₹${subtotal.toLocaleString('en-IN')}\n`;
     if (activeCouponObj && discountAmount > 0) {
-      billSummaryText += `\u2022 ${em.ticket} Coupon (${activeCouponObj.code}): -\u20B9${discountAmount.toLocaleString('en-IN')}\n`;
+      billSummaryText += `• ${em.ticket} Coupon (${activeCouponObj.code}): -₹${discountAmount.toLocaleString('en-IN')}\n`;
     }
     if (manualDiscountAmount > 0) {
-      billSummaryText += `\u2022 ${em.tag} Discount: -\u20B9${manualDiscountAmount.toLocaleString('en-IN')}\n`;
+      billSummaryText += `• ${em.tag} Discount: -₹${manualDiscountAmount.toLocaleString('en-IN')}\n`;
     }
     if (deliveryFee > 0) {
-      billSummaryText += `\u2022 ${em.truck} Delivery: \u20B9${deliveryFee.toLocaleString('en-IN')}\n`;
+      billSummaryText += `• ${em.truck} Delivery: ₹${deliveryFee.toLocaleString('en-IN')}\n`;
     }
-    billSummaryText += `\n${em.money} *Grand Total: \u20B9${finalTotal.toLocaleString('en-IN')}*\n\n`;
+    if (isGstInvoice) {
+      billSummaryText += `• Taxable Value: ₹${taxableValue.toLocaleString('en-IN')}\n`;
+      billSummaryText += `• CGST (${(gstRate / 2).toFixed(1)}%): ₹${cgst.toLocaleString('en-IN')}\n`;
+      billSummaryText += `• SGST (${(gstRate / 2).toFixed(1)}%): ₹${sgst.toLocaleString('en-IN')}\n`;
+    }
+    billSummaryText += `\n${em.money} *Grand Total: ₹${finalTotal.toLocaleString('en-IN')}*\n\n`;
     billSummaryText += `Thank you for shopping with Abirami Agency! ${em.sparkle}`;
 
     const orderData = {
       customerName: customerName || 'Walk-in Customer',
       customerPhone: cleanPhone || 'Walk-in',
-      customerAddress: `BILL TYPE: ${billingMode.toUpperCase()}`,
+      customerAddress: customerAddress.trim() || `BILL TYPE: ${billingMode.toUpperCase()}`,
+      address: customerAddress.trim(),
       couponId: activeCouponObj?.id || null,
       discountAmount: totalDiscount,
       totalAmount: finalTotal,
       userId: null,
       status: 'Completed',
-      notes: `${billSummaryText}\nBILL TYPE: ${billingMode.toUpperCase()}`,
+      notes: `${billSummaryText}\nBILL TYPE: ${billingMode.toUpperCase()}${customerAddress.trim() ? `\nCUSTOMER_ADDRESS: ${customerAddress.trim()}` : ''}${isGstInvoice ? `\nIS_GST: true\nGST_RATE: ${gstRate}\nTAXABLE_AMOUNT: ${taxableValue}\nCGST: ${cgst}\nSGST: ${sgst}${customerGstin.trim() ? `\nCUSTOMER_GSTIN: ${customerGstin.trim()}` : ''}` : '\nIS_GST: false'}`,
+      is_gst: isGstInvoice,
+      gst_rate: isGstInvoice ? gstRate : 0,
+      taxable_amount: taxableValue,
+      cgst_amount: cgst,
+      sgst_amount: sgst,
+      customer_gstin: customerGstin.trim(),
       items: items.map(i => ({
         productId: i.variantId || 'CUSTOM',
         name: i.name,
@@ -452,8 +486,14 @@ export default function BillingClient() {
           billingMode,
           customerName: customerName || 'Walk-in Customer',
           customerPhone: cleanPhone || '',
-          customerAddress: 'Madhavaram, Chennai',
+          customerAddress: customerAddress.trim(),
           paymentMode: billingMode === 'online' ? 'Online / UPI' : 'Cash',
+          is_gst: isGstInvoice,
+          gst_rate: isGstInvoice ? gstRate : 0,
+          taxable_amount: taxableValue,
+          cgst_amount: cgst,
+          sgst_amount: sgst,
+          customer_gstin: customerGstin.trim(),
         });
 
         setOrderFeedback({
@@ -483,6 +523,10 @@ export default function BillingClient() {
     setItems([{ name: '', price: 0, quantity: 1 }]);
     setCustomerName('');
     setPhone('');
+    setCustomerAddress('');
+    setIsGstInvoice(false);
+    setGstRate(18);
+    setCustomerGstin('');
     setSelectedCoupon('');
     setManualDiscountValue(0);
     setDeliveryFee(0);
@@ -510,7 +554,14 @@ export default function BillingClient() {
           customerName={generatedBill.customerName}
           customerPhone={generatedBill.customerPhone}
           customerAddress={generatedBill.customerAddress}
+          address={generatedBill.customerAddress}
           paymentMode={generatedBill.paymentMode}
+          isGst={generatedBill.is_gst}
+          gstRate={generatedBill.gst_rate}
+          taxableAmount={generatedBill.taxable_amount}
+          cgstAmount={generatedBill.cgst_amount}
+          sgstAmount={generatedBill.sgst_amount}
+          customerGstin={generatedBill.customer_gstin}
         />
       </div>
     );
@@ -622,6 +673,36 @@ export default function BillingClient() {
                 </div>
               </div>
             </div>
+
+            {/* Customer Address Input Field (Matching Image 24) */}
+            <div className="mt-4">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">
+                CUSTOMER ADDRESS (OPTIONAL)
+              </label>
+              <input
+                type="text"
+                value={customerAddress}
+                onChange={(e) => setCustomerAddress(e.target.value)}
+                placeholder="Enter full address"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              />
+            </div>
+
+            {/* Optional Customer GSTIN Field (when GST INVOICE is active) */}
+            {isGstInvoice && (
+              <div className="mt-4">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1.5">
+                  CUSTOMER GSTIN (OPTIONAL)
+                </label>
+                <input
+                  type="text"
+                  value={customerGstin}
+                  onChange={(e) => setCustomerGstin(e.target.value.toUpperCase())}
+                  placeholder="e.g. 33AAAAA0000A1Z5"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white uppercase font-mono"
+                />
+              </div>
+            )}
           </div>
 
           {/* Items Card */}
@@ -910,6 +991,60 @@ export default function BillingClient() {
                   <span className="font-extrabold text-gray-900 text-base uppercase tracking-wider">Grand Total</span>
                   <span className="font-black text-gray-900 text-xl">₹{finalTotal.toLocaleString('en-IN')}</span>
                 </div>
+              </div>
+
+              {/* GST Invoice vs Non-GST Bill Toggle (Above Payment Options) */}
+              <div className="border-t border-gray-200 pt-4 space-y-3">
+                <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setIsGstInvoice(false)}
+                    className={`py-2 px-3 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                      !isGstInvoice
+                        ? 'bg-slate-950 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    NON-GST BILL
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsGstInvoice(true)}
+                    className={`py-2 px-3 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                      isGstInvoice
+                        ? 'bg-pink-600 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    GST INVOICE
+                  </button>
+                </div>
+
+                {/* GST (INCL.) Rate Row (Appears only when "GST INVOICE" is selected) */}
+                {isGstInvoice && (
+                  <div className="flex items-center justify-between bg-pink-50/70 border border-pink-200/80 p-3 rounded-xl">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-slate-700">GST (INCL.)</span>
+                      <div className="flex items-center gap-1 bg-white border border-pink-200 rounded-lg px-2 py-0.5 text-xs font-bold shadow-xs">
+                        <input
+                          type="number"
+                          value={gstRate === 0 ? '' : gstRate}
+                          onChange={(e) => setGstRate(Number(e.target.value) || 0)}
+                          onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                          className="w-10 text-right bg-transparent outline-none font-bold text-slate-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          min={0}
+                          max={100}
+                        />
+                        <span className="text-slate-400">%</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-sm font-bold text-pink-600">
+                        ₹{totalGst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Cash Payment */}

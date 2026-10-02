@@ -310,44 +310,49 @@ function BestsellersSkeleton() {
 }
 
 async function BestsellersSection() {
-  const dbProducts = await getProductsFromDB();
-  const products = dbProducts.filter((p) => p.sizes && p.sizes.length > 0);
-  const bestsellers = products.filter((p) => p.badge === "Bestseller");
+  try {
+    const dbProducts = await getProductsFromDB();
+    const products = (dbProducts || []).filter((p) => p && p.sizes && p.sizes.length > 0);
+    const bestsellers = products.filter((p) => p.badge === "Bestseller");
 
-  if (bestsellers.length === 0) return null;
+    if (bestsellers.length === 0) return null;
 
-  return (
-    <section className="py-16 md:py-24">
-      <div className="container-main">
-        <div className="flex items-end justify-between mb-12">
-          <FadeCard>
-            <div>
-              <span className="text-xs font-black text-primary uppercase tracking-widest">
-                🔥 Most Ordered
-              </span>
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mt-2">
-                Bestsellers
-              </h2>
-              <p className="text-gray-500 mt-1 font-medium">
-                Our most popular products
-              </p>
-            </div>
-          </FadeCard>
-          <FadeCard>
-            <Link href="/products" className="text-primary hover:text-primary-dark font-bold text-sm flex items-center gap-1 group">
-              View All
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </FadeCard>
+    return (
+      <section className="py-16 md:py-24">
+        <div className="container-main">
+          <div className="flex items-end justify-between mb-12">
+            <FadeCard>
+              <div>
+                <span className="text-xs font-black text-primary uppercase tracking-widest">
+                  🔥 Most Ordered
+                </span>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mt-2">
+                  Bestsellers
+                </h2>
+                <p className="text-gray-500 mt-1 font-medium">
+                  Our most popular products
+                </p>
+              </div>
+            </FadeCard>
+            <FadeCard>
+              <Link href="/products" className="text-primary hover:text-primary-dark font-bold text-sm flex items-center gap-1 group">
+                View All
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </FadeCard>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 max-w-7xl mx-auto px-2 sm:px-4 mt-8">
+            {bestsellers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 max-w-7xl mx-auto px-2 sm:px-4 mt-8">
-          {bestsellers.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+  } catch (error) {
+    console.error("Failed to load bestsellers on Home page:", error);
+    return null;
+  }
 }

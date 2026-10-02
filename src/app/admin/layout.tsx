@@ -124,7 +124,7 @@ export default function AdminLayout({
     <div className="w-full bg-slate-50 min-h-screen flex">
       {/* Desktop Sidebar (hidden on mobile, unchanged on desktop) */}
       <AdminSidebar 
-        className={`hidden md:flex transition-all duration-300 ${isDesktopSidebarOpen ? 'w-64' : 'w-20'}`} 
+        className={`hidden md:flex transition-all duration-300 ${isDesktopSidebarOpen ? 'w-64' : 'w-20'} print:hidden`} 
         isCollapsed={!isDesktopSidebarOpen}
         onToggle={() => setIsDesktopSidebarOpen(!isDesktopSidebarOpen)}
       />
@@ -132,7 +132,7 @@ export default function AdminLayout({
       {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 w-full overflow-hidden">
         {/* Mobile Header + Sticky Top-Icon Navigation Bar (< md) */}
-        <div className="md:hidden sticky top-0 z-40 shrink-0">
+        <div className="md:hidden sticky top-0 z-40 shrink-0 print:hidden">
           {/* Mobile Top Bar */}
           <div className="h-14 bg-slate-950 px-4 flex items-center justify-between border-b border-slate-900">
             <Link href="/admin" className="flex items-center gap-2">
@@ -182,7 +182,7 @@ export default function AdminLayout({
         </div>
 
         {/* Desktop Navbar (hidden md:flex) */}
-        <header className="hidden md:flex bg-white border-b border-gray-200 h-16 sticky top-0 z-40 px-8 items-center justify-between">
+        <header className="hidden md:flex bg-white border-b border-gray-200 h-16 sticky top-0 z-40 px-8 items-center justify-between print:hidden">
           <h1 className="text-lg font-bold text-gray-800 tracking-tight">Dashboard</h1>
           
           <div className="flex items-center gap-4 shrink-0">
@@ -210,7 +210,7 @@ export default function AdminLayout({
           </div>
           
           {/* Admin Footer */}
-          <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-widest shrink-0 text-center md:text-left">
+          <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-widest shrink-0 text-center md:text-left print:hidden">
             <span>© {new Date().getFullYear()} ALL RIGHTS RESERVED. ABIRAMI AGENCY.</span>
             <span>POWERED BY <span className="text-primary font-bold">CENEXA SYSTEMS</span> ©{new Date().getFullYear()}</span>
             <span className="text-primary italic tracking-normal text-xs font-serif">• PARRYWARE PREMIUM BATH EXPERIENCES.</span>
