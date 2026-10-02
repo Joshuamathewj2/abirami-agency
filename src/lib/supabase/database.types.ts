@@ -300,6 +300,13 @@ export type Database = {
           status: string | null
           total_amount: number
           user_id: string | null
+          customer_address: string | null
+          is_gst: boolean | null
+          gst_rate: number | null
+          taxable_amount: number | null
+          cgst_amount: number | null
+          sgst_amount: number | null
+          customer_gstin: string | null
         }
         Insert: {
           coupon_id?: string | null
@@ -312,6 +319,13 @@ export type Database = {
           status?: string | null
           total_amount: number
           user_id?: string | null
+          customer_address?: string | null
+          is_gst?: boolean | null
+          gst_rate?: number | null
+          taxable_amount?: number | null
+          cgst_amount?: number | null
+          sgst_amount?: number | null
+          customer_gstin?: string | null
         }
         Update: {
           coupon_id?: string | null
@@ -324,6 +338,13 @@ export type Database = {
           status?: string | null
           total_amount?: number
           user_id?: string | null
+          customer_address?: string | null
+          is_gst?: boolean | null
+          gst_rate?: number | null
+          taxable_amount?: number | null
+          cgst_amount?: number | null
+          sgst_amount?: number | null
+          customer_gstin?: string | null
         }
         Relationships: [
           {
