@@ -252,6 +252,42 @@ export async function getOrdersFromDB() {
   }
 }
 
+export function mapOrderToInsertPayload(order: any, finalNotes: string = '', generatedInvoiceId?: string) {
+  const isGst = Boolean(order.is_gst || order.isGst || order.invoice_type === 'gst' || order.invoiceType === 'gst');
+  const gstRate = Number(order.gst_rate ?? order.gstRate ?? (isGst ? 18 : 0));
+  const taxableAmount = Number(order.taxable_amount ?? order.taxableAmount ?? (order.total_amount || order.totalAmount || 0));
+  const cgstAmount = Number(order.cgst_amount ?? order.cgstAmount ?? 0);
+  const sgstAmount = Number(order.sgst_amount ?? order.sgstAmount ?? 0);
+  const gstTotal = Number(order.gst_total ?? order.gstTotal ?? (cgstAmount + sgstAmount));
+  const invoiceType = order.invoice_type || order.invoiceType || (isGst ? 'gst' : 'non-gst');
+  const gstMode = order.gst_mode || order.gstMode || 'inclusive';
+
+  return {
+    customer_name: order.customerName || order.customer_name || 'Walk-in Customer',
+    customer_phone: order.customerPhone || order.customer_phone || '',
+    customer_address: order.customerAddress || order.address || order.customer_address || null,
+    bill_type: (order.customerAddress || order.address || '')?.includes('RETAIL') ? 'retail' : 'wholesale',
+    coupon_id: order.couponId || order.coupon_id || null,
+    discount_amount: Number(order.discountAmount ?? order.discount_amount ?? 0),
+    delivery_charge: Number(order.deliveryFee ?? order.delivery_charge ?? order.deliveryCharge ?? 0),
+    total_amount: Number(order.totalAmount ?? order.total_amount ?? 0),
+    status: order.status || 'Completed',
+    payment_method: (order.paymentMethod || order.payment_method || 'cash').toLowerCase(),
+    notes: finalNotes || order.notes || '',
+    invoice_id: generatedInvoiceId || order.invoice_id || order.invoiceId || undefined,
+    // GST Columns:
+    is_gst: isGst,
+    invoice_type: invoiceType,
+    gst_mode: gstMode,
+    gst_rate: gstRate,
+    taxable_amount: taxableAmount,
+    cgst_amount: cgstAmount,
+    sgst_amount: sgstAmount,
+    gst_total: gstTotal,
+    customer_gstin: order.customer_gstin || order.customerGstin || null,
+  };
+}
+
 export async function addOrderToDB(order: any) {
   const getBaseId = (id: string) => id.split('_color_')[0];
   const isCatalog = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(getBaseId(id));
@@ -290,26 +326,11 @@ export async function addOrderToDB(order: any) {
     finalNotes = `${finalNotes} | CHANNEL: ${channelTag}`;
   }
 
+  const payload = mapOrderToInsertPayload(order, finalNotes, generatedInvoiceId);
+
   const { data: newOrder, error: orderError } = await supabaseAdmin
     .from('orders')
-    .insert({
-      customer_name: order.customerName || 'Walk-in Customer',
-      customer_phone: order.customerPhone || '',
-      customer_address: order.customerAddress || order.address || null,
-      is_gst: Boolean(order.is_gst),
-      gst_rate: order.gst_rate ?? 0,
-      taxable_amount: order.taxable_amount ?? 0,
-      cgst_amount: order.cgst_amount ?? 0,
-      sgst_amount: order.sgst_amount ?? 0,
-      customer_gstin: order.customer_gstin || null,
-      notes: finalNotes,
-      invoice_id: generatedInvoiceId || undefined,
-      coupon_id: order.couponId || null,
-      discount_amount: order.discountAmount || 0,
-      total_amount: order.totalAmount,
-      status: order.status || 'Completed',
-      bill_type: order.customerAddress?.includes('RETAIL') ? 'retail' : 'wholesale'
-    })
+    .insert(payload)
     .select()
     .single();
 

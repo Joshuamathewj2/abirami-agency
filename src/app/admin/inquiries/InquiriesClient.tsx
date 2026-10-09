@@ -597,6 +597,16 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
                     {formatDateTimeFull(selectedInquiry.created_at)}
                   </p>
                 </div>
+
+                {/* PAYMENT METHOD */}
+                <div>
+                  <span className="block text-xs font-semibold uppercase text-slate-500 mb-1">
+                    PAYMENT METHOD
+                  </span>
+                  <p className="font-bold text-slate-900 uppercase">
+                    {selectedInquiry.payment_method || (selectedInquiry.notes?.match(/PAYMENT(?:_METHOD)?:\s*(\w+)/i)?.[1]) || 'CASH'}
+                  </p>
+                </div>
               </div>
 
               {/* Order Items Section */}

@@ -135,7 +135,7 @@ export async function getAllInquiriesAction() {
 
     // Normalize orders → map order_items into inquiry_items shape for WhatsApp Center rendering
     const orders = (ordersRes.data || []).map((ord: any) => ({
-      id: ord.id,
+      ...ord,
       customer_name: ord.customer_name || 'Walk-in Customer',
       customer_phone: ord.customer_phone || '',
       notes: ord.notes || `BILL TYPE: ${(ord.bill_type || 'RETAIL').toUpperCase()}`,

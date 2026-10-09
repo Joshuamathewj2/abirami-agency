@@ -388,12 +388,17 @@ export default function BillingClient() {
       amount_received: totals.grandTotal,
       userId: null,
       status: 'Completed',
+      paymentMethod: paymentMethod,
       notes: `${billSummaryText}\nINVOICE_TYPE: ${invoiceType}\nGST_MODE: ${gstMode}\nPAYMENT_METHOD: ${paymentMethod}\nDELIVERY_FEE: ${totals.delivery}`,
       is_gst: isGst,
+      invoice_type: invoiceType,
+      gst_mode: gstMode,
       gst_rate: isGst ? gstRate : 0,
       taxable_amount: totals.taxableAmount,
       cgst_amount: totals.cgst,
       sgst_amount: totals.sgst,
+      gst_total: totals.gstTotal,
+      delivery_charge: totals.delivery,
       customer_gstin: customerGstin.trim(),
       items: validItems.map(i => ({
         productId: i.variantId || 'CUSTOM',
@@ -447,15 +452,17 @@ export default function BillingClient() {
           message: `✓ Order & Invoice ${res.invoiceId} successfully created!`
         });
       } else {
+        console.error('Failed to save order to DB:', res.error);
         setOrderFeedback({
           type: 'error',
-          message: `❌ Failed to save order: ${res.error || 'Server error'}`
+          message: `Failed to save order: ${res.error || 'Server error'}. Please check details and try again.`
         });
       }
     } catch (err: any) {
+      console.error('Order placement exception:', err);
       setOrderFeedback({
         type: 'error',
-        message: `❌ Exception: ${err?.message || 'Server error'}`
+        message: `Failed to save order: ${err?.message || 'Server error'}. Please try again.`
       });
     }
   };
@@ -1009,14 +1016,12 @@ export default function BillingClient() {
             {/* Financial Options (Payment Methods) */}
             <div>
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5">
-                Payment Method:
+                Financial Option:
               </span>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: 'cash', label: 'Cash' },
                   { id: 'gpay', label: 'GPay / UPI' },
-                  { id: 'split', label: 'Split' },
-                  { id: 'credit', label: 'Credit' },
                 ].map(pm => {
                   const isSelected = paymentMethod === pm.id;
                   return (
@@ -1024,7 +1029,7 @@ export default function BillingClient() {
                       key={pm.id}
                       type="button"
                       onClick={() => setPaymentMethod(pm.id as PaymentMethod)}
-                      className={`py-2 px-1 rounded-xl text-[11px] font-black uppercase text-center transition-all ${
+                      className={`py-2.5 px-3 rounded-xl text-xs font-black uppercase text-center transition-all ${
                         isSelected
                           ? 'bg-slate-900 text-white shadow-xs'
                           : 'bg-slate-100 hover:bg-slate-200 text-slate-700'

@@ -293,6 +293,10 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
                   <span className="text-gray-400 font-bold">Status:</span>
                   <span className="text-gray-900 font-black uppercase">{order.status || 'SALE'}</span>
                 </div>
+                <div className="flex gap-1.5">
+                  <span className="text-gray-400 font-bold">Payment:</span>
+                  <span className="text-gray-900 font-black uppercase">{order.payment_method || (order.notes?.match(/PAYMENT(?:_METHOD)?:\s*(\w+)/i)?.[1]) || 'CASH'}</span>
+                </div>
               </div>
             </div>
           </div>
