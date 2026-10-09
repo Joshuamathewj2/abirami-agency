@@ -114,6 +114,64 @@ export function HeroSection() {
               </motion.div>
             </motion.div>
 
+            {/* Mobile Stats (2-column row directly below CTA) */}
+            <motion.div
+              variants={fadeUpVariants}
+              className="grid grid-cols-2 gap-3 mt-6 w-full max-w-sm lg:hidden"
+            >
+              <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-3 text-center shadow-xs">
+                <p className="text-2xl font-black text-slate-900 leading-none">
+                  200<span className="text-[#0091FF]">+</span>
+                </p>
+                <p className="text-[10px] tracking-wider text-slate-500 font-bold uppercase mt-1">
+                  Premium Products
+                </p>
+              </div>
+              <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-3 text-center shadow-xs">
+                <p className="text-2xl font-black text-slate-900 leading-none">
+                  24<span className="text-[#0091FF]">h</span>
+                </p>
+                <p className="text-[10px] tracking-wider text-slate-500 font-bold uppercase mt-1">
+                  Fast Delivery
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Mobile Category Chips (Horizontally scrollable with touch target >= 44px) */}
+            <motion.div
+              variants={fadeUpVariants}
+              className="w-full mt-5 lg:hidden overflow-hidden"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  Quick Catalog
+                </span>
+                <span className="text-[11px] text-primary font-semibold">
+                  Swipe to view &rarr;
+                </span>
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 -mx-1 px-1 touch-manipulation overscroll-contain">
+                {[
+                  { name: "Faucets", href: "/products?category=Faucets%20%E2%80%94%20Claret%20Collection" },
+                  { name: "Wall Hung WC", href: "/products?category=Wall%20Hung%20WC" },
+                  { name: "Wash Basins", href: "/products?category=Wall%20Hung%20Basin" },
+                  { name: "Coupled Closets", href: "/products?category=Floor%20Mounted%20Coupled%20Closet" },
+                  { name: "Showers", href: "/products?category=Hand%20Showers%20Collection" },
+                  { name: "Cisterns", href: "/products?category=Polymer%20Cistern%20Dual%20Flush" },
+                  { name: "Squatting Pan", href: "/products?category=Squatting%20Pan" },
+                  { name: "Health Faucets", href: "/products?category=Health%20Faucet%20Collection" },
+                ].map((chip) => (
+                  <Link
+                    key={chip.name}
+                    href={chip.href}
+                    className="min-h-[44px] px-4 py-2 bg-slate-100 hover:bg-sky-50 text-slate-700 hover:text-primary active:bg-sky-100 border border-slate-200/80 rounded-full text-xs font-bold whitespace-nowrap shrink-0 flex items-center transition-colors shadow-2xs"
+                  >
+                    {chip.name}
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+
             {/* Desktop Trust Metrics */}
             <motion.div
               variants={fadeUpVariants}
@@ -165,27 +223,6 @@ export function HeroSection() {
                 className="w-full h-full object-contain p-1"
               />
             </div>
-          </div>
-        </div>
-
-        {/* Mobile Trust Metrics (Placed neatly below video player on mobile screens) */}
-        <div className="flex lg:hidden items-center justify-around gap-6 mt-4 pt-4 border-t border-slate-200 w-full max-w-md mx-auto">
-          <div>
-            <p className="text-2xl font-bold text-slate-900 text-center">
-              200<span className="text-[#3B82F6]">+</span>
-            </p>
-            <p className="text-[11px] tracking-wider text-slate-500 font-semibold uppercase mt-0.5 text-center">
-              Premium Products
-            </p>
-          </div>
-          <div className="w-px h-7 bg-slate-200" />
-          <div>
-            <p className="text-2xl font-bold text-slate-900 text-center">
-              24<span className="text-[#3B82F6]">h</span>
-            </p>
-            <p className="text-[11px] tracking-wider text-slate-500 font-semibold uppercase mt-0.5 text-center">
-              Fast Delivery
-            </p>
           </div>
         </div>
       </div>
