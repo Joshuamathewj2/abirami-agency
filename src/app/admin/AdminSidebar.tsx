@@ -247,7 +247,9 @@ export default function AdminSidebar({
             <Link
               key={link.name}
               href={link.href}
+              prefetch={true}
               onClick={onLinkClick}
+              style={{ touchAction: 'manipulation' }}
               className={`flex items-center gap-3 py-3 rounded-xl transition-all font-medium ${isCollapsed ? "justify-center px-0" : "px-4"} ${
                 isActive
                   ? "bg-primary text-white shadow-sm hover:bg-primary-dark"

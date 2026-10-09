@@ -41,12 +41,22 @@ export default function AdminLayout({
   const [isLocked, setIsLocked] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(false);
   const [currentUser, setCurrentUser] = useState<any | null>(null);
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+  const [optimisticPath, setOptimisticPath] = useState(pathname);
+
+  useEffect(() => {
+    setOptimisticPath(pathname);
+  }, [pathname]);
 
   const checkAdminAuth = async () => {
+    // If already verified, do not re-run network roundtrips
+    if (isAuthorized) return;
+
     try {
       const hasCookie = await checkAdminSessionAction();
       if (hasCookie) {
         setIsLocked(false);
+        setIsAuthorized(true);
         const { data: { session } } = await supabase.auth.getSession();
         setCurrentUser(session?.user || null);
         return;
@@ -69,6 +79,7 @@ export default function AdminLayout({
       const userEmail = (session.user.email || '').toLowerCase();
       if (adminEmails.length > 0 && adminEmails.includes(userEmail)) {
         setIsLocked(false);
+        setIsAuthorized(true);
         return;
       }
 
@@ -76,6 +87,7 @@ export default function AdminLayout({
       const userRole = (session.user.user_metadata?.role || session.user.app_metadata?.role || '').toLowerCase();
       if (userRole === 'admin') {
         setIsLocked(false);
+        setIsAuthorized(true);
         return;
       }
 
@@ -88,6 +100,7 @@ export default function AdminLayout({
 
       if (profile?.role?.toLowerCase() === 'admin') {
         setIsLocked(false);
+        setIsAuthorized(true);
       } else {
         setIsLocked(true);
         window.location.replace('/');
@@ -101,11 +114,13 @@ export default function AdminLayout({
     }
   };
 
-  // Re-check live DB role on every route navigation inside /admin
+  // Check auth once on initial mount instead of firing on every tab change
   useEffect(() => {
-    checkAdminAuth();
+    if (isAuthorized !== true) {
+      checkAdminAuth();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -116,6 +131,7 @@ export default function AdminLayout({
     }
     setCurrentUser(null);
     setIsLocked(true);
+    setIsAuthorized(false);
     window.location.replace('/');
   };
 
@@ -135,7 +151,7 @@ export default function AdminLayout({
         <div className="md:hidden sticky top-0 z-40 shrink-0">
           {/* Mobile Top Bar */}
           <div className="h-14 bg-slate-950 px-4 flex items-center justify-between border-b border-slate-900">
-            <Link href="/admin" className="flex items-center gap-2">
+            <Link href="/admin" prefetch={true} className="flex items-center gap-2">
               <span className="font-playfair text-base font-bold text-white tracking-tight">
                 Abirami Admin
               </span>
@@ -154,24 +170,29 @@ export default function AdminLayout({
             </button>
           </div>
 
-          {/* Horizontal Icon Navigation Bar */}
+          {/* Horizontal Icon Navigation Bar with instant feedback, prefetch, and zero tap delay */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2.5 px-3 bg-slate-900 text-slate-400 border-b border-slate-800">
             {adminNavItems.map((item) => {
+              const currentPath = optimisticPath || pathname;
               const isActive =
                 item.href === '/admin'
-                  ? pathname === '/admin'
-                  : pathname?.startsWith(item.href);
+                  ? currentPath === '/admin'
+                  : currentPath?.startsWith(item.href);
               const Icon = item.icon;
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   title={item.name}
-                  className={`p-2.5 rounded-xl transition-colors shrink-0 flex items-center justify-center ${
+                  onTouchStart={() => setOptimisticPath(item.href)}
+                  onPointerDown={() => setOptimisticPath(item.href)}
+                  style={{ touchAction: 'manipulation' }}
+                  className={`p-2.5 rounded-xl transition-all duration-100 shrink-0 flex items-center justify-center ${
                     isActive
-                      ? 'bg-blue-600/30 text-blue-400 border border-blue-500/50 shadow-sm'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60 border border-transparent'
+                      ? 'bg-blue-600/30 text-blue-400 border border-blue-500/50 shadow-sm scale-105'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60 border border-transparent active:scale-95'
                   }`}
                 >
                   <Icon className="w-5 h-5" />

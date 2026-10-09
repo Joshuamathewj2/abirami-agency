@@ -332,4 +332,19 @@ body {
   }
 }
 
+/* ──────────────────────────────────────────
+   Ticker Marquee utility
+────────────────────────────────────────── */
+@keyframes tickerMarquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: tickerMarquee 18s linear infinite;
+}
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
 

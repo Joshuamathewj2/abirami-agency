@@ -44,13 +44,10 @@ export default function CategorySidebar({
       <div className="bg-white rounded-xl border border-gray-200 p-4 lg:p-5 sticky top-28 shadow-sm">
         {/* Mobile Header / Accordion Toggle Button */}
         <div className="flex items-center justify-between lg:mb-4 lg:pb-2 lg:border-b lg:border-gray-100">
-          <div className="flex items-center gap-2">
+          <div>
             <h3 className="font-bold text-gray-900 text-sm tracking-wide uppercase">
               {isFaucetsMode ? "Faucets & Fittings" : "Sanitaryware"}
             </h3>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-primary">
-              {isFaucetsMode ? "Faucets Mode" : "Sanitaryware Mode"}
-            </span>
           </div>
 
           {/* Toggle button visible ONLY on mobile (< lg) */}
