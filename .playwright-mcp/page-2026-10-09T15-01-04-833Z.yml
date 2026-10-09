@@ -1,0 +1,63 @@
+- generic [active] [ref=f3e1]:
+  - main [ref=f3e2]:
+    - generic [ref=f3e40]:
+      - generic [ref=f3e198]:
+        - generic [ref=f3e199]:
+          - link "Abirami Admin ADMIN" [ref=f3e200] [cursor=pointer]:
+            - /url: /admin
+            - generic [ref=f3e201]: Abirami Admin
+            - generic [ref=f3e202]: ADMIN
+          - button "Sign Out" [ref=f3e203]
+        - generic [ref=f3e207]:
+          - link "Dashboard" [ref=f3e208] [cursor=pointer]:
+            - /url: /admin
+          - link "WhatsApp Center" [ref=f3e214] [cursor=pointer]:
+            - /url: /admin/whatsapp
+          - link "Orders" [ref=f3e217] [cursor=pointer]:
+            - /url: /admin/inquiries
+          - link "Inventory" [ref=f3e221] [cursor=pointer]:
+            - /url: /admin/products
+          - link "Categories" [ref=f3e226] [cursor=pointer]:
+            - /url: /admin/categories
+          - link "Billing POS" [ref=f3e231] [cursor=pointer]:
+            - /url: /admin/billing
+          - link "POS Analytics" [ref=f3e234] [cursor=pointer]:
+            - /url: /admin/analytics
+          - link "Coupons" [ref=f3e236] [cursor=pointer]:
+            - /url: /admin/coupons
+          - link "Users" [ref=f3e240] [cursor=pointer]:
+            - /url: /admin/users
+      - main [ref=f3e49]:
+        - generic [ref=f3e246]:
+          - generic [ref=f3e247]:
+            - heading "Abirami Agency" [level=1] [ref=f3e248]
+            - generic [ref=f3e249]:
+              - button "OFFLINE (POS)" [ref=f3e250] [cursor=pointer]
+              - button "ONLINE ORDER" [ref=f3e251] [cursor=pointer]
+          - generic [ref=f3e253]:
+            - generic [ref=f3e254]:
+              - heading "Bill Generated" [level=2] [ref=f3e255]
+              - paragraph [ref=f3e256]: "#INV-2026-KRWM3V6"
+            - button "+ NEW SALE" [ref=f3e257] [cursor=pointer]
+          - generic [ref=f3e258]:
+            - generic [ref=f3e259]: BILL SUMMARY
+            - generic [ref=f3e260]:
+              - generic [ref=f3e261]: Total Amount
+              - generic [ref=f3e262]: ₹15,927.64
+          - generic [ref=f3e263]:
+            - button "PRINT RECEIPT" [ref=f3e264] [cursor=pointer]
+            - button "WHATSAPP INVOICE" [ref=f3e270] [cursor=pointer]
+            - button "+ NEW SALE" [ref=f3e274] [cursor=pointer]
+          - generic [ref=f3e275]:
+            - generic [ref=f3e276]: ITEMS SOLD
+            - generic [ref=f3e278]:
+              - generic [ref=f3e279]:
+                - text: Tiger One Piece WC – C8599 (S-230) (700" × 360" × 760")
+                - generic [ref=f3e280]: × 1 piece
+              - generic [ref=f3e281]: ₹13,490.00
+        - generic [ref=f3e184]:
+          - generic [ref=f3e185]: © 2026 ALL RIGHTS RESERVED. ABIRAMI AGENCY.
+          - generic [ref=f3e186]: POWERED BY CENEXA SYSTEMS ©2026
+          - generic [ref=f3e187]: • PARRYWARE PREMIUM BATH EXPERIENCES.
+  - button "Open Next.js Dev Tools" [ref=f3e193] [cursor=pointer]
+  - alert [ref=f3e197]

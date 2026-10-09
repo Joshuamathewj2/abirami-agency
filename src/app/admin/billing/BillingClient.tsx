@@ -45,7 +45,7 @@ interface FlatCatalogItem {
 
 export default function BillingClient() {
   // Customer Details State
-  const [customerName, setCustomerName] = useState('Walk-in Customer');
+  const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [billDate, setBillDate] = useState(() => {
     const today = new Date();
@@ -315,7 +315,7 @@ export default function BillingClient() {
   const clearOrder = () => {
     if (confirm("Are you sure you want to clear this entire bill?")) {
       setItems([{ name: '', price: 0, quantity: 1 }]);
-      setCustomerName('Walk-in Customer');
+      setCustomerName('');
       setPhone('');
       setCustomerAddress('');
       setCustomerGstin('');
@@ -674,7 +674,7 @@ export default function BillingClient() {
           {/* 1. Customer Details Card */}
           <div className="bg-white rounded-2xl md:rounded-3xl p-5 md:p-6 border border-slate-100 shadow-sm space-y-4">
             <div className="flex items-center gap-2 text-base md:text-lg font-black text-slate-900">
-              <span className="text-[#e6007e]">
+              <span className="text-[#0085FF]">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -693,8 +693,8 @@ export default function BillingClient() {
                   type="text"
                   value={customerName}
                   onChange={e => setCustomerName(e.target.value)}
-                  className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 focus:bg-white focus:border-[#e6007e] focus:ring-2 focus:ring-[#e6007e]/15 outline-none transition-all"
-                  placeholder="Walk-in Customer"
+                  className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none transition-all"
+                  placeholder="Enter customer name..."
                 />
               </div>
 
@@ -714,7 +714,7 @@ export default function BillingClient() {
                   type="tel"
                   value={phone}
                   onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                  className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 focus:bg-white focus:border-[#e6007e] focus:ring-2 focus:ring-[#e6007e]/15 outline-none transition-all"
+                  className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none transition-all"
                   placeholder="Enter 10-digit number"
                 />
               </div>
@@ -722,19 +722,19 @@ export default function BillingClient() {
               {/* Bill Date (Custom / Past) */}
               <div>
                 <label className="block text-[10px] md:text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <span className="text-[#e6007e]">
+                  <span className="text-blue-600">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </span>
                   <span>BILL DATE</span>
-                  <span className="text-[9px] font-black text-[#e6007e] tracking-tight">CUSTOM / PAST</span>
+                  <span className="text-[9px] font-black text-[#0085FF] tracking-tight">CUSTOM / PAST</span>
                 </label>
                 <input
                   type="date"
                   value={billDate}
                   onChange={e => setBillDate(e.target.value)}
-                  className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 focus:bg-white focus:border-[#e6007e] focus:ring-2 focus:ring-[#e6007e]/15 outline-none transition-all cursor-pointer"
+                  className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none transition-all cursor-pointer"
                 />
               </div>
             </div>
@@ -748,7 +748,7 @@ export default function BillingClient() {
                 type="text"
                 value={customerAddress}
                 onChange={e => setCustomerAddress(e.target.value)}
-                className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 focus:bg-white focus:border-[#e6007e] focus:ring-2 focus:ring-[#e6007e]/15 outline-none transition-all"
+                className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none transition-all"
                 placeholder="Enter full address"
               />
             </div>
@@ -758,14 +758,14 @@ export default function BillingClient() {
               <div className="pt-1">
                 <label className="block text-[10px] md:text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                   <span>CUSTOMER GSTIN (REQUIRED FOR TAX INVOICE)</span>
-                  <span className="text-[10px] font-bold text-[#e6007e]">15 DIGITS</span>
+                  <span className="text-[10px] font-bold text-blue-600">15 DIGITS</span>
                 </label>
                 <input
                   type="text"
                   value={customerGstin}
                   onChange={e => setCustomerGstin(e.target.value.toUpperCase())}
                   maxLength={15}
-                  className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 font-mono uppercase focus:bg-white focus:border-[#e6007e] focus:ring-2 focus:ring-[#e6007e]/15 outline-none transition-all"
+                  className="w-full bg-slate-50/60 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm font-bold text-slate-900 font-mono uppercase focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none transition-all"
                   placeholder="e.g. 33AAAAA0000A1Z5"
                 />
               </div>
@@ -778,7 +778,7 @@ export default function BillingClient() {
             {/* Header: Title + Action Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2 text-base md:text-lg font-black text-slate-900">
-                <span className="text-[#e6007e]">
+                <span className="text-[#0085FF]">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                   </svg>
@@ -803,7 +803,7 @@ export default function BillingClient() {
                 <button
                   type="button"
                   onClick={() => setShowAddToCatalogModal(true)}
-                  className="px-3 py-2 bg-pink-50/60 hover:bg-pink-100/70 text-[#e6007e] border border-pink-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+                  className="px-3 py-2 border border-[#0085FF]/30 text-[#0085FF] hover:bg-[#0085FF]/10 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -815,7 +815,7 @@ export default function BillingClient() {
                 <button
                   type="button"
                   onClick={addCustomItem}
-                  className="px-3.5 py-2 bg-[#e6007e] hover:bg-[#d00072] text-white rounded-xl text-xs font-black flex items-center gap-1 transition-colors shadow-xs"
+                  className="px-3.5 py-2 bg-[#0085FF] hover:bg-[#0073E6] active:bg-[#0062C4] text-white rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors shadow-xs"
                 >
                   <span>+ ADD CUSTOM ITEM</span>
                 </button>
@@ -849,7 +849,7 @@ export default function BillingClient() {
                           value={item.name}
                           onChange={e => updateItem(index, 'name', e.target.value)}
                           placeholder="Type custom item name..."
-                          className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs md:text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:border-[#e6007e] focus:ring-2 focus:ring-[#e6007e]/15 outline-none transition-all"
+                          className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs md:text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none transition-all"
                         />
                         <button
                           type="button"
@@ -863,8 +863,8 @@ export default function BillingClient() {
                           }}
                           className={`shrink-0 px-2.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all border ${
                             isCatalogOpen
-                              ? 'bg-[#e6007e] text-white border-[#e6007e] shadow-xs'
-                              : 'bg-pink-50 hover:bg-pink-100 text-[#e6007e] border-pink-200'
+                              ? 'bg-[#0085FF] text-white border-[#0085FF] shadow-xs'
+                              : 'border-[#0085FF]/30 text-[#0085FF] hover:bg-[#0085FF]/10'
                           }`}
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -883,7 +883,7 @@ export default function BillingClient() {
                             value={item.price === 0 ? '' : item.price}
                             onChange={e => updateItem(index, 'price', Math.max(0, Number(e.target.value) || 0))}
                             placeholder="0"
-                            className="w-full text-right bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs md:text-sm font-black text-slate-900 focus:border-[#e6007e] outline-none"
+                            className="w-full text-right bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs md:text-sm font-black text-slate-900 focus:border-blue-600 outline-none"
                             min="0"
                           />
                         </div>
@@ -927,7 +927,7 @@ export default function BillingClient() {
 
                     {/* ── INLINE CATALOG DROPDOWN (Renders directly under the active row) ── */}
                     {isCatalogOpen && (
-                      <div className="bg-white rounded-2xl border-2 border-[#e6007e]/30 shadow-xl p-3 md:p-4 space-y-3 animate-fade-in relative z-20">
+                      <div className="bg-white rounded-2xl border-2 border-blue-600/30 shadow-xl p-3 md:p-4 space-y-3 animate-fade-in relative z-20">
                         {/* Search & Category Header */}
                         <div className="space-y-2">
                           <div className="relative">
@@ -937,7 +937,7 @@ export default function BillingClient() {
                               value={catalogSearchQuery}
                               onChange={e => setCatalogSearchQuery(e.target.value)}
                               placeholder="Search catalog items..."
-                              className="w-full bg-slate-50 border border-slate-200 focus:border-[#e6007e] rounded-xl pl-9 pr-9 py-2 text-xs md:text-sm font-bold text-slate-900 outline-none"
+                              className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 rounded-xl pl-9 pr-9 py-2 text-xs md:text-sm font-bold text-slate-900 outline-none"
                             />
                             <svg className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -962,7 +962,7 @@ export default function BillingClient() {
                             <select
                               value={catalogCategoryFilter}
                               onChange={e => setCatalogCategoryFilter(e.target.value)}
-                              className="w-full bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-3 py-2 outline-none cursor-pointer focus:border-[#e6007e]"
+                              className="w-full bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-3 py-2 outline-none cursor-pointer focus:border-blue-600"
                             >
                               {categoriesList.map(cat => (
                                 <option key={cat} value={cat}>
@@ -986,16 +986,16 @@ export default function BillingClient() {
                               <div
                                 key={catItem.id}
                                 onClick={() => handleSelectCatalogItem(index, catItem)}
-                                className="p-2.5 hover:bg-pink-50/50 cursor-pointer transition-colors flex items-center justify-between gap-3 group"
+                                className="p-2.5 hover:bg-blue-50/50 cursor-pointer transition-colors flex items-center justify-between gap-3 group"
                               >
                                 <div className="min-w-0 flex-1">
-                                  <p className="text-xs md:text-sm font-bold text-slate-900 group-hover:text-[#e6007e] transition-colors leading-snug">
+                                  <p className="text-xs md:text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
                                     {catItem.displayName}
                                   </p>
                                   <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider line-clamp-1 mt-0.5">
                                     {catItem.description}
                                   </p>
-                                  <p className="text-xs md:text-sm font-black text-[#e6007e] mt-1">
+                                  <p className="text-xs md:text-sm font-black text-blue-600 mt-1">
                                     ₹{catItem.price.toLocaleString('en-IN')}
                                   </p>
                                 </div>
@@ -1046,7 +1046,7 @@ export default function BillingClient() {
             {/* Header: Current Order + OFFLINE (POS) Pill */}
             <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2 text-base md:text-lg font-black text-slate-900">
-                <span className="text-[#e6007e]">
+                <span className="text-[#0085FF]">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
@@ -1118,7 +1118,7 @@ export default function BillingClient() {
                   value={manualDiscountValue === 0 ? '' : manualDiscountValue}
                   onChange={e => setManualDiscountValue(Math.max(0, Number(e.target.value) || 0))}
                   placeholder="0"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 outline-none focus:bg-white focus:border-[#e6007e]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 outline-none focus:bg-white focus:border-blue-600"
                   min="0"
                 />
               </div>
@@ -1135,12 +1135,12 @@ export default function BillingClient() {
                   value={couponInput}
                   onChange={e => setCouponInput(e.target.value.toUpperCase())}
                   placeholder="E.G. WELCOME10"
-                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-slate-900 uppercase outline-none focus:bg-white focus:border-[#e6007e]"
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-black text-slate-900 uppercase outline-none focus:bg-white focus:border-blue-600"
                 />
                 <button
                   type="button"
                   onClick={handleApplyCoupon}
-                  className="px-3.5 py-2 bg-[#e6007e] hover:bg-[#d00072] text-white text-xs font-black rounded-xl transition-colors shrink-0 shadow-2xs"
+                  className="px-3.5 py-2 bg-[#0085FF] hover:bg-[#0073E6] active:bg-[#0062C4] text-white text-xs font-semibold rounded-xl transition-colors shrink-0 shadow-2xs"
                 >
                   APPLY
                 </button>
@@ -1196,7 +1196,7 @@ export default function BillingClient() {
                   onClick={() => setInvoiceType('gst')}
                   className={`py-2 text-[11px] font-black uppercase rounded-xl transition-all ${
                     isGst
-                      ? 'bg-[#e6007e] text-white shadow-xs'
+                      ? 'bg-blue-600 text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -1206,21 +1206,21 @@ export default function BillingClient() {
 
               {/* GST controls & breakdown */}
               {isGst && (
-                <div className="bg-pink-50/50 border border-pink-100 rounded-2xl p-3 space-y-2 text-xs">
+                <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-3 space-y-2 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black text-slate-600 uppercase tracking-wider">Calculation:</span>
-                    <div className="flex items-center bg-white border border-pink-200 rounded-lg p-0.5 text-[10px] font-black">
+                    <div className="flex items-center bg-white border border-blue-200 rounded-lg p-0.5 text-[10px] font-black">
                       <button
                         type="button"
                         onClick={() => setGstMode('inclusive')}
-                        className={`px-2 py-0.5 rounded-md ${gstMode === 'inclusive' ? 'bg-[#e6007e] text-white' : 'text-slate-600'}`}
+                        className={`px-2 py-0.5 rounded-md ${gstMode === 'inclusive' ? 'bg-blue-600 text-white' : 'text-slate-600'}`}
                       >
                         INCLUSIVE
                       </button>
                       <button
                         type="button"
                         onClick={() => setGstMode('exclusive')}
-                        className={`px-2 py-0.5 rounded-md ${gstMode === 'exclusive' ? 'bg-[#e6007e] text-white' : 'text-slate-600'}`}
+                        className={`px-2 py-0.5 rounded-md ${gstMode === 'exclusive' ? 'bg-blue-600 text-white' : 'text-slate-600'}`}
                       >
                         EXCLUSIVE (+GST)
                       </button>
@@ -1233,11 +1233,11 @@ export default function BillingClient() {
                       type="number"
                       value={gstRate}
                       onChange={e => setGstRate(Math.max(0, Number(e.target.value) || 0))}
-                      className="w-14 text-right bg-white border border-pink-200 rounded-lg px-2 py-0.5 font-black text-xs text-slate-900 outline-none"
+                      className="w-14 text-right bg-white border border-blue-200 rounded-lg px-2 py-0.5 font-black text-xs text-slate-900 outline-none"
                     />
                   </div>
 
-                  <div className="pt-2 border-t border-pink-200/60 space-y-1 text-[11px]">
+                  <div className="pt-2 border-t border-blue-200/60 space-y-1 text-[11px]">
                     <div className="flex justify-between text-slate-600 font-semibold">
                       <span>Taxable Value:</span>
                       <span className="font-bold text-slate-900">₹{totals.taxableAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
@@ -1250,7 +1250,7 @@ export default function BillingClient() {
                       <span>SGST ({(gstRate / 2).toFixed(1)}%):</span>
                       <span>₹{totals.sgst.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                     </div>
-                    <div className="flex justify-between text-[#e6007e] font-black pt-1 border-t border-pink-200/40">
+                    <div className="flex justify-between text-blue-600 font-black pt-1 border-t border-blue-200/40">
                       <span>Total GST (+{gstRate}%):</span>
                       <span>₹{totals.gstTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                     </div>
@@ -1277,7 +1277,7 @@ export default function BillingClient() {
                       onClick={() => setPaymentMethod(opt.id as any)}
                       className={`py-2.5 rounded-xl text-xs font-black uppercase text-center transition-all ${
                         isSelected
-                          ? 'bg-[#e6007e] text-white shadow-xs'
+                          ? 'bg-[#0085FF] text-white font-semibold shadow-sm'
                           : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                       }`}
                     >
@@ -1293,7 +1293,7 @@ export default function BillingClient() {
               <span className="text-xs md:text-sm font-black text-slate-900 uppercase tracking-wider">
                 GRAND TOTAL
               </span>
-              <span className="text-2xl md:text-3xl font-black text-[#e6007e] tracking-tight">
+              <span className="text-2xl md:text-3xl font-black text-[#0085FF] tracking-tight">
                 ₹{totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </span>
             </div>
@@ -1311,7 +1311,7 @@ export default function BillingClient() {
                     value={amountReceived === '' ? '' : amountReceived}
                     onChange={e => setAmountReceived(e.target.value === '' ? '' : Number(e.target.value))}
                     placeholder={String(totals.grandTotal)}
-                    className="w-28 text-right bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 font-black text-xs text-slate-900 outline-none focus:border-[#e6007e]"
+                    className="w-28 text-right bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 font-black text-xs text-slate-900 outline-none focus:border-blue-600"
                     min="0"
                   />
                 </div>
@@ -1356,7 +1356,7 @@ export default function BillingClient() {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md p-3 border-t border-slate-200 shadow-2xl">
         <div className="flex items-center justify-between gap-3 mb-2 px-1">
           <span className="text-xs font-black text-slate-600 uppercase">Grand Total:</span>
-          <span className="text-lg font-black text-[#e6007e]">
+          <span className="text-lg font-black text-blue-600">
             ₹{totals.grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </span>
         </div>
@@ -1378,7 +1378,7 @@ export default function BillingClient() {
           <div className="bg-white rounded-3xl p-6 max-w-md w-full border border-slate-100 shadow-2xl space-y-4 animate-scale-up">
             <div className="flex justify-between items-center pb-2 border-b border-slate-100">
               <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                <span className="text-[#e6007e]">📦</span> Add Item to Catalog
+                <span className="text-blue-600">📦</span> Add Item to Catalog
               </h3>
               <button
                 type="button"
@@ -1400,7 +1400,7 @@ export default function BillingClient() {
                   value={newCatName}
                   onChange={e => setNewCatName(e.target.value)}
                   placeholder="e.g. Parryware Glacier Floor WC"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#e6007e]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-blue-600"
                 />
               </div>
 
@@ -1414,7 +1414,7 @@ export default function BillingClient() {
                     value={newCatCategory}
                     onChange={e => setNewCatCategory(e.target.value)}
                     placeholder="e.g. Water Closets"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#e6007e]"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-blue-600"
                   />
                 </div>
                 <div>
@@ -1427,7 +1427,7 @@ export default function BillingClient() {
                     value={newCatPrice === 0 ? '' : newCatPrice}
                     onChange={e => setNewCatPrice(Number(e.target.value))}
                     placeholder="0"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-black outline-none focus:border-[#e6007e]"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-black outline-none focus:border-blue-600"
                     min="0"
                   />
                 </div>
@@ -1442,7 +1442,7 @@ export default function BillingClient() {
                   value={newCatDesc}
                   onChange={e => setNewCatDesc(e.target.value)}
                   placeholder="e.g. S-Trap (220mm) White Ceramic"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-[#e6007e]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-blue-600"
                 />
               </div>
 
@@ -1456,7 +1456,7 @@ export default function BillingClient() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#e6007e] hover:bg-[#d00072] text-white text-xs font-black rounded-xl transition-colors shadow-xs"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-xl transition-colors shadow-xs"
                 >
                   Save to Catalog
                 </button>
