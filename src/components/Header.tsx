@@ -268,10 +268,10 @@ function HeaderContent() {
       {/* ────────────────── TOP UTILITY STRIP ────────────────── */}
       <div className="bg-primary text-white text-xs md:text-sm">
         {/* Desktop Top Strip (hidden < md) */}
-        <div className="container-main hidden md:flex items-center justify-between py-1.5 md:py-2">
-          <div className="flex items-center gap-1 md:gap-2">
+        <div className="container-main hidden md:flex items-center justify-center gap-8 py-1.5 md:py-2 font-medium">
+          <span className="flex items-center gap-1.5">
             <svg
-              className="w-3.5 h-3.5 md:w-4 md:h-4"
+              className="w-4 h-4 text-emerald-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -280,87 +280,34 @@ function HeaderContent() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
               />
             </svg>
-            <a
-              href="tel:8610710434"
-              className="font-semibold hover:text-green-400 transition-colors"
+            Fast Delivery across Tamil Nadu
+          </span>
+          <span className="opacity-40">•</span>
+          <span className="flex items-center gap-1.5">
+            <svg
+              className="w-4 h-4 text-emerald-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              86107 10434
-            </a>
-            <span className="px-1.5 opacity-70">/</span>
-            <a
-              href="tel:7200377455"
-              className="font-semibold hover:text-green-500 transition-colors"
-            >
-              72003 77455
-            </a>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-                />
-              </svg>
-              Fast Delivery across Tamil Nadu
-            </span>
-            <span className="flex items-center gap-1">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                />
-              </svg>
-              Genuine Branded Products
-            </span>
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+            Genuine Branded Products
+          </span>
         </div>
 
-        {/* Mobile Top Strip (< md): Call Buttons + Auto-scrolling Ticker */}
+        {/* Mobile Top Strip (< md): Auto-scrolling Trust Ticker */}
         <div className="md:hidden">
-          {/* Tappable Call Buttons (min touch target 44px) */}
-          <div className="px-3 py-1.5 flex items-center justify-between gap-2 border-b border-white/15 bg-primary-dark/80">
-            <a
-              href="tel:8610710434"
-              className="flex-1 min-h-[44px] flex items-center justify-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-xl text-white font-bold text-xs transition-colors shadow-2xs"
-              aria-label="Call 86107 10434"
-            >
-              <svg className="w-4 h-4 text-emerald-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>Call: 86107 10434</span>
-            </a>
-            <a
-              href="tel:7200377455"
-              className="flex-1 min-h-[44px] flex items-center justify-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-xl text-white font-bold text-xs transition-colors shadow-2xs"
-              aria-label="Call 72003 77455"
-            >
-              <svg className="w-4 h-4 text-emerald-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>Call: 72003 77455</span>
-            </a>
-          </div>
-
           {/* Auto-scrolling / Swipeable Trust Ticker */}
-          <div className="overflow-hidden py-1.5 px-2 bg-primary/95 text-[11px] font-semibold text-white/95">
+          <div className="overflow-hidden py-1.5 px-2 bg-primary text-[11px] font-semibold text-white/95">
             <div className="animate-ticker flex items-center gap-8 whitespace-nowrap">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
