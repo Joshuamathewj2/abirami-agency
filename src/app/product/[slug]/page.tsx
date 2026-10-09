@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import ProductCard from '@/components/ProductCard';
 import ProductDetailClient from '@/components/ProductDetailClient';
 import { getProductsFromDB } from '@/lib/db';
+import { getProductImagePath } from '@/lib/image-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,8 +104,68 @@ export default async function ProductDetailPage({
 
       {relatedProducts.length > 0 && (
         <div className="container-main py-8 md:py-12">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex items-center justify-between mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">Related Products</h2>
+            <span className="sm:hidden text-xs text-primary font-semibold">Swipe &rarr;</span>
+          </div>
+
+          {/* Mobile Horizontal Carousel (< sm): Amazon-style scroll snapping */}
+          <div className="sm:hidden">
+            <div
+              className="flex items-stretch gap-3 overflow-x-auto no-scrollbar py-2 -mx-4 px-4 overscroll-contain touch-manipulation"
+              style={{
+                scrollSnapType: 'x mandatory',
+                WebkitOverflowScrolling: 'touch',
+              }}
+            >
+              {relatedProducts.map((p) => {
+                const imgSrc = getProductImagePath(p);
+                return (
+                  <div
+                    key={p.id}
+                    className="w-[152px] shrink-0 bg-white border border-gray-200/90 rounded-2xl p-2.5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition-shadow"
+                    style={{ scrollSnapAlign: 'start' }}
+                  >
+                    <div>
+                      {/* Square image with lazy loading and reserved aspect ratio */}
+                      <Link href={`/product/${p.slug}`} className="block">
+                        <div className="w-full aspect-square bg-slate-50 rounded-xl overflow-hidden mb-2 relative flex items-center justify-center p-1.5 border border-gray-100/80">
+                          <img
+                            src={imgSrc}
+                            alt={p.name}
+                            loading="lazy"
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <h3 className="text-xs font-bold text-gray-900 line-clamp-2 leading-snug hover:text-primary transition-colors min-h-[32px]">
+                          {p.name}
+                        </h3>
+                      </Link>
+                    </div>
+
+                    <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col gap-1.5">
+                      <span className="text-xs font-black text-slate-900">
+                        ₹{p.price.toLocaleString('en-IN')}
+                      </span>
+                      <Link
+                        href={`/product/${p.slug}`}
+                        className="min-h-[44px] flex items-center justify-center w-full bg-sky-50 active:bg-sky-100 text-primary hover:bg-primary hover:text-white rounded-xl text-xs font-bold transition-colors"
+                      >
+                        View Product
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex items-center justify-between mt-1 text-[11px] text-gray-400 font-semibold px-1">
+              <span>Swipe to explore more &rarr;</span>
+              <span>{relatedProducts.length} items</span>
+            </div>
+          </div>
+
+          {/* Desktop Grid (sm+): Completely untouched */}
+          <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedProducts.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
