@@ -119,12 +119,28 @@ export default function UserDashboardPage() {
                     <div key={order.id} className="bg-white border border-gray-100 rounded-[2rem] p-8 md:p-10 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-300">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-8 border-b border-gray-50">
                         <div>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Order #{order.ordId || order.id}</p>
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Order #{order.ordId || order.id}</p>
+                            {order.is_gst ? (
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                GST ({order.gst_rate || 18}%)
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500">
+                                Non-GST
+                              </span>
+                            )}
+                          </div>
                           <p className="text-slate-600 font-medium">Placed on {new Date(order.createdAt).toLocaleDateString()}</p>
                         </div>
                         <div className="flex flex-col md:items-end gap-3">
                           <div className="text-left md:text-right">
                             <p className="text-2xl font-extrabold text-slate-900">₹{order.totalAmount?.toLocaleString('en-IN')}</p>
+                            {order.is_gst && (
+                              <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                                Taxable: ₹{(order.taxable_amount ?? 0).toLocaleString('en-IN')} | GST: ₹{((order.cgst_amount || 0) + (order.sgst_amount || 0)).toLocaleString('en-IN')}
+                              </p>
+                            )}
                           </div>
                           <div className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm ${
                             order.status === 'Pending' ? 'bg-amber-50 text-amber-600 border border-amber-100' :

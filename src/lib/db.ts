@@ -295,6 +295,13 @@ export async function addOrderToDB(order: any) {
     .insert({
       customer_name: order.customerName || 'Walk-in Customer',
       customer_phone: order.customerPhone || '',
+      customer_address: order.customerAddress || order.address || null,
+      is_gst: Boolean(order.is_gst),
+      gst_rate: order.gst_rate ?? 0,
+      taxable_amount: order.taxable_amount ?? 0,
+      cgst_amount: order.cgst_amount ?? 0,
+      sgst_amount: order.sgst_amount ?? 0,
+      customer_gstin: order.customer_gstin || null,
       notes: finalNotes,
       invoice_id: generatedInvoiceId || undefined,
       coupon_id: order.couponId || null,

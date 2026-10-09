@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { getInvoiceAction } from "@/app/actions/orderActions";
 import { ShoppingBag, MapPin, Phone, Printer, Copy, Check } from "lucide-react";
 import Link from "next/link";
+import { calculateTotals, numberToIndianWords } from "@/lib/gst";
 
 export default function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -67,6 +68,13 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
   const discountAmount = order.discount_amount || 0;
   const totalAmount = order.total_amount || 0;
   const subtotal = totalAmount + discountAmount;
+  const isGst = Boolean(order.is_gst);
+  const gstRate = order.gst_rate ?? 18;
+  const taxableAmount = order.taxable_amount ?? (isGst ? Number((totalAmount / (1 + gstRate / 100)).toFixed(2)) : totalAmount);
+  const cgst = order.cgst_amount ?? (isGst ? Number(((totalAmount - taxableAmount) / 2).toFixed(2)) : 0);
+  const sgst = order.sgst_amount ?? (isGst ? Number(((totalAmount - taxableAmount) - cgst).toFixed(2)) : 0);
+  const totalGst = Number((cgst + sgst).toFixed(2));
+  const wordsAmount = numberToIndianWords(totalAmount);
 
   // Parser helper to extract custom items from notes safely
   const parseCustomItems = (notes: string, hasDbItems: boolean) => {
@@ -231,7 +239,14 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
         {/* Header Section */}
         <div className="bg-[#f0f9ff] border-b border-gray-200 p-8 sm:p-12 print:p-4 flex flex-col items-center text-center">
           <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">Abirami Agency</h1>
-          <p className="text-xs text-primary font-bold tracking-wider mt-2 mb-4">INVOICE: {order.invoice_id || order.id}</p>
+          <p className="text-xs text-primary font-bold tracking-wider mt-2 mb-1">
+            {isGst ? 'TAX INVOICE' : 'INVOICE'}: {order.invoice_id || order.id}
+          </p>
+          {isGst && (
+            <p className="text-[11px] font-black text-slate-800 tracking-wider mb-2">
+              GSTIN: 33AAAAA0000A1Z5
+            </p>
+          )}
           
           <div className="flex flex-col items-center gap-2 text-sm text-gray-600 font-semibold">
             <div className="text-center w-full leading-relaxed">
@@ -254,6 +269,12 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
             <p className="text-base font-bold text-gray-900">{order.customer_name || "Guest Customer"}</p>
             {order.customer_phone && (
               <p className="text-sm text-gray-600 font-semibold mt-1">+91 {order.customer_phone}</p>
+            )}
+            {order.customer_address && (
+              <p className="text-xs text-gray-600 mt-1 leading-snug">{order.customer_address}</p>
+            )}
+            {isGst && order.customer_gstin && (
+              <p className="text-xs font-bold text-slate-900 mt-1">GSTIN: {order.customer_gstin}</p>
             )}
           </div>
           <div className="sm:text-right flex flex-col sm:items-end">
@@ -353,29 +374,65 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
         })()}
 
         {/* Totals Section */}
-        <div className="bg-[#fdfaf9] border-t border-gray-200 p-8 sm:p-12 print:p-4 flex justify-end">
-            <div className="w-full sm:w-1/2 space-y-3">
-              {(discountAmount > 0) && (
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-400 font-bold uppercase tracking-wider">Subtotal</span>
-                  <span className="font-bold text-gray-900">₹{subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
-                </div>
-              )}
-              
-              {discountAmount > 0 && (
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-400 font-bold uppercase tracking-wider">
-                    Discount
-                  </span>
-                  <span className="font-bold text-primary">-₹{discountAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
-                </div>
-              )}
-
-              <div className="border-t border-gray-200 pt-4 mt-2 flex justify-between items-center">
-                <span className="text-sm font-black text-primary uppercase tracking-widest">Total Amount</span>
-                <span className="text-3xl font-black text-gray-900">₹{totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+        <div className="bg-[#fdfaf9] border-t border-gray-200 p-8 sm:p-12 print:p-4 flex flex-col sm:flex-row justify-between items-start gap-6">
+          <div className="w-full sm:w-1/2">
+            {wordsAmount && (
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 block mb-1">
+                  Amount in Words
+                </span>
+                <p className="text-xs font-bold text-slate-800 italic leading-relaxed">
+                  {wordsAmount}
+                </p>
               </div>
+            )}
+          </div>
+
+          <div className="w-full sm:w-1/2 space-y-2.5">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 font-bold uppercase tracking-wider">Subtotal</span>
+              <span className="font-bold text-gray-900">₹{subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
             </div>
+            
+            {discountAmount > 0 && (
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-500 font-bold uppercase tracking-wider">
+                  Discount
+                </span>
+                <span className="font-bold text-primary">-₹{discountAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+              </div>
+            )}
+
+            {isGst && (
+              <>
+                <div className="flex justify-between items-center text-sm pt-2 border-t border-dashed border-slate-200">
+                  <span className="text-slate-600 font-semibold">Taxable Value</span>
+                  <span className="font-bold text-slate-900">₹{taxableAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs text-slate-600">
+                  <span>CGST ({(gstRate / 2).toFixed(1)}%)</span>
+                  <span className="font-bold text-slate-800">₹{cgst.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs text-slate-600">
+                  <span>SGST ({(gstRate / 2).toFixed(1)}%)</span>
+                  <span className="font-bold text-slate-800">₹{sgst.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs text-slate-700 font-bold">
+                  <span>Total GST (+{gstRate}%)</span>
+                  <span className="font-extrabold text-slate-900">₹{totalGst.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+                </div>
+              </>
+            )}
+
+            <div className="border-t border-gray-200 pt-3 mt-2 flex justify-between items-center">
+              <span className="text-sm font-black text-primary uppercase tracking-widest">
+                {isGst ? 'Grand Total' : 'Total Amount'}
+              </span>
+              <span className="text-2xl sm:text-3xl font-black text-gray-900">
+                ₹{totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
+              </span>
+            </div>
+          </div>
         </div>
         
         {/* Footer */}
