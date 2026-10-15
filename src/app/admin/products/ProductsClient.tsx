@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Product } from '@/types';
 import ProductRow from './ProductRow';
+import { exportProductsToCSV } from '@/lib/csvExport';
 
 export default function ProductsClient({ initialProducts }: { initialProducts: Product[] }) {
   const router = useRouter();
@@ -33,15 +34,27 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
           <h2 className="text-xl font-bold text-gray-900">All Products</h2>
           <p className="text-sm text-gray-500 mt-1">Manage pricing, variants, and stock.</p>
         </div>
-        <Link 
-          href="/admin/products/new" 
-          className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-sm shadow-sky-200 hover:shadow-sky-300 hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto text-center"
-        >
-          <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add New Product
-        </Link>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <button
+            onClick={() => exportProductsToCSV(filteredProducts)}
+            className="inline-flex items-center justify-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 active:bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-xs cursor-pointer active:scale-95"
+            title="Export products to CSV"
+          >
+            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export CSV
+          </button>
+          <Link 
+            href="/admin/products/new" 
+            className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-sm shadow-sky-200 hover:shadow-sky-300 hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto text-center cursor-pointer"
+          >
+            <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add New Product
+          </Link>
+        </div>
       </div>
 
       {/* Search Input */}

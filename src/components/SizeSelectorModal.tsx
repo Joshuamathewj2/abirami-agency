@@ -6,6 +6,7 @@ import { type Product, type Size } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useUserStore } from '@/store/userStore';
 import { getColorName } from '@/lib/colors';
+import { formatDimensions } from '@/lib/dimensions';
 
 interface SizeSelectorModalProps {
   product: Product;
@@ -198,7 +199,17 @@ export default function SizeSelectorModal({ product, isOpen, onClose, selectedCo
           </div>
           <h3 className="text-2xl font-black text-gray-900 mb-2">Added to Cart!</h3>
           <p className="text-gray-500 font-medium mb-6">
-            <span className="font-bold text-gray-800">{quantity}x</span> {product.name} ({selectedVariant.label}, {selectedVariant.dimensions}) has been successfully added to your cart.
+            {(() => {
+              const validDims = formatDimensions(selectedVariant.dimensions);
+              const label = selectedVariant.label && selectedVariant.label !== 'Standard' ? selectedVariant.label : '';
+              const details = [label, validDims].filter(Boolean).join(', ');
+              return (
+                <>
+                  <span className="font-bold text-gray-800">{quantity}x</span> {product.name}
+                  {details ? ` (${details})` : ''} has been successfully added to your cart.
+                </>
+              );
+            })()}
           </p>
           <div className="space-y-3">
             <button

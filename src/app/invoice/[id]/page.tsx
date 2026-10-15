@@ -5,6 +5,7 @@ import { getInvoiceAction } from "@/app/actions/orderActions";
 import { ShoppingBag, MapPin, Phone, Printer, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import { calculateTotals, numberToIndianWords } from "@/lib/gst";
+import { formatDimensions, cleanDisplayName } from "@/lib/dimensions";
 
 export default function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -322,21 +323,34 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
                 if (item.variants) {
                   const productName = item.variants?.mattresses?.name || "Unknown Product";
                   const sizeName = item.variants?.size_name || "";
-                  fullName = `${productName} ${sizeName ? `(${sizeName})` : ''}`.trim();
-                  const length = item.variants?.length;
-                  const width = item.variants?.width;
-                  const height = item.variants?.height;
-                  if (length && width) {
-                    dimensions = `${length}" × ${width}"${height ? ` × ${height}"` : ''}`;
-                  }
-                  sku = item.variants?.sku;
+                  const rawSku = item.variants?.sku || "";
+                  const formatted = formatDimensions(item.variants, 'mm');
+                  const clean = cleanDisplayName({
+                    productName,
+                    sku: rawSku,
+                    sizeName,
+                    dimensions: formatted,
+                  });
+                  fullName = clean.displayName;
+                  dimensions = clean.formattedDimensions;
+                  sku = clean.cleanSku;
                 } else {
                   fullName = item.custom_name || "Custom Product";
                   // Extract dimensions in parenthesis if present
                   const dimMatch = fullName.match(/\(([^)]*\d+["\s]*[×x*][^)]*)\)/i);
                   if (dimMatch) {
-                    dimensions = dimMatch[1];
+                    const parsedDim = formatDimensions(dimMatch[1]);
+                    dimensions = parsedDim;
                     fullName = fullName.replace(dimMatch[0], "").trim();
+                  }
+                  // Clean redundant SKU pattern like (G5284A1) if already in name
+                  const skuMatch = fullName.match(/\(([A-Z0-9_-]+)\)$/i);
+                  if (skuMatch) {
+                    const matchedCode = skuMatch[1];
+                    if (fullName.slice(0, skuMatch.index).toLowerCase().includes(matchedCode.toLowerCase())) {
+                      fullName = fullName.replace(skuMatch[0], "").trim();
+                    }
+                    if (!sku) sku = matchedCode;
                   }
                 }
                 

@@ -137,18 +137,20 @@ export default function AdminLayout({
 
   // Normal Authorized Admin Layout
   return (
-    <div className="w-full bg-slate-50 min-h-screen flex">
-      {/* Desktop Sidebar (hidden on mobile, unchanged on desktop) */}
-      <AdminSidebar 
-        className={`hidden md:flex transition-all duration-300 ${isDesktopSidebarOpen ? 'w-64' : 'w-20'}`} 
-        isCollapsed={!isDesktopSidebarOpen}
-        onToggle={() => setIsDesktopSidebarOpen(!isDesktopSidebarOpen)}
-      />
+    <div className="w-full bg-slate-50 min-h-screen flex print:min-h-0 print:bg-white print:block">
+      {/* Desktop Sidebar (hidden on mobile, unchanged on desktop, hidden on print) */}
+      <div className="hidden md:flex print:hidden">
+        <AdminSidebar 
+          className={`transition-all duration-300 ${isDesktopSidebarOpen ? 'w-64' : 'w-20'}`} 
+          isCollapsed={!isDesktopSidebarOpen}
+          onToggle={() => setIsDesktopSidebarOpen(!isDesktopSidebarOpen)}
+        />
+      </div>
 
       {/* Main Container */}
-      <div className="flex-1 flex flex-col min-w-0 w-full overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 w-full overflow-hidden print:overflow-visible print:block">
         {/* Mobile Header + Sticky Top-Icon Navigation Bar (< md) */}
-        <div className="md:hidden sticky top-0 z-40 shrink-0">
+        <div className="md:hidden sticky top-0 z-40 shrink-0 print:hidden">
           {/* Mobile Top Bar */}
           <div className="h-14 bg-slate-950 px-4 flex items-center justify-between border-b border-slate-900">
             <Link href="/admin" prefetch={true} className="flex items-center gap-2">
@@ -202,8 +204,8 @@ export default function AdminLayout({
           </div>
         </div>
 
-        {/* Desktop Navbar (hidden md:flex) */}
-        <header className="hidden md:flex bg-white border-b border-gray-200 h-16 sticky top-0 z-40 px-8 items-center justify-between">
+        {/* Desktop Navbar (hidden md:flex, hidden on print) */}
+        <header className="hidden md:flex bg-white border-b border-gray-200 h-16 sticky top-0 z-40 px-8 items-center justify-between print:hidden">
           <h1 className="text-lg font-bold text-gray-800 tracking-tight">Dashboard</h1>
           
           <div className="flex items-center gap-4 shrink-0">
@@ -225,13 +227,13 @@ export default function AdminLayout({
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 px-2.5 py-4 sm:p-8 flex flex-col w-full max-w-full overflow-hidden">
-          <div className="bg-white rounded-xl md:rounded-2xl shadow-sm border border-gray-100 p-2.5 sm:p-4 md:p-6 flex-1 w-full max-w-full overflow-hidden">
+        <main className="flex-1 px-2.5 py-4 sm:p-8 flex flex-col w-full max-w-full overflow-hidden print:p-0 print:m-0 print:bg-white print:min-h-0 print:overflow-visible print:block">
+          <div className="bg-white rounded-xl md:rounded-2xl shadow-sm border border-gray-100 p-2.5 sm:p-4 md:p-6 flex-1 w-full max-w-full overflow-hidden print:p-0 print:m-0 print:border-none print:shadow-none print:rounded-none print:overflow-visible print:block">
             {children}
           </div>
           
           {/* Admin Footer */}
-          <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-widest shrink-0 text-center md:text-left">
+          <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-widest shrink-0 text-center md:text-left print:hidden">
             <span>© {new Date().getFullYear()} ALL RIGHTS RESERVED. ABIRAMI AGENCY.</span>
             <span>POWERED BY <span className="text-primary font-bold">CENEXA SYSTEMS</span> ©{new Date().getFullYear()}</span>
             <span className="text-primary italic tracking-normal text-xs font-serif">• PARRYWARE PREMIUM BATH EXPERIENCES.</span>

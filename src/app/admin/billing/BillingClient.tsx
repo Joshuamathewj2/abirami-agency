@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase/client';
 import { placeOrderAction } from '@/app/actions/orderActions';
 import BillGeneratedView from '@/components/BillGeneratedView';
 import { calculateTotals, InvoiceType, GstMode } from '@/lib/gst';
+import { formatDimensions, cleanDisplayName } from '@/lib/dimensions';
 
 interface DBProduct {
   id: string;
@@ -40,6 +41,7 @@ interface FlatCatalogItem {
   price: number;
   stock: number;
   sku?: string;
+  dimensions?: string;
   imageUrl?: string;
 }
 
@@ -166,7 +168,7 @@ export default function BillingClient() {
               variants: (m.variants || []).map((v: any) => ({
                 id: v.id,
                 size_name: v.size_name || 'Standard',
-                dimensions: v.length > 0 ? `${v.length}" × ${v.width}"${v.height ? ` × ${v.height}"` : ''}` : (v.size_name || 'Standard'),
+                dimensions: formatDimensions(v, 'mm'),
                 price: Number(v.price),
                 stock: v.stock || 0,
                 sku: v.sku || ''
@@ -185,7 +187,7 @@ export default function BillingClient() {
             variants: (p.sizes || []).map((s: any) => ({
               id: s.id,
               size_name: s.label || 'Standard',
-              dimensions: s.dimensions || 'Standard',
+              dimensions: formatDimensions(s.dimensions || s, 'mm'),
               price: Number(s.price),
               stock: 50
             }))
@@ -221,20 +223,16 @@ export default function BillingClient() {
     dbProducts.forEach(p => {
       if (p.variants && p.variants.length > 0) {
         p.variants.forEach(v => {
-          const hasVariantTag = v.size_name && v.size_name !== 'Standard';
-          const hasDim = v.dimensions && v.dimensions !== 'Standard';
-          let variantLabel = '';
-          if (hasVariantTag && hasDim && v.size_name !== v.dimensions) {
-            variantLabel = `${v.size_name} (${v.dimensions})`;
-          } else if (hasVariantTag) {
-            variantLabel = v.size_name;
-          } else if (hasDim) {
-            variantLabel = v.dimensions;
-          }
+          const clean = cleanDisplayName({
+            productName: p.name,
+            sku: v.sku,
+            sizeName: v.size_name,
+            dimensions: v.dimensions,
+          });
 
-          const displayName = variantLabel ? `${p.name} – ${variantLabel}` : p.name;
+          const displayName = clean.displayName;
           const description = v.sku 
-            ? `${p.name} (SKU: ${v.sku})` 
+            ? (p.name.toLowerCase().includes(v.sku.toLowerCase()) ? p.name : `${p.name} (SKU: ${v.sku})`)
             : `${p.name} • ${p.category}`.toUpperCase();
 
           list.push({
@@ -247,6 +245,7 @@ export default function BillingClient() {
             price: v.price,
             stock: v.stock,
             sku: v.sku,
+            dimensions: clean.formattedDimensions,
             imageUrl: p.imageUrl
           });
         });
@@ -260,6 +259,7 @@ export default function BillingClient() {
           category: p.category,
           price: 0,
           stock: 50,
+          dimensions: '',
           imageUrl: p.imageUrl
         });
       }
@@ -342,40 +342,6 @@ export default function BillingClient() {
     setItems(newItems);
     setActiveCatalogRow(null);
     setCatalogSearchQuery('');
-  };
-
-  const handleDeleteCatalogItem = (e: React.MouseEvent, item: FlatCatalogItem) => {
-    e.stopPropagation();
-    if (window.confirm(`Are you sure you want to delete "${item.displayName}" from the catalog?`)) {
-      setDbProducts(prev => prev.map(p => {
-        if (p.id === item.productId) {
-          return {
-            ...p,
-            variants: p.variants.filter(v => v.id !== item.id)
-          };
-        }
-        return p;
-      }).filter(p => p.variants.length > 0));
-    }
-  };
-
-  const handleEditCatalogItem = (e: React.MouseEvent, item: FlatCatalogItem) => {
-    e.stopPropagation();
-    const newPriceStr = window.prompt(`Edit price for "${item.displayName}":`, String(item.price));
-    if (newPriceStr !== null) {
-      const newPrice = Number(newPriceStr);
-      if (!isNaN(newPrice) && newPrice >= 0) {
-        setDbProducts(prev => prev.map(p => {
-          if (p.id === item.productId) {
-            return {
-              ...p,
-              variants: p.variants.map(v => v.id === item.id ? { ...v, price: newPrice } : v)
-            };
-          }
-          return p;
-        }));
-      }
-    }
   };
 
   const handleCreateCatalogItem = (e: React.FormEvent) => {
@@ -843,13 +809,13 @@ export default function BillingClient() {
                     <div className="p-3 sm:p-2 bg-slate-50/60 hover:bg-slate-50 rounded-2xl border border-slate-200/80 transition-all flex flex-col sm:grid sm:grid-cols-12 gap-2 sm:gap-3 items-center">
                       
                       {/* Name input + CATALOG button (Cols 7) */}
-                      <div className="w-full sm:col-span-7 flex items-center gap-2">
+                      <div className="w-full sm:col-span-7 flex items-center gap-2 min-w-0">
                         <input
                           type="text"
                           value={item.name}
                           onChange={e => updateItem(index, 'name', e.target.value)}
                           placeholder="Type custom item name..."
-                          className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs md:text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none transition-all"
+                          className="flex-1 min-w-0 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs md:text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 outline-none transition-all"
                         />
                         <button
                           type="button"
@@ -861,13 +827,13 @@ export default function BillingClient() {
                               setCatalogSearchQuery('');
                             }
                           }}
-                          className={`shrink-0 px-2.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all border ${
+                          className={`shrink-0 px-2.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all border whitespace-nowrap ${
                             isCatalogOpen
                               ? 'bg-[#0085FF] text-white border-[#0085FF] shadow-xs'
                               : 'border-[#0085FF]/30 text-[#0085FF] hover:bg-[#0085FF]/10'
                           }`}
                         >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M4 6h16M4 12h16M4 18h7" />
                           </svg>
                           <span>CATALOG</span>
@@ -986,13 +952,14 @@ export default function BillingClient() {
                               <div
                                 key={catItem.id}
                                 onClick={() => handleSelectCatalogItem(index, catItem)}
-                                className="p-2.5 hover:bg-blue-50/50 cursor-pointer transition-colors flex items-center justify-between gap-3 group"
+                                className="p-2.5 hover:bg-blue-50/70 active:bg-blue-100/70 cursor-pointer transition-colors flex items-center justify-between gap-3 group"
+                                title="Click to select this item"
                               >
                                 <div className="min-w-0 flex-1">
-                                  <p className="text-xs md:text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
+                                  <p className="text-xs md:text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug truncate">
                                     {catItem.displayName}
                                   </p>
-                                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider line-clamp-1 mt-0.5">
+                                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider truncate mt-0.5">
                                     {catItem.description}
                                   </p>
                                   <p className="text-xs md:text-sm font-black text-blue-600 mt-1">
@@ -1000,30 +967,11 @@ export default function BillingClient() {
                                   </p>
                                 </div>
 
-                                <div className="flex items-center gap-1.5 shrink-0">
-                                  {/* Edit Pencil Icon */}
-                                  <button
-                                    type="button"
-                                    onClick={e => handleEditCatalogItem(e, catItem)}
-                                    className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-white rounded-lg transition-colors border border-transparent hover:border-slate-200"
-                                    title="Edit price"
-                                  >
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                    </svg>
-                                  </button>
-
-                                  {/* Delete Trash Icon */}
-                                  <button
-                                    type="button"
-                                    onClick={e => handleDeleteCatalogItem(e, catItem)}
-                                    className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                                    title="Delete from catalog"
-                                  >
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7" />
-                                    </svg>
-                                  </button>
+                                <div className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-[#0085FF] group-hover:underline">
+                                  <span>Select</span>
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                                  </svg>
                                 </div>
                               </div>
                             ))

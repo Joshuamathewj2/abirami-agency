@@ -1,0 +1,1988 @@
+[
+  {
+    "productId": "b29d92ad-558d-40f1-8966-d287b6be9128",
+    "productName": "Single Lever Basin Mixer",
+    "skus": [
+      "CLARET-SINGLE-LEVER-BASIN-MIXER-V1"
+    ],
+    "variants": [
+      {
+        "id": "cd540c72-eed4-4cf4-9a24-45ed1eeb08a0",
+        "sku": "CLARET-SINGLE-LEVER-BASIN-MIXER-V1",
+        "sizeName": "T4665A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "4ddcdc8a-fb86-4692-8495-a6da9b141dc0",
+    "productName": "Tall Body Basin Mixer",
+    "skus": [
+      "CLARET-TALL-BODY-BASIN-MIXER-V1"
+    ],
+    "variants": [
+      {
+        "id": "fdbb8e8a-327d-48cf-a939-b5002258dcb3",
+        "sku": "CLARET-TALL-BODY-BASIN-MIXER-V1",
+        "sizeName": "T4663A1 / T4646A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "650dcd1c-fb10-4189-96a4-58ec2227cfd3",
+    "productName": "Wall Mounted Basin Mixer Upper Trim (G5276A1)",
+    "skus": [
+      "CLARET-WALL-MOUNTED-BASIN-MIXER-UPPER-TRIM-G5276A1-V1"
+    ],
+    "variants": [
+      {
+        "id": "337bec5e-cb95-4745-b0a8-f4775031a76e",
+        "sku": "CLARET-WALL-MOUNTED-BASIN-MIXER-UPPER-TRIM-G5276A1-V1",
+        "sizeName": "G5276A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "32661157-bc5a-4430-87f2-c1bd69e4784a",
+    "productName": "Claret Pillar Cock",
+    "skus": [
+      "CLARET-PILLAR-COCK-V1",
+      "CLARET-PILLAR-COCK-V2",
+      "CLARET-PILLAR-COCK-V3"
+    ],
+    "variants": [
+      {
+        "id": "ef422679-1f1b-4730-9fa7-f216100688c1",
+        "sku": "CLARET-PILLAR-COCK-V1",
+        "sizeName": "G5201A1 / T4601A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "bbbdbadc-5da2-4fb1-8eae-0ebf24ebacbb",
+        "sku": "CLARET-PILLAR-COCK-V2",
+        "sizeName": "G5201A1GE (Gold/Emerald)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "f0742f8a-e923-488f-8964-7f2af1cc24c1",
+        "sku": "CLARET-PILLAR-COCK-V3",
+        "sizeName": "G5201A1GJ (Gold/Jade)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "0232743b-db35-46a0-9797-eceac7492b6b",
+    "productName": "Wall Mounted Basin Tap Upper Trim",
+    "skus": [
+      "CLARET-WALL-MOUNTED-BASIN-TAP-UPPER-TRIM-V1"
+    ],
+    "variants": [
+      {
+        "id": "68bde1f1-9d00-4764-a346-eec57a0c8a08",
+        "sku": "CLARET-WALL-MOUNTED-BASIN-TAP-UPPER-TRIM-V1",
+        "sizeName": "G5296A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "366b7488-bbd0-4c3c-8c18-42b64cdd6065",
+    "productName": "Angle Valve",
+    "skus": [
+      "CLARET-ANGLE-VALVE-V1"
+    ],
+    "variants": [
+      {
+        "id": "e4d5daed-9791-4d3c-829e-8090f03c7430",
+        "sku": "CLARET-ANGLE-VALVE-V1",
+        "sizeName": "T4607A1 / G5207A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "b3a370bb-0145-4d53-9166-a171b06bb8b7",
+    "productName": "Concealed Diverter Upper Trim",
+    "skus": [
+      "CLARET-CONCEALED-DIVERTER-UPPER-TRIM-V1"
+    ],
+    "variants": [
+      {
+        "id": "ed7c0da0-fe37-4efd-a06e-db71dbeabc82",
+        "sku": "CLARET-CONCEALED-DIVERTER-UPPER-TRIM-V1",
+        "sizeName": "G5250A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "2733773c-8f49-4388-9688-0559e4a12b82",
+    "productName": "Single Lever Basin Mixer (Cold Start)",
+    "skus": [
+      "CLARET-SINGLE-LEVER-BASIN-MIXER-COLD-START-V1",
+      "CLARET-SINGLE-LEVER-BASIN-MIXER-COLD-START-V2",
+      "CLARET-SINGLE-LEVER-BASIN-MIXER-COLD-START-V3"
+    ],
+    "variants": [
+      {
+        "id": "59bbed94-1db5-4804-90a4-a42fbf1eaf29",
+        "sku": "CLARET-SINGLE-LEVER-BASIN-MIXER-COLD-START-V1",
+        "sizeName": "G5265A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "b83739a3-e6b6-4736-adfd-273e5996bc7f",
+        "sku": "CLARET-SINGLE-LEVER-BASIN-MIXER-COLD-START-V2",
+        "sizeName": "G5265A1GE (Gold/Emerald)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "92b2c1a2-26f5-4467-b3d8-1870e0ab9071",
+        "sku": "CLARET-SINGLE-LEVER-BASIN-MIXER-COLD-START-V3",
+        "sizeName": "G5265A1GJ (Gold/Jade)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "9bf8edbf-3388-4a8e-b85c-eea2be29da4d",
+    "productName": "Wall Mounted Basin Mixer Upper Trim (G5277A1)",
+    "skus": [
+      "CLARET-WALL-MOUNTED-BASIN-MIXER-UPPER-TRIM-G5277A1-V1"
+    ],
+    "variants": [
+      {
+        "id": "8e2a98a5-9dc2-4a55-a2e6-60e71744d017",
+        "sku": "CLARET-WALL-MOUNTED-BASIN-MIXER-UPPER-TRIM-G5277A1-V1",
+        "sizeName": "G5277A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "15601be5-3b6b-453e-863a-f35447eabb1f",
+    "productName": "Center Hole Basin Mixer",
+    "skus": [
+      "CLARET-CENTER-HOLE-BASIN-MIXER-V1"
+    ],
+    "variants": [
+      {
+        "id": "7088d6be-d21b-4788-8825-1846109fea34",
+        "sku": "CLARET-CENTER-HOLE-BASIN-MIXER-V1",
+        "sizeName": "T4614A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ac0b0d90-e9d7-4de7-bd10-2abe26e24b28",
+    "productName": "Tall Body Pillar Cock",
+    "skus": [
+      "CLARET-TALL-BODY-PILLAR-COCK-V1"
+    ],
+    "variants": [
+      {
+        "id": "dbb12eac-3f01-45c9-9fea-0006a24e4efe",
+        "sku": "CLARET-TALL-BODY-PILLAR-COCK-V1",
+        "sizeName": "T4602A1 / T4642A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "f4892435-781a-45f6-9afc-5670f6687531",
+    "productName": "Swan Neck Pillar Cock",
+    "skus": [
+      "CLARET-SWAN-NECK-PILLAR-COCK-V1"
+    ],
+    "variants": [
+      {
+        "id": "77326ed5-e7eb-4f11-8676-f3d1872cb569",
+        "sku": "CLARET-SWAN-NECK-PILLAR-COCK-V1",
+        "sizeName": "T4668A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "39da2589-4995-4cf1-81fa-a0b17b0adac7",
+    "productName": "Ultra High Flow Concealed Diverter Upper Trim",
+    "skus": [
+      "CLARET-ULTRA-HIGH-FLOW-CONCEALED-DIVERTER-UPPER-TRIM-V1"
+    ],
+    "variants": [
+      {
+        "id": "ecf2416d-60b0-4e20-9876-e78b407ef87e",
+        "sku": "CLARET-ULTRA-HIGH-FLOW-CONCEALED-DIVERTER-UPPER-TRIM-V1",
+        "sizeName": "G522KA1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "02350847-7306-4f23-9e58-123f7055298b",
+    "productName": "Deusch Mixer Upper Trim",
+    "skus": [
+      "CLARET-DEUSCH-MIXER-UPPER-TRIM-V1"
+    ],
+    "variants": [
+      {
+        "id": "96730ad6-27f3-48ac-800a-3e2fe031e975",
+        "sku": "CLARET-DEUSCH-MIXER-UPPER-TRIM-V1",
+        "sizeName": "G521HA1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ad3da77a-08aa-4776-9cf8-63bc126d2aca",
+    "productName": "3-Inlet Diverter Upper Trim",
+    "skus": [
+      "CLARET-3-INLET-DIVERTER-UPPER-TRIM-V1"
+    ],
+    "variants": [
+      {
+        "id": "1bfcaed9-a945-48bb-85b4-3ee0e811dfa2",
+        "sku": "CLARET-3-INLET-DIVERTER-UPPER-TRIM-V1",
+        "sizeName": "G5284A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "8df81e73-3281-4119-95eb-11dadbf5aa67",
+    "productName": "Non Telephonic Wall Mixer",
+    "skus": [
+      "CLARET-NON-TELEPHONIC-WALL-MIXER-V1"
+    ],
+    "variants": [
+      {
+        "id": "c2ef5794-6e01-47e3-9336-6e2148479f9e",
+        "sku": "CLARET-NON-TELEPHONIC-WALL-MIXER-V1",
+        "sizeName": "T4641A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "752dc5ab-5467-43e0-aa4e-01dc4c0f5f21",
+    "productName": "Wall Mixer 2-in-1",
+    "skus": [
+      "CLARET-WALL-MIXER-2-IN-1-V1"
+    ],
+    "variants": [
+      {
+        "id": "ec1708ff-e6db-4613-96fc-da2d5e9c05a3",
+        "sku": "CLARET-WALL-MIXER-2-IN-1-V1",
+        "sizeName": "T4616A1 / G5216A1",
+        "length": "2",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "96b4caef-6286-42da-8d4d-66236bddd4e7",
+    "productName": "Wall Mixer 3-in-1",
+    "skus": [
+      "CLARET-WALL-MIXER-3-IN-1-V1"
+    ],
+    "variants": [
+      {
+        "id": "645c2a02-dc5f-491c-9b5c-3f97b51b8d34",
+        "sku": "CLARET-WALL-MIXER-3-IN-1-V1",
+        "sizeName": "T4617A1",
+        "length": "3",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "83e98523-0f32-4295-939a-2d2fd6edac86",
+    "productName": "Wall Mixer with Crutch",
+    "skus": [
+      "CLARET-WALL-MIXER-WITH-CRUTCH-V1"
+    ],
+    "variants": [
+      {
+        "id": "b3cb5dc6-6b1b-4045-b601-6b3c39d7b1ae",
+        "sku": "CLARET-WALL-MIXER-WITH-CRUTCH-V1",
+        "sizeName": "G5219A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "18e5e912-a20b-4832-befe-4e8fd35f7060",
+    "productName": "Wall Spout",
+    "skus": [
+      "CLARET-WALL-SPOUT-V1"
+    ],
+    "variants": [
+      {
+        "id": "9fe98dd4-e2df-4968-8180-90544aaaad62",
+        "sku": "CLARET-WALL-SPOUT-V1",
+        "sizeName": "T4628A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "12ae6b9d-e21f-4746-8695-6490ab765f81",
+    "productName": "Wall Spout with Diverter",
+    "skus": [
+      "CLARET-WALL-SPOUT-WITH-DIVERTER-V1"
+    ],
+    "variants": [
+      {
+        "id": "9cbcec99-4249-465f-9bfd-304fb26157d5",
+        "sku": "CLARET-WALL-SPOUT-WITH-DIVERTER-V1",
+        "sizeName": "T4627A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "6aabfcc8-2fdc-4efe-9d37-ba3f3caebabd",
+    "productName": "Claret Bib Cock",
+    "skus": [
+      "CLARET-BIB-COCK-V1",
+      "CLARET-BIB-COCK-V2",
+      "CLARET-BIB-COCK-V3"
+    ],
+    "variants": [
+      {
+        "id": "11594a6f-fb4b-4f67-bfe9-d44588351e5c",
+        "sku": "CLARET-BIB-COCK-V1",
+        "sizeName": "G5204A1 / T4604A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "359f4589-d2ee-4425-82f6-e4f5b4a4c188",
+        "sku": "CLARET-BIB-COCK-V2",
+        "sizeName": "G5204A1GE (Gold/Emerald)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "851bf327-15f9-4584-a61a-ab771f64b7f9",
+        "sku": "CLARET-BIB-COCK-V3",
+        "sizeName": "G5204A1GJ (Gold/Jade)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ada427bc-cd4b-44fb-a95c-ff19d06d1530",
+    "productName": "Two Way Bib Cock",
+    "skus": [
+      "CLARET-TWO-WAY-BIB-COCK-V1"
+    ],
+    "variants": [
+      {
+        "id": "892075bb-c6a7-4eb8-94b6-f059c3cb93e6",
+        "sku": "CLARET-TWO-WAY-BIB-COCK-V1",
+        "sizeName": "G5234A1",
+        "length": "2",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "6a5b2020-8c05-4da5-b0b0-7b0c04d8c269",
+    "productName": "Two Way Angle Valve",
+    "skus": [
+      "CLARET-TWO-WAY-ANGLE-VALVE-V1"
+    ],
+    "variants": [
+      {
+        "id": "1ac42ffa-0785-4d51-85ab-d0e30afddbd1",
+        "sku": "CLARET-TWO-WAY-ANGLE-VALVE-V1",
+        "sizeName": "T4643A1 / G5243A1",
+        "length": "2",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ad106b07-d96d-4916-bf85-1db34a1a3796",
+    "productName": "Bib Cock with Nozzle",
+    "skus": [
+      "CLARET-BIB-COCK-WITH-NOZZLE-V1"
+    ],
+    "variants": [
+      {
+        "id": "3b125212-aa59-4532-9291-d24a0d926213",
+        "sku": "CLARET-BIB-COCK-WITH-NOZZLE-V1",
+        "sizeName": "G5279A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "6f673bde-34ae-42db-9be1-0b27870f21f7",
+    "productName": "Long Body Bib Cock",
+    "skus": [
+      "CLARET-LONG-BODY-BIB-COCK-V1",
+      "CLARET-LONG-BODY-BIB-COCK-V2",
+      "CLARET-LONG-BODY-BIB-COCK-V3"
+    ],
+    "variants": [
+      {
+        "id": "9ef255b7-fda5-43b6-9da3-15e26d5d65f8",
+        "sku": "CLARET-LONG-BODY-BIB-COCK-V1",
+        "sizeName": "G5206A1 / T4606A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "368b8dbf-93d1-4a4e-a6bb-634bee3ae6f9",
+        "sku": "CLARET-LONG-BODY-BIB-COCK-V2",
+        "sizeName": "G5206A1GE (Gold/Emerald)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "88b48d46-6ed1-436e-88dc-a9c9d571401c",
+        "sku": "CLARET-LONG-BODY-BIB-COCK-V3",
+        "sizeName": "G5206A1GJ (Gold/Jade)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "3697b3ed-6e0e-41be-8ec1-5341d02524a4",
+    "productName": "Long Neck Bib Cock",
+    "skus": [
+      "CLARET-LONG-NECK-BIB-COCK-V1"
+    ],
+    "variants": [
+      {
+        "id": "9070a53a-9289-4587-880f-73cbb0776ac1",
+        "sku": "CLARET-LONG-NECK-BIB-COCK-V1",
+        "sizeName": "G5271A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ad554093-84d9-4941-9617-6be741aecd8e",
+    "productName": "Concealed Stop Cock 1/2\" (incl body)",
+    "skus": [
+      "CLARET-CONCEALED-STOP-COCK-HALF-INCH-V1"
+    ],
+    "variants": [
+      {
+        "id": "ecf67a1d-c6c9-429d-aee3-7ebe2a2121c4",
+        "sku": "CLARET-CONCEALED-STOP-COCK-HALF-INCH-V1",
+        "sizeName": "T4611A1 (1/2 inch)",
+        "length": "1",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "46ad5d3c-c622-4de1-ae75-a234e705ed55",
+    "productName": "Concealed Stop Cock 3/4\" (incl body)",
+    "skus": [
+      "CLARET-CONCEALED-STOP-COCK-THREE-QUARTER-INCH-V1"
+    ],
+    "variants": [
+      {
+        "id": "72687158-ab15-43b5-94f2-41bfa7ce858d",
+        "sku": "CLARET-CONCEALED-STOP-COCK-THREE-QUARTER-INCH-V1",
+        "sizeName": "T4612A1 (3/4 inch)",
+        "length": "3",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "a6e5834b-0bec-40cc-b481-1845a755a07b",
+    "productName": "Concealed Stop Cock Upper Trim",
+    "skus": [
+      "CLARET-CONCEALED-STOP-COCK-UPPER-TRIM-V1"
+    ],
+    "variants": [
+      {
+        "id": "4dfccaa9-15bb-4b72-8778-5b83139126ea",
+        "sku": "CLARET-CONCEALED-STOP-COCK-UPPER-TRIM-V1",
+        "sizeName": "G5283A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "96c5ab37-d571-4aed-9cf1-1b9513121589",
+    "productName": "Exposed Part of Flush Cock",
+    "skus": [
+      "CLARET-EXPOSED-PART-OF-FLUSH-COCK-V1"
+    ],
+    "variants": [
+      {
+        "id": "023550d3-3363-43a5-a248-7584c85f86cd",
+        "sku": "CLARET-EXPOSED-PART-OF-FLUSH-COCK-V1",
+        "sizeName": "T982CA1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "8f4b467b-3de6-4625-9736-7b935b558a4d",
+    "productName": "Basin Mixer without Pop-Up",
+    "skus": [
+      "JADE-BASIN-MIXER-WITHOUT-POP-UP-V1",
+      "JADE-BASIN-MIXER-WITHOUT-POP-UP-V2",
+      "JADE-BASIN-MIXER-WITHOUT-POP-UP-V3"
+    ],
+    "variants": [
+      {
+        "id": "2ebe7e2b-d6da-4f6f-9903-49fe7ea6ae77",
+        "sku": "JADE-BASIN-MIXER-WITHOUT-POP-UP-V1",
+        "sizeName": "G0214A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "4705dbd2-8b1d-4bbd-a0c5-d2bfd812b935",
+        "sku": "JADE-BASIN-MIXER-WITHOUT-POP-UP-V2",
+        "sizeName": "G0214A1GE (Gold/Emerald)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "d1715a98-a4c7-4b56-92f1-f116665466ac",
+        "sku": "JADE-BASIN-MIXER-WITHOUT-POP-UP-V3",
+        "sizeName": "G0214A1GJ (Gold/Jade)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "09d94c34-ee93-4931-825b-2a97192fd218",
+    "productName": "Pillar Cock with Aerator",
+    "skus": [
+      "JADE-PILLAR-COCK-WITH-AERATOR-V1",
+      "JADE-PILLAR-COCK-WITH-AERATOR-V2",
+      "JADE-PILLAR-COCK-WITH-AERATOR-V3"
+    ],
+    "variants": [
+      {
+        "id": "43bd0cdc-186e-4ca2-bfe7-b74f3d82d235",
+        "sku": "JADE-PILLAR-COCK-WITH-AERATOR-V1",
+        "sizeName": "G0202A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "a9bcecd8-931f-40c3-82dc-175bb5a848da",
+        "sku": "JADE-PILLAR-COCK-WITH-AERATOR-V2",
+        "sizeName": "G0202A1GE (Gold/Emerald)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "24431bd1-5ed1-413f-91b9-83e2167ed675",
+        "sku": "JADE-PILLAR-COCK-WITH-AERATOR-V3",
+        "sizeName": "G0202A1GJ (Gold/Jade)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "1de96309-c5bd-430e-855b-88ac1fad17bd",
+    "productName": "Swan Neck Pillar Cock (Jade)",
+    "skus": [
+      "JADE-SWAN-NECK-PILLAR-COCK-V1",
+      "JADE-SWAN-NECK-PILLAR-COCK-V2",
+      "JADE-SWAN-NECK-PILLAR-COCK-V3"
+    ],
+    "variants": [
+      {
+        "id": "5e7055fd-2989-48f7-8a4e-1b9e64801b95",
+        "sku": "JADE-SWAN-NECK-PILLAR-COCK-V1",
+        "sizeName": "G0268A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "8cd96e6e-9fa0-445b-bf86-89da53d2f0a0",
+        "sku": "JADE-SWAN-NECK-PILLAR-COCK-V2",
+        "sizeName": "G0268A1GE (Gold/Emerald)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "94269f20-f78b-4898-a655-8b34a05aafb5",
+        "sku": "JADE-SWAN-NECK-PILLAR-COCK-V3",
+        "sizeName": "G0268A1GJ (Gold/Jade)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "957eb6a5-9635-430d-aabd-e8870999a886",
+    "productName": "Angle Valve (Jade)",
+    "skus": [
+      "JADE-ANGLE-VALVE-V1"
+    ],
+    "variants": [
+      {
+        "id": "7a341823-9fb4-4f8c-9e96-64c995e9b489",
+        "sku": "JADE-ANGLE-VALVE-V1",
+        "sizeName": "G0253A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "79cd724d-5222-4275-8681-77a7f07fad00",
+    "productName": "Wall Mixer 2-in-1 (Jade)",
+    "skus": [
+      "JADE-WALL-MIXER-2-IN-1-V1"
+    ],
+    "variants": [
+      {
+        "id": "c0644283-be52-45c3-9341-ea21c53b63f9",
+        "sku": "JADE-WALL-MIXER-2-IN-1-V1",
+        "sizeName": "G022EA1",
+        "length": "2",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "6a4fb0a0-84a1-46b3-b14c-e77dbd4a44a1",
+    "productName": "Wall Mixer 3-in-1 (Jade)",
+    "skus": [
+      "JADE-WALL-MIXER-3-IN-1-V1"
+    ],
+    "variants": [
+      {
+        "id": "82a0a240-61c2-4e21-81a3-846f7d561507",
+        "sku": "JADE-WALL-MIXER-3-IN-1-V1",
+        "sizeName": "G022FA1",
+        "length": "3",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "95eb3ba4-0561-4525-a7de-8c28ce815a32",
+    "productName": "Wall Mixer with Crutch (Jade)",
+    "skus": [
+      "JADE-WALL-MIXER-WITH-CRUTCH-V1"
+    ],
+    "variants": [
+      {
+        "id": "7ae0ebfb-3551-46c0-bce0-cc2578dca02f",
+        "sku": "JADE-WALL-MIXER-WITH-CRUTCH-V1",
+        "sizeName": "G022GA1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "c8c20606-4820-447d-9723-625b495986f6",
+    "productName": "Sink Mixer (Wall Mounted) (Jade)",
+    "skus": [
+      "JADE-SINK-MIXER-WALL-MOUNTED-V1"
+    ],
+    "variants": [
+      {
+        "id": "05ac15bc-b537-45dc-bd02-89b2c77dc472",
+        "sku": "JADE-SINK-MIXER-WALL-MOUNTED-V1",
+        "sizeName": "G0235A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "3b942e49-efce-45f8-83de-cd79824ef4fc",
+    "productName": "Sink Cock (Wall Mounted) (Jade)",
+    "skus": [
+      "JADE-SINK-COCK-WALL-MOUNTED-V1",
+      "JADE-SINK-COCK-WALL-MOUNTED-V2",
+      "JADE-SINK-COCK-WALL-MOUNTED-V3"
+    ],
+    "variants": [
+      {
+        "id": "3195301d-bdd4-45ff-ab0a-7c9372913465",
+        "sku": "JADE-SINK-COCK-WALL-MOUNTED-V1",
+        "sizeName": "G0221A1 (Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "6f6a3e37-2ab2-4c65-a666-df52046bd56e",
+        "sku": "JADE-SINK-COCK-WALL-MOUNTED-V2",
+        "sizeName": "G0221A1GE (Gold/Emerald)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "1a3a7977-09cd-43a6-917a-7003042bbfc8",
+        "sku": "JADE-SINK-COCK-WALL-MOUNTED-V3",
+        "sizeName": "G0221A1GJ (Gold/Jade)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "2ad1109e-6a20-496b-a2ec-7d72f2b5af96",
+    "productName": "Sink Cock (Deck Mounted) (Jade)",
+    "skus": [
+      "JADE-SINK-COCK-DECK-MOUNTED-V1"
+    ],
+    "variants": [
+      {
+        "id": "f336b2ed-da43-4f0c-b86b-ddf21d5e1b22",
+        "sku": "JADE-SINK-COCK-DECK-MOUNTED-V1",
+        "sizeName": "G0238A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ce6c330b-ee84-4573-b35c-c430dd9d5980",
+    "productName": "Sink Mixer (Deck Mounted) Two Knob (Jade)",
+    "skus": [
+      "JADE-SINK-MIXER-DECK-MOUNTED-TWO-KNOB-V1"
+    ],
+    "variants": [
+      {
+        "id": "a0e32a33-1236-461e-a433-be252ca2cda4",
+        "sku": "JADE-SINK-MIXER-DECK-MOUNTED-TWO-KNOB-V1",
+        "sizeName": "G0245A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "1b13dc84-97de-4396-a183-43b605d04b0f",
+    "productName": "3-Inlet Concealed Diverter Body (G9969A1)",
+    "skus": [
+      "3-INLET-CONCEALED-DIVERTER-BODY-G9969A1-V1"
+    ],
+    "variants": [
+      {
+        "id": "6426de21-5536-4f84-81cc-dc55d675d880",
+        "sku": "3-INLET-CONCEALED-DIVERTER-BODY-G9969A1-V1",
+        "sizeName": "G9969A1",
+        "length": "3",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "6041cbde-5583-4d72-ba5a-a90012601cc9",
+    "productName": "Ultra High Flow Concealed Diverter Body",
+    "skus": [
+      "ULTRA-HIGH-FLOW-CONCEALED-DIVERTER-BODY-V1"
+    ],
+    "variants": [
+      {
+        "id": "863d39d0-5965-4da7-a0b7-453f9f1063e9",
+        "sku": "ULTRA-HIGH-FLOW-CONCEALED-DIVERTER-BODY-V1",
+        "sizeName": "G4888A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "b099f6d0-4566-4525-afc2-125a05ca205b",
+    "productName": "Concealed Body Basin Mixer",
+    "skus": [
+      "CONCEALED-BODY-BASIN-MIXER-V1"
+    ],
+    "variants": [
+      {
+        "id": "95490016-1d70-4e49-af1d-fb583b476b86",
+        "sku": "CONCEALED-BODY-BASIN-MIXER-V1",
+        "sizeName": "G9002A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "70115e52-2a0a-4323-9382-ee69a8fc040c",
+    "productName": "Concealed Deusch Mixer Body",
+    "skus": [
+      "CONCEALED-DEUSCH-MIXER-BODY-V1"
+    ],
+    "variants": [
+      {
+        "id": "0d8e4321-7925-4845-9f98-28d2674b418e",
+        "sku": "CONCEALED-DEUSCH-MIXER-BODY-V1",
+        "sizeName": "G4257A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "4e4d9bc6-fd1c-49fb-88e0-f991c2d2d97a",
+    "productName": "Concealed Wall Mounted Basin Tap Body",
+    "skus": [
+      "CONCEALED-WALL-MOUNTED-BASIN-TAP-BODY-V1"
+    ],
+    "variants": [
+      {
+        "id": "e15805d7-dcb1-4393-9f04-50aa1181dedb",
+        "sku": "CONCEALED-WALL-MOUNTED-BASIN-TAP-BODY-V1",
+        "sizeName": "G2797A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "a789bec7-e7e1-444f-89bd-ce243cca65a2",
+    "productName": "Concealed Stop Cock Body (1/2\")",
+    "skus": [
+      "CONCEALED-STOP-COCK-BODY-HALF-INCH-V1"
+    ],
+    "variants": [
+      {
+        "id": "541845b0-673d-43f1-ab7a-d9bb5e72e383",
+        "sku": "CONCEALED-STOP-COCK-BODY-HALF-INCH-V1",
+        "sizeName": "G5052A1",
+        "length": "1",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ae7ec0eb-6ad3-4394-a38d-affe93b47fb9",
+    "productName": "3 Modes Hand Shower 120mm, Chrome Finish",
+    "skus": [
+      "3-MODES-HAND-SHOWER-120MM-CHROME-V1"
+    ],
+    "variants": [
+      {
+        "id": "f823ee99-42bc-4f45-9e8f-63305a588842",
+        "sku": "3-MODES-HAND-SHOWER-120MM-CHROME-V1",
+        "sizeName": "T9859A1 (120mm)",
+        "length": "120",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "72b4e0f7-f1c3-43ca-8a9a-8784d98f36ea",
+    "productName": "Multiflow Hand Shower 100mm",
+    "skus": [
+      "MULTIFLOW-HAND-SHOWER-100MM-V1"
+    ],
+    "variants": [
+      {
+        "id": "64c43dcf-6e0f-481d-adde-bfa32e6536dc",
+        "sku": "MULTIFLOW-HAND-SHOWER-100MM-V1",
+        "sizeName": "T9983A1",
+        "length": "100",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "c4f9afc7-94c0-4e1b-b1c5-9ec069825408",
+    "productName": "Multiflow Hand Shower 80mm, Chrome Finish",
+    "skus": [
+      "MULTIFLOW-HAND-SHOWER-80MM-CHROME-V1"
+    ],
+    "variants": [
+      {
+        "id": "d20c90b5-d152-4607-8052-2fa744d0a303",
+        "sku": "MULTIFLOW-HAND-SHOWER-80MM-CHROME-V1",
+        "sizeName": "T9982A1",
+        "length": "80",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "a9d113b5-a0e6-4bcb-9acd-ada02c23c1b5",
+    "productName": "Single Flow Hand Shower 80mm, Normal Rain Flow",
+    "skus": [
+      "SINGLE-FLOW-HAND-SHOWER-80MM-CHROME-V1"
+    ],
+    "variants": [
+      {
+        "id": "1f6702be-d21f-4e45-839f-e47bf46e2842",
+        "sku": "SINGLE-FLOW-HAND-SHOWER-80MM-CHROME-V1",
+        "sizeName": "T9981A1",
+        "length": "80",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "15fb83e2-c1a4-44a7-9e8a-8842a7791775",
+    "productName": "4 Modes Hand Shower 105mm, Chrome Finish",
+    "skus": [
+      "4-MODES-HAND-SHOWER-105MM-CHROME-V1"
+    ],
+    "variants": [
+      {
+        "id": "fbcd0351-f16a-45e5-bc26-2f7e06dbc254",
+        "sku": "4-MODES-HAND-SHOWER-105MM-CHROME-V1",
+        "sizeName": "T9863A1",
+        "length": "105",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "da846b11-1387-4434-8d53-acd776c3cf3d",
+    "productName": "Easy Cleaning Hand Shower 100mm, Rain Flow",
+    "skus": [
+      "EASY-CLEANING-HAND-SHOWER-100MM-CHROME-V1"
+    ],
+    "variants": [
+      {
+        "id": "062bf6de-eb23-4a28-aef3-1435a9cc620b",
+        "sku": "EASY-CLEANING-HAND-SHOWER-100MM-CHROME-V1",
+        "sizeName": "T9870A1",
+        "length": "100",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "7d7f643e-ab19-4cca-869d-6e632848757c",
+    "productName": "Single Flow Hand Shower, Rain Flow",
+    "skus": [
+      "SINGLE-FLOW-HAND-SHOWER-E8376A1-V1"
+    ],
+    "variants": [
+      {
+        "id": "b33087f4-0841-49c7-a0d2-4157b2c570a7",
+        "sku": "SINGLE-FLOW-HAND-SHOWER-E8376A1-V1",
+        "sizeName": "E8376A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "3b28cc23-ff15-479a-9408-da724b83dd80",
+    "productName": "3 Modes Hand Shower 120mm (T9866A1)",
+    "skus": [
+      "3-MODES-HAND-SHOWER-120MM-T9866A1-V1"
+    ],
+    "variants": [
+      {
+        "id": "da27f9b5-422a-4382-bee1-920126d78752",
+        "sku": "3-MODES-HAND-SHOWER-120MM-T9866A1-V1",
+        "sizeName": "T9866A1",
+        "length": "120",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "b875e2b5-75f4-455e-9aae-7ad687c668b0",
+    "productName": "Sinatra Stick Hand Shower 30mm, Rain Flow",
+    "skus": [
+      "SINATRA-STICK-HAND-SHOWER-30MM-V1"
+    ],
+    "variants": [
+      {
+        "id": "483804e1-c65a-47d1-92d6-bd59042fa318",
+        "sku": "SINATRA-STICK-HAND-SHOWER-30MM-V1",
+        "sizeName": "T9946A1",
+        "length": "30",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "5831b0ee-4fc9-47e8-9ffe-64dbcf1fa717",
+    "productName": "Cardiff Health Faucet Brass",
+    "skus": [
+      "CARDIFF-HEALTH-FAUCET-BRASS-V1"
+    ],
+    "variants": [
+      {
+        "id": "c6f9fbbb-63af-433e-98cb-4a4f1a3c5d07",
+        "sku": "CARDIFF-HEALTH-FAUCET-BRASS-V1",
+        "sizeName": "T9941A1 (Brass)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "582291f1-6421-47f7-898d-0c1590fe8440",
+    "productName": "Euclid Plus Health Faucet",
+    "skus": [
+      "EUCLID-PLUS-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "b5482a4e-265b-48cf-b008-fb33fad3be46",
+        "sku": "EUCLID-PLUS-HEALTH-FAUCET-V1",
+        "sizeName": "T9355A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "63513e07-4615-489b-ae01-d183c3a342d2",
+    "productName": "Praseo Health Faucet",
+    "skus": [
+      "PRASEO-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "8b05d52c-1f06-4d19-b03e-b59802796e7d",
+        "sku": "PRASEO-HEALTH-FAUCET-V1",
+        "sizeName": "T9920A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "c6d38976-674c-4f1d-9ec8-7b3fc55979fb",
+    "productName": "Primo Health Faucet",
+    "skus": [
+      "PRIMO-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "0740df8d-ee79-40b7-ad47-b6ed71d9182c",
+        "sku": "PRIMO-HEALTH-FAUCET-V1",
+        "sizeName": "E8383A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "501d3bd6-d3c1-4cc0-8688-e2426ae581cf",
+    "productName": "Splash Health Faucet",
+    "skus": [
+      "SPLASH-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "59c6a5e5-6abc-4b4f-a16e-ace0a3cbe09c",
+        "sku": "SPLASH-HEALTH-FAUCET-V1",
+        "sizeName": "T9805A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "cb374387-7be5-4f91-8893-c4ebf03af5f6",
+    "productName": "3-Inlet Concealed Diverter Body (T9969A1)",
+    "skus": [
+      "3-INLET-CONCEALED-DIVERTER-BODY-T9969A1-V1"
+    ],
+    "variants": [
+      {
+        "id": "ef55ce35-da4e-4706-bb02-32bc520e2ecb",
+        "sku": "3-INLET-CONCEALED-DIVERTER-BODY-T9969A1-V1",
+        "sizeName": "T9969A1",
+        "length": "3",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "7a169117-1c4b-4b6b-bcc6-51c5685c7c94",
+    "productName": "Concealed Diverter Body",
+    "skus": [
+      "CONCEALED-DIVERTER-BODY-V1"
+    ],
+    "variants": [
+      {
+        "id": "6ff8895d-cf95-4feb-be91-1fec508ffeb7",
+        "sku": "CONCEALED-DIVERTER-BODY-V1",
+        "sizeName": "G5051A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "463fbe9a-b6d6-4d9f-a415-9dbe3ed00e37",
+    "productName": "Wall Mounted Pillar Cock Body - Pressmatic",
+    "skus": [
+      "WALL-MOUNTED-PILLAR-COCK-BODY-PRESSMATIC-V1"
+    ],
+    "variants": [
+      {
+        "id": "49e33fc1-bd20-4b1f-b490-083be7b71058",
+        "sku": "WALL-MOUNTED-PILLAR-COCK-BODY-PRESSMATIC-V1",
+        "sizeName": "G2078A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "c1a2654b-9274-45a9-8250-594cd54cb053",
+    "productName": "Concealed Deusch Mixer Body (Reverse)",
+    "skus": [
+      "CONCEALED-DEUSCH-MIXER-BODY-REVERSE-V1"
+    ],
+    "variants": [
+      {
+        "id": "be5f65dc-c4d6-4127-bf80-85cdbedd9ade",
+        "sku": "CONCEALED-DEUSCH-MIXER-BODY-REVERSE-V1",
+        "sizeName": "G4258A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "aadfb3cd-a61f-4c9f-81cc-c926bc774507",
+    "productName": "Concealed Body of Flush Cock (Universal)",
+    "skus": [
+      "CONCEALED-BODY-OF-FLUSH-COCK-UNIVERSAL-V1"
+    ],
+    "variants": [
+      {
+        "id": "abef4531-3374-4e9e-9065-85c9887f76e3",
+        "sku": "CONCEALED-BODY-OF-FLUSH-COCK-UNIVERSAL-V1",
+        "sizeName": "T9823A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ee8f6a94-957b-4bee-833a-98c97b4cfb21",
+    "productName": "Concealed Stop Cock Body (3/4\")",
+    "skus": [
+      "CONCEALED-STOP-COCK-BODY-THREE-QUARTER-INCH-V1"
+    ],
+    "variants": [
+      {
+        "id": "841cf5d8-07b9-4c2e-953d-c9163ec98405",
+        "sku": "CONCEALED-STOP-COCK-BODY-THREE-QUARTER-INCH-V1",
+        "sizeName": "G5053A1",
+        "length": "3",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "76d7dd0a-cae6-47da-8136-8acf4c05fdfa",
+    "productName": "Galaxy 3 Flow Hand Shower Black",
+    "skus": [
+      "GALAXY-3-FLOW-HAND-SHOWER-BLACK-V1"
+    ],
+    "variants": [
+      {
+        "id": "45a56f6b-fd06-46c6-b796-0087505a9c8c",
+        "sku": "GALAXY-3-FLOW-HAND-SHOWER-BLACK-V1",
+        "sizeName": "T98987C (Black)",
+        "length": "264",
+        "width": "102",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "f429c66b-be70-444b-a081-7221be1a6562",
+    "productName": "Airmix Hand Shower 100mm, Chrome Finish",
+    "skus": [
+      "AIRMIX-HAND-SHOWER-100MM-CHROME-V1"
+    ],
+    "variants": [
+      {
+        "id": "4efafa1c-b732-4c7f-94bc-ec4ed98b74ce",
+        "sku": "AIRMIX-HAND-SHOWER-100MM-CHROME-V1",
+        "sizeName": "T9819A1",
+        "length": "100",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "e39c1d1c-08ab-48bc-a0ae-27a47f0a83c9",
+    "productName": "3 Modes Hand Shower 105mm, Chrome Finish",
+    "skus": [
+      "3-MODES-HAND-SHOWER-105MM-CHROME-V1"
+    ],
+    "variants": [
+      {
+        "id": "ea362240-c4a9-40f6-9084-1d5563e6960d",
+        "sku": "3-MODES-HAND-SHOWER-105MM-CHROME-V1",
+        "sizeName": "T9865A1",
+        "length": "105",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "3642b5fe-5bac-4ba7-b707-16b6592cccb0",
+    "productName": "3 Modes Hand Shower 120mm (T9862A1)",
+    "skus": [
+      "3-MODES-HAND-SHOWER-120MM-T9862A1-V1"
+    ],
+    "variants": [
+      {
+        "id": "ffd196e6-2100-490a-ad0f-4c4ed4b6c20b",
+        "sku": "3-MODES-HAND-SHOWER-120MM-T9862A1-V1",
+        "sizeName": "T9862A1",
+        "length": "120",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "f6af14b3-4b48-44fb-8e4f-4c457fe922e2",
+    "productName": "Easy Cleaning Hand Shower, Rain Flow",
+    "skus": [
+      "EASY-CLEANING-HAND-SHOWER-CHROME-V1"
+    ],
+    "variants": [
+      {
+        "id": "6cc0b53d-1b0b-412e-8547-140424d10b0b",
+        "sku": "EASY-CLEANING-HAND-SHOWER-CHROME-V1",
+        "sizeName": "T9025A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "51183c88-d384-40fe-b117-73f3265b7d6c",
+    "productName": "2 Modes Hand Shower 110mm",
+    "skus": [
+      "2-MODES-HAND-SHOWER-110MM-V1"
+    ],
+    "variants": [
+      {
+        "id": "86625cd5-bc96-445d-90bd-d2f15e297ce3",
+        "sku": "2-MODES-HAND-SHOWER-110MM-V1",
+        "sizeName": "T9872A1",
+        "length": "110",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "ce76859a-d22b-47be-8b3c-00b69d63f9b8",
+    "productName": "Single Flow Hand Shower 80mm, Rain Flow",
+    "skus": [
+      "SINGLE-FLOW-HAND-SHOWER-80MM-T9902A1-V1"
+    ],
+    "variants": [
+      {
+        "id": "342fe219-e4ee-458f-adad-bb546b28d81e",
+        "sku": "SINGLE-FLOW-HAND-SHOWER-80MM-T9902A1-V1",
+        "sizeName": "T9902A1",
+        "length": "80",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "f32790b7-672f-4947-abf0-ccea00fa544b",
+    "productName": "Opera Stick Hand Shower, Rain Flow",
+    "skus": [
+      "OPERA-STICK-HAND-SHOWER-V1"
+    ],
+    "variants": [
+      {
+        "id": "14af0ebc-d89d-492e-8566-b5ce49fcb0a3",
+        "sku": "OPERA-STICK-HAND-SHOWER-V1",
+        "sizeName": "T9701A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "7bc86d98-6d04-4966-8cd5-c5240e938038",
+    "productName": "Comfort Hand Shower 80mm, Rain Flow",
+    "skus": [
+      "COMFORT-HAND-SHOWER-80MM-V1"
+    ],
+    "variants": [
+      {
+        "id": "cb9c124c-bd13-48cb-b0f5-7e68ddd2c1b5",
+        "sku": "COMFORT-HAND-SHOWER-80MM-V1",
+        "sizeName": "T9871A1",
+        "length": "80",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "d1721bb8-e3cd-4d6b-9fdb-84417ce5f7d8",
+    "productName": "Crust Health Faucet",
+    "skus": [
+      "CRUST-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "6f245303-831f-4a55-9163-9e3c23ce38f7",
+        "sku": "CRUST-HEALTH-FAUCET-V1",
+        "sizeName": "E8342A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "be09623a-e7ec-457c-8930-d6c9da246cf3",
+    "productName": "Slimline Easy Cleaning Health Faucet",
+    "skus": [
+      "SLIMLINE-EASY-CLEANING-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "d7f3d1f6-b538-4ce9-a59f-d11f3efbc3d9",
+        "sku": "SLIMLINE-EASY-CLEANING-HEALTH-FAUCET-V1",
+        "sizeName": "E8354A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "967927a0-ed0f-493b-91f3-5771a5dc300c",
+    "productName": "Quattro Health Faucet",
+    "skus": [
+      "QUATTRO-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "628d6f07-133b-4a86-a3d8-305d43e5d5d7",
+        "sku": "QUATTRO-HEALTH-FAUCET-V1",
+        "sizeName": "T9896A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "79cd981d-2c23-434b-98d7-2fdfd3fd4da4",
+    "productName": "Pluto Health Faucet",
+    "skus": [
+      "PLUTO-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "2d6a2b93-4023-439a-945c-5a157feeeeec",
+        "sku": "PLUTO-HEALTH-FAUCET-V1",
+        "sizeName": "E8384A1 (Satin/Chrome)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "8b740a62-7ce7-4bb6-91e7-195c24db7422",
+    "productName": "Uno Health Faucet",
+    "skus": [
+      "UNO-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "39594360-004d-4ebc-9ad1-e842082b00ea",
+        "sku": "UNO-HEALTH-FAUCET-V1",
+        "sizeName": "T9921A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "29d1daa4-310b-49b1-9696-49e3d66139c5",
+    "productName": "Coral Neo Health Faucet",
+    "skus": [
+      "CORAL-NEO-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "cc02694c-d48c-45c0-a7d1-527f53ff3e4d",
+        "sku": "CORAL-NEO-HEALTH-FAUCET-V1",
+        "sizeName": "E8353A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "0167b59e-cb79-47df-89fa-81ac4f33998c",
+    "productName": "Ovalo Plus Anti Microbial Health Faucet",
+    "skus": [
+      "OVALO-PLUS-ANTI-MICROBIAL-HEALTH-FAUCET-V1"
+    ],
+    "variants": [
+      {
+        "id": "6c4a9b04-1a87-4492-baa8-2165b5afb778",
+        "sku": "OVALO-PLUS-ANTI-MICROBIAL-HEALTH-FAUCET-V1",
+        "sizeName": "E8372A1",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "a576175e-1756-48fc-a33a-fca68e22fdbf",
+    "productName": "Bottle Trap - Light 9\"",
+    "skus": [
+      "BOTTLE-TRAP-LIGHT-9-INCH-V1"
+    ],
+    "variants": [
+      {
+        "id": "d9fe5036-2ba1-4d28-936b-e5e2a1b9bf69",
+        "sku": "BOTTLE-TRAP-LIGHT-9-INCH-V1",
+        "sizeName": "T3201A1 (9 inch Light)",
+        "length": "9",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "922aea89-868d-4d5a-8014-941dff91d617",
+    "productName": "Bottle Trap - Heavy 9\"",
+    "skus": [
+      "BOTTLE-TRAP-HEAVY-9-INCH-V1"
+    ],
+    "variants": [
+      {
+        "id": "398b5b16-0428-4ef8-998d-9047cdf565b0",
+        "sku": "BOTTLE-TRAP-HEAVY-9-INCH-V1",
+        "sizeName": "T3202A1 (9 inch Heavy)",
+        "length": "9",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "02f10dc9-d3b9-4a8e-90ab-e9bdb018818a",
+    "productName": "Bottle Trap - Light 12\" Vertical Pipe",
+    "skus": [
+      "BOTTLE-TRAP-LIGHT-12-INCH-VERTICAL-PIPE-V1"
+    ],
+    "variants": [
+      {
+        "id": "326aebf4-58d9-43ab-91dc-fdd5dd5d3833",
+        "sku": "BOTTLE-TRAP-LIGHT-12-INCH-VERTICAL-PIPE-V1",
+        "sizeName": "T3203A1 (12 inch Vertical)",
+        "length": "12",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "d749fd0e-e3c7-4295-a2dd-34a7835d6929",
+    "productName": "Bottle Trap - Light 12\" Horizontal Pipe",
+    "skus": [
+      "BOTTLE-TRAP-LIGHT-12-INCH-HORIZONTAL-PIPE-V1"
+    ],
+    "variants": [
+      {
+        "id": "aaa52821-059e-4a2d-b92b-eff7d9f9c385",
+        "sku": "BOTTLE-TRAP-LIGHT-12-INCH-HORIZONTAL-PIPE-V1",
+        "sizeName": "T3205A1 (12 inch Horizontal)",
+        "length": "12",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "a12d7d9d-0358-4918-bd2a-e065cfa2613c",
+    "productName": "SS Braided Hose Pipe 1.5ft",
+    "skus": [
+      "SS-BRAIDED-HOSE-PIPE-1-5FT-V1",
+      "SS-BRAIDED-HOSE-PIPE-1-5FT-V2"
+    ],
+    "variants": [
+      {
+        "id": "fbd4d654-9f3b-4602-948d-c3f4b27fa28c",
+        "sku": "SS-BRAIDED-HOSE-PIPE-1-5FT-V1",
+        "sizeName": "T754099 (Per Pair)",
+        "length": "1",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "7de6a4d0-cdef-4ab3-955b-767e8045f81f",
+        "sku": "SS-BRAIDED-HOSE-PIPE-1-5FT-V2",
+        "sizeName": "T989099 (Pack of 10 Pairs)",
+        "length": "1",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "746de06f-e136-4180-915e-56e75c3be911",
+    "productName": "SS Braided Hose Pipe 2.0ft",
+    "skus": [
+      "SS-BRAIDED-HOSE-PIPE-2-0FT-V1",
+      "SS-BRAIDED-HOSE-PIPE-2-0FT-V2"
+    ],
+    "variants": [
+      {
+        "id": "365e35ec-5c4b-488d-b6fc-b7de7c0dddbf",
+        "sku": "SS-BRAIDED-HOSE-PIPE-2-0FT-V1",
+        "sizeName": "T754199 (Per Pair)",
+        "length": "2",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "90597113-57a1-49cd-9d9e-a7ba141884b3",
+        "sku": "SS-BRAIDED-HOSE-PIPE-2-0FT-V2",
+        "sizeName": "T989199 (Pack of 10 Pairs)",
+        "length": "2",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "36e3ef04-80e4-4094-abb2-40a117e0d29c",
+    "productName": "Connection PVC Hose 1.5ft (Milky White)",
+    "skus": [
+      "CONNECTION-PVC-HOSE-1-5FT-MILKY-WHITE-V1",
+      "CONNECTION-PVC-HOSE-1-5FT-MILKY-WHITE-V2"
+    ],
+    "variants": [
+      {
+        "id": "d610eb6d-021c-4c5f-88d0-4e2cc6c8a21e",
+        "sku": "CONNECTION-PVC-HOSE-1-5FT-MILKY-WHITE-V1",
+        "sizeName": "T991299 (Single Hose)",
+        "length": "1",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "1d40a032-87a2-46f7-b6f4-86260af69f63",
+        "sku": "CONNECTION-PVC-HOSE-1-5FT-MILKY-WHITE-V2",
+        "sizeName": "T988899 (Pack of 20)",
+        "length": "1",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "f3482bc3-dfa1-4489-8a58-3ef42b904191",
+    "productName": "Connection PVC Hose 2.0ft (Milky White)",
+    "skus": [
+      "CONNECTION-PVC-HOSE-2-0FT-MILKY-WHITE-V1",
+      "CONNECTION-PVC-HOSE-2-0FT-MILKY-WHITE-V2"
+    ],
+    "variants": [
+      {
+        "id": "fa715d8c-4ecd-4bcc-9cfa-0a0e64ef123b",
+        "sku": "CONNECTION-PVC-HOSE-2-0FT-MILKY-WHITE-V1",
+        "sizeName": "T991999 (Single Hose)",
+        "length": "2",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "99d7ffcf-750e-4da9-8f73-6f35cd7fe5d7",
+        "sku": "CONNECTION-PVC-HOSE-2-0FT-MILKY-WHITE-V2",
+        "sizeName": "T988999 (Pack of 20)",
+        "length": "2",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "17b919ac-38e7-4f60-8e56-09ef4a665ce9",
+    "productName": "Full Thread Waste Coupling-80mm",
+    "skus": [
+      "FULL-THREAD-WASTE-COUPLING-80MM-V1"
+    ],
+    "variants": [
+      {
+        "id": "9d31d151-2433-4091-8558-ebe01e1291b4",
+        "sku": "FULL-THREAD-WASTE-COUPLING-80MM-V1",
+        "sizeName": "T9899A1 (80mm Full Thread)",
+        "length": "80",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "a876fc11-3deb-4ad7-b05e-cbf5fa1e8d34",
+    "productName": "Full Thread Waste Coupling-130mm",
+    "skus": [
+      "FULL-THREAD-WASTE-COUPLING-130MM-V1"
+    ],
+    "variants": [
+      {
+        "id": "f2398128-3a45-4854-8e5d-ff2b01c45ba1",
+        "sku": "FULL-THREAD-WASTE-COUPLING-130MM-V1",
+        "sizeName": "T9898A1 (130mm Full Thread)",
+        "length": "130",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "28b48088-2bcb-425f-a0ea-ab1accbde26a",
+    "productName": "Half Thread Waste Coupling",
+    "skus": [
+      "HALF-THREAD-WASTE-COUPLING-V1"
+    ],
+    "variants": [
+      {
+        "id": "63ce6beb-1793-42b5-9790-2fc4a13a06f9",
+        "sku": "HALF-THREAD-WASTE-COUPLING-V1",
+        "sizeName": "T9910A1 (Half Thread)",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "2c6ecaa2-64d2-45fd-bf3d-9031d2e435f6",
+    "productName": "Virtic Polymer Cistern (E8320)",
+    "skus": [
+      "VIRTIC-POLYMER-CISTERN-E8320-V1"
+    ],
+    "variants": [
+      {
+        "id": "2b7fa0cf-f450-444f-8652-5b82632bd0d9",
+        "sku": "VIRTIC-POLYMER-CISTERN-E8320-V1",
+        "sizeName": "E8320",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "95cf9ee7-412f-473f-9fe2-e3cfb2a763cf",
+    "productName": "Hexa Polymer Cistern (E8319)",
+    "skus": [
+      "HEXA-POLYMER-CISTERN-E8319-V1"
+    ],
+    "variants": [
+      {
+        "id": "b208a822-8d9a-444c-841a-86f4a826c75f",
+        "sku": "HEXA-POLYMER-CISTERN-E8319-V1",
+        "sizeName": "E8319",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "e0a5bf35-116d-45d1-88dc-b5806b10c6c8",
+    "productName": "Premium Polymer Cistern (E8392)",
+    "skus": [
+      "PREMIUM-POLYMER-CISTERN-E8392-V1"
+    ],
+    "variants": [
+      {
+        "id": "8b92e35e-2fec-41d4-bc26-814c0fec760b",
+        "sku": "PREMIUM-POLYMER-CISTERN-E8392-V1",
+        "sizeName": "E8392",
+        "length": "0",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "9cd6c22a-373b-4285-94f9-d24bd1948b84",
+    "productName": "Economy Polymer Cistern (E8090)",
+    "skus": [
+      "ECONOMY-POLYMER-CISTERN-E8090-V1",
+      "ECONOMY-POLYMER-CISTERN-E8090-V2",
+      "ECONOMY-POLYMER-CISTERN-E8090-V3",
+      "ECONOMY-POLYMER-CISTERN-E8090-V4",
+      "ECONOMY-POLYMER-CISTERN-E8090-V5"
+    ],
+    "variants": [
+      {
+        "id": "f5aeb3b3-a78d-48ee-8f02-b74e9d4a06f6",
+        "sku": "ECONOMY-POLYMER-CISTERN-E8090-V1",
+        "sizeName": "White (Base)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "83a62b3e-ebcd-4bb0-83a4-9b3b2ec0c6c7",
+        "sku": "ECONOMY-POLYMER-CISTERN-E8090-V2",
+        "sizeName": "Silky Off White (4A)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "67c06b04-d547-4b1f-b6dc-63eb51daf472",
+        "sku": "ECONOMY-POLYMER-CISTERN-E8090-V3",
+        "sizeName": "Alpine Blue (4I)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "9c051820-9f9c-4fca-bb1a-004da69f7b5d",
+        "sku": "ECONOMY-POLYMER-CISTERN-E8090-V4",
+        "sizeName": "Moon Ivory (4H)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "2c948a85-eff0-4fee-b398-489cc8ca25a5",
+        "sku": "ECONOMY-POLYMER-CISTERN-E8090-V5",
+        "sizeName": "Magenta (4N)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "9824daa3-fae3-453c-ba5f-41d9195fc324",
+    "productName": "Standard Polymer Cistern (E8297)",
+    "skus": [
+      "STANDARD-POLYMER-CISTERN-E8297-V1",
+      "STANDARD-POLYMER-CISTERN-E8297-V2",
+      "STANDARD-POLYMER-CISTERN-E8297-V3",
+      "STANDARD-POLYMER-CISTERN-E8297-V4",
+      "STANDARD-POLYMER-CISTERN-E8297-V5"
+    ],
+    "variants": [
+      {
+        "id": "783a2c54-80a6-470a-8f5b-2eba77ceb70d",
+        "sku": "STANDARD-POLYMER-CISTERN-E8297-V1",
+        "sizeName": "White (Base)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "b04aa4e8-6f26-4794-adc7-cc2603afb04e",
+        "sku": "STANDARD-POLYMER-CISTERN-E8297-V2",
+        "sizeName": "Silky Off White (4A)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "bdf3ee43-c0df-4697-ba08-759aaf06d194",
+        "sku": "STANDARD-POLYMER-CISTERN-E8297-V3",
+        "sizeName": "Alpine Blue (4I)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "e862bec3-b08b-43a9-a146-53f2bfbfcfc6",
+        "sku": "STANDARD-POLYMER-CISTERN-E8297-V4",
+        "sizeName": "Moon Ivory (4H)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      },
+      {
+        "id": "e07eb0ad-8e84-4157-9a3c-1f5b955e160f",
+        "sku": "STANDARD-POLYMER-CISTERN-E8297-V5",
+        "sizeName": "Magenta (4N)",
+        "length": "10",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "1ffd5baa-ca82-4196-b0b7-a22ad421b174",
+    "productName": "economic",
+    "skus": [
+      "PAR-MV882NPM"
+    ],
+    "variants": [
+      {
+        "id": "d7dfe621-0d55-46ca-b374-835abe147e28",
+        "sku": "PAR-MV882NPM",
+        "sizeName": "Standard",
+        "length": "88",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  },
+  {
+    "productId": "0a35687d-44c5-4e66-81bf-f8232f82d4bf",
+    "productName": "aliser",
+    "skus": [
+      "PAR-MV9755L2"
+    ],
+    "variants": [
+      {
+        "id": "9f85b0f2-7820-4d37-975c-013924acb89b",
+        "sku": "PAR-MV9755L2",
+        "sizeName": "Standard",
+        "length": "90",
+        "width": "0",
+        "height": "0"
+      }
+    ]
+  }
+]

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from "next/link";
 import { Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
@@ -7,9 +9,10 @@ import {
   SectionHeading,
   StatsStrip,
 } from "@/components/HeroAnimated";
-import { testimonials, categories } from "@/lib/mock-data";
+import { categories } from "@/lib/mock-data";
 import { getProductsFromDB } from "@/lib/db";
-import HomeReviewButton from "@/components/HomeReviewButton";
+import { getApprovedTestimonialsAction, getReviewAuthContext } from "@/app/actions/reviewActions";
+import TestimonialCarousel from "@/components/TestimonialCarousel";
 import StardustButton from "@/components/StardustButton";
 import StoreLocation from "@/components/StoreLocation";
 import CategoryCarousel from "@/components/CategoryCarousel";
@@ -58,6 +61,11 @@ const trustBadges = [
 ];
 
 export default async function Home() {
+  const [testimonials, auth] = await Promise.all([
+    getApprovedTestimonialsAction(),
+    getReviewAuthContext(),
+  ]);
+
   const allowedCategoryNames = [
     "One Piece WC (S-Trap)",
     "Wall Hung Basin",
@@ -147,14 +155,14 @@ export default async function Home() {
       </section>
 
       {/* ────────────────── SHOP BY CATEGORY (3D CARD STACK CAROUSEL) ────────────────── */}
-      <section className="py-20 md:py-32 bg-gray-50 overflow-hidden">
+      <section className="pt-10 pb-6 md:pt-14 md:pb-8 bg-gray-50 overflow-hidden">
         <div className="container-main">
           <SectionHeading
             eyebrow="Browse by Category"
             title="Shop by Category"
             sub="Explore our full range of premium sanitaryware and bathroom fittings"
           />
-          <div className="mt-12 w-full flex justify-center">
+          <div className="mt-8 md:mt-12 w-full flex justify-center">
             <CategoryCarousel slides={carouselSlides} />
           </div>
         </div>
@@ -166,57 +174,24 @@ export default async function Home() {
       </Suspense>
 
       {/* ────────────────── TESTIMONIALS ────────────────── */}
-      {testimonials.length > 0 && (
-        <section className="py-16 md:py-24 overflow-hidden">
-          <div className="container-main mb-12">
-            <div className="relative flex flex-col items-center text-center">
-              <SectionHeading
-                eyebrow="Social Proof"
-                title="What Our Customers Say"
-                sub="Trusted by hundreds of customers across Tamil Nadu"
-              />
-              <div className="md:absolute md:right-0 md:bottom-0 mt-4 md:mt-0">
-                <HomeReviewButton />
-              </div>
-            </div>
+      <section className="pt-6 pb-12 md:pt-10 md:pb-18 overflow-hidden">
+        <div className="container-main mb-2 md:mb-4">
+          <div className="relative flex flex-col items-center text-center">
+            <SectionHeading
+              eyebrow="Social Proof"
+              title="What Our Customers Say"
+              sub="Trusted by hundreds of customers across Tamil Nadu"
+            />
           </div>
-          <div className="relative w-full before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-16 md:before:w-32 before:bg-gradient-to-r before:from-white before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-16 md:after:w-32 after:bg-gradient-to-l after:from-white after:to-transparent">
-            <div className="flex gap-6 w-max animate-marquee pause-marquee py-4">
-              {[...testimonials, ...testimonials].map((t, i) => (
-                <div
-                  key={`${t.id}-${i}`}
-                  className="w-[320px] md:w-[400px] shrink-0 bg-white rounded-2xl p-6 md:p-8 border border-gray-200 hover:border-primary/20 hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex items-center gap-1 mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg
-                        key={star}
-                        className={`w-5 h-5 ${star <= t.rating ? "text-yellow-400" : "text-gray-200"}`}
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-gray-700 text-base leading-relaxed mb-6 font-medium">
-                    &ldquo;{t.comment}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg border border-primary/20">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900">{t.name}</p>
-                      <p className="text-sm text-gray-500 font-medium">{t.location}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+        </div>
+
+        <TestimonialCarousel
+          initialReviews={testimonials}
+          initialIsAdmin={auth.isAdmin}
+          serverUserId={auth.user?.id}
+          serverUserEmail={auth.user?.email}
+        />
+      </section>
 
       {/* ────────────────── LOCATION MAP ────────────────── */}
       <section className="py-16 md:py-24 bg-gray-50 border-t border-gray-100 relative overflow-hidden">

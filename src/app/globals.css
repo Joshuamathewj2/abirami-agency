@@ -173,7 +173,8 @@ body {
   animation: marquee 30s linear infinite;
 }
 
-.pause-marquee:hover {
+.pause-marquee:hover,
+.pause-marquee:active {
   animation-play-state: paused;
 }
 
@@ -317,18 +318,94 @@ body {
    Print utility
 ────────────────────────────────────────── */
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
   @page {
     size: A4 portrait;
-    margin: 12mm 15mm;
+    margin: 10mm;
   }
-  .no-print, header, nav, footer, aside {
+
+  html,
+  body {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide navigation, chrome, headers, footers, buttons, and sidebars */
+  .no-print,
+  .print\:hidden,
+  header,
+  nav,
+  footer,
+  aside {
     display: none !important;
+  }
+
+  /* Table styling exact rendering */
+  table {
+    border-collapse: collapse !important;
+  }
+
+  table th,
+  table td {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Recommended invoice print isolation: hides everything except the invoice */
+  body:has(#invoice-print-area) * {
+    visibility: hidden;
+  }
+
+  body:has(#invoice-print-area) #invoice-print-area,
+  body:has(#invoice-print-area) #invoice-print-area * {
+    visibility: visible;
+  }
+
+  body:has(#invoice-print-area) #invoice-print-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  body:has(#printable-receipt):not(:has(#invoice-print-area)) * {
+    visibility: hidden;
+  }
+
+  body:has(#printable-receipt):not(:has(#invoice-print-area)) #printable-receipt,
+  body:has(#printable-receipt):not(:has(#invoice-print-area)) #printable-receipt * {
+    visibility: visible;
+  }
+
+  body:has(#printable-receipt):not(:has(#invoice-print-area)) #printable-receipt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }
 

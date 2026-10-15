@@ -8,6 +8,7 @@ import { useUserStore } from "@/store/userStore";
 import { supabase } from "@/lib/supabase/client";
 import { placeInquiryAction } from "@/app/actions/orderActions";
 import BillGeneratedView from "@/components/BillGeneratedView";
+import { formatDimensions } from "@/lib/dimensions";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } =
@@ -268,9 +269,7 @@ export default function CartPage() {
     message += `${e.cart} *Items:*\n\n`;
 
     const orderItems = items.map((item, index) => {
-      const parts = item.selectedSize.dimensions.split(" x ");
-      const dims = parts[0];
-      const height = parts[1] || "";
+      const validDims = formatDimensions(item.selectedSize.dimensions);
       const firmness =
         item.product.specifications?.Firmness ||
         item.product.specifications?.["Comfort Level"];
@@ -278,8 +277,7 @@ export default function CartPage() {
       message += `${e.package} *${index + 1}. ${item.product.name}*\n`;
       message += `\u2022 ${e.tag} Category: ${item.product.category}\n`;
       message += `\u2022 ${e.ruler} Size: ${item.selectedSize.label}\n`;
-      message += `\u2022 ${e.check} Dimensions: ${dims}\n`;
-      if (height) message += `\u2022 Height: ${height} inch\n`;
+      if (validDims) message += `\u2022 ${e.check} Dimensions: ${validDims}\n`;
       if (firmness) message += `\u2022 Firmness: ${firmness}\n`;
       message += `\u2022 Qty: ${item.quantity}\n`;
       
@@ -533,12 +531,14 @@ export default function CartPage() {
                       {item.selectedSize.label}
                     </span>
                   </div>
-                  <div className="text-sm">
-                    <span className="text-gray-500">Dimensions:</span>{" "}
-                    <span className="font-medium text-gray-900">
-                      {item.selectedSize.dimensions}
-                    </span>
-                  </div>
+                  {formatDimensions(item.selectedSize.dimensions) && (
+                    <div className="text-sm">
+                      <span className="text-gray-500">Dimensions:</span>{" "}
+                      <span className="font-medium text-gray-900">
+                        {formatDimensions(item.selectedSize.dimensions)}
+                      </span>
+                    </div>
+                  )}
                   <div className="text-sm">
                     <span className="text-gray-500">Firmness:</span>{" "}
                     <span className="font-medium text-gray-900">

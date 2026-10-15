@@ -2,6 +2,7 @@ import { Product, Size } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { products as fallbackProducts } from '@/lib/mock-data';
+import { formatDimensions } from '@/lib/dimensions';
 
 import { unstable_cache } from 'next/cache';
 
@@ -71,7 +72,7 @@ export const getProductsFromDB = unstable_cache(
     const sizes: Size[] = (m.variants || []).map((v: any) => ({
       id: v.id,
       label: v.size_name || 'Standard',
-      dimensions: v.length > 0 ? `${v.length} × ${v.width}${v.height ? ` × ${v.height}` : ''} mm` : (v.size_name || 'Standard'),
+      dimensions: formatDimensions(v, 'mm') || (v.size_name || 'Standard'),
       price: Number(v.price),
       inStock: v.stock > 0
     }));
@@ -118,7 +119,7 @@ export const getProductsFromDB = unstable_cache(
         return {
           id: v.id,
           label: v.size_name || 'Standard',
-          dimensions: v.length > 0 ? `${v.length} × ${v.width}${v.height ? ` × ${v.height}` : ''} mm` : (v.size_name || 'Standard'),
+          dimensions: formatDimensions(v, 'mm') || (v.size_name || 'Standard'),
           price: varPrice,
           mrp: varMrp,
           inStock: v.stock > 0

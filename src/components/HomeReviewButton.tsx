@@ -46,9 +46,10 @@ export default function HomeReviewButton() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [isInstant, setIsInstant] = useState(true);
 
   const reset = () => {
-    setName(''); setRating(0); setTitle(''); setBody(''); setError(''); setDone(false);
+    setName(''); setRating(0); setTitle(''); setBody(''); setError(''); setDone(false); setIsInstant(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,6 +69,7 @@ export default function HomeReviewButton() {
     });
     setSubmitting(false);
     if (res.success) {
+      setIsInstant(!!res.instant);
       setDone(true);
     } else {
       setError(res.error || 'Something went wrong. Please try again.');
@@ -121,7 +123,9 @@ export default function HomeReviewButton() {
                   </div>
                   <h3 className="text-xl font-extrabold text-gray-900 mb-2">Thank You!</h3>
                   <p className="text-gray-500 text-sm font-medium max-w-xs">
-                    Your review has been submitted. We appreciate your feedback and it helps others make the right choice!
+                    {isInstant
+                      ? 'Your review has been submitted and is now visible on our website. We appreciate your feedback!'
+                      : 'Thanks! Your review has been submitted and will appear after approval.'}
                   </p>
                   <button
                     onClick={() => setOpen(false)}

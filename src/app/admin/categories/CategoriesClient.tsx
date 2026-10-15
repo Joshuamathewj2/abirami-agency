@@ -17,12 +17,43 @@ export default function CategoriesClient({ initialCategories }: { initialCategor
     c.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshToast, setRefreshToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
   const refreshCategories = async () => {
     const { data, error } = await supabase.from('materials').select('*').order('name', { ascending: true });
     if (error) {
       setErrorMsg(error.message);
     } else if (data) {
       setCategories(data);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    setRefreshToast(null);
+    try {
+      const { data, error } = await supabase
+        .from('materials')
+        .select('*')
+        .order('name', { ascending: true });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data) {
+        setCategories(data);
+        setRefreshToast({ message: `Categories refreshed (${data.length} total)`, type: 'success' });
+      }
+    } catch (err: any) {
+      console.error('Failed to refresh categories:', err);
+      setRefreshToast({ message: err?.message || 'Failed to refresh categories', type: 'error' });
+    } finally {
+      setIsRefreshing(false);
+      setTimeout(() => {
+        setRefreshToast(null);
+      }, 3500);
     }
   };
 
@@ -110,22 +141,53 @@ export default function CategoriesClient({ initialCategories }: { initialCategor
             Manage your product categories. Changes sync instantly to storefront search, dropdowns, and POS tools.
           </p>
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {refreshToast && (
+            <div
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold animate-fade-in flex items-center gap-1.5 shadow-xs border ${
+                refreshToast.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-rose-50 text-rose-800 border-rose-200'
+              }`}
+            >
+              {refreshToast.type === 'success' ? (
+                <svg className="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <svg className="w-3.5 h-3.5 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+              <span>{refreshToast.message}</span>
+            </div>
+          )}
+
           {categories.length === 0 && (
             <button
               onClick={handleSeed}
               disabled={isSeeding}
-              className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-sm transition-colors shadow-sm disabled:opacity-50"
+              className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-sm transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
             >
               {isSeeding ? 'Syncing...' : 'Sync Default Categories'}
             </button>
           )}
+
           <button
-            onClick={refreshCategories}
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl font-bold text-sm transition-colors flex items-center gap-2 shadow-sm"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 active:bg-gray-100 hover:border-gray-300 rounded-xl font-bold text-sm transition-all flex items-center gap-2 shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            title="Refresh categories from database"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-            Refresh
+            <svg
+              className={`w-4 h-4 text-gray-600 transition-transform ${isRefreshing ? 'animate-spin text-primary' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
           </button>
         </div>
       </div>

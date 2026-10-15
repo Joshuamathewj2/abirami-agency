@@ -257,9 +257,9 @@ export default function BillGeneratedView({
           PRINT-ONLY DEDICATED INVOICE TEMPLATE (hidden print:block)
       ══════════════════════════════════════════════════════════════════ */}
       <div
-        id="printable-receipt"
-        className="hidden print:block w-full max-w-[190mm] mx-auto bg-white text-slate-900 font-sans text-xs p-4 leading-normal"
-        style={{ pageBreakInside: 'avoid' }}
+        id="invoice-print-area"
+        className="hidden print:block w-full max-w-[190mm] mx-auto bg-white text-slate-900 font-sans text-xs p-2 leading-normal"
+        style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}
       >
         {/* 1. Header (Business & Shop Details) */}
         <div className="text-center pb-2">
@@ -410,7 +410,7 @@ export default function BillGeneratedView({
         </div>
 
         {/* 5. Footer & Legal Terms */}
-        <div className="mt-6 pt-3 border-t border-slate-300 flex justify-between items-end text-xs">
+        <div className="mt-4 pt-2.5 border-t border-slate-300 flex justify-between items-end text-xs">
           <div className="max-w-xs text-[10px] text-slate-500 leading-relaxed space-y-0.5">
             <p className="font-bold text-slate-700 uppercase">Terms &amp; Conditions:</p>
             <p>1. Goods once sold will not be taken back without valid bill.</p>
@@ -419,7 +419,7 @@ export default function BillGeneratedView({
           </div>
 
           <div className="text-center">
-            <div className="h-12 border-b border-dashed border-slate-400 w-44 mb-1 mx-auto" />
+            <div className="h-10 border-b border-dashed border-slate-400 w-44 mb-1 mx-auto" />
             <p className="text-[10px] font-bold text-slate-800 uppercase tracking-wider">
               Authorised Signatory / Stamp
             </p>

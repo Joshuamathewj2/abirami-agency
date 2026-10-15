@@ -7,6 +7,7 @@ import { useCart } from '@/context/CartContext';
 import { type Product, type Size } from '@/types';
 import { useUserStore } from '@/store/userStore';
 import { getProductImagePath } from '@/lib/image-utils';
+import { formatDimensions } from '@/lib/dimensions';
 
 export default function ProductDetailClient({ product }: { product: Product }) {
   const router = useRouter();
@@ -156,15 +157,26 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               if (!specs['Model / SKU Number'] && primaryVariant?.label) {
                 specs['Model / SKU Number'] = primaryVariant.label.split('(')[0].trim();
               }
-              const validEntries = Object.entries(specs).filter(([key, val]) => {
-                if (key.toLowerCase() === 'warranty') {
-                  const strVal = String(val || '').trim().toLowerCase();
-                  if (!val || strVal === '0' || strVal === '0 years' || strVal === '0 year' || strVal === '0 months' || strVal === '0y' || strVal === '0m' || strVal === 'null' || strVal === 'undefined') {
+              const validEntries = Object.entries(specs)
+                .map(([key, val]) => {
+                  if (key.toLowerCase() === 'dimensions') {
+                    return [key, formatDimensions(val)];
+                  }
+                  return [key, val];
+                })
+                .filter(([key, val]) => {
+                  if (!val) return false;
+                  if (key.toLowerCase() === 'warranty') {
+                    const strVal = String(val || '').trim().toLowerCase();
+                    if (!val || strVal === '0' || strVal === '0 years' || strVal === '0 year' || strVal === '0 months' || strVal === '0y' || strVal === '0m' || strVal === 'null' || strVal === 'undefined') {
+                      return false;
+                    }
+                  }
+                  if (key.toLowerCase() === 'dimensions' && !val) {
                     return false;
                   }
-                }
-                return true;
-              });
+                  return true;
+                });
               if (validEntries.length === 0) return null;
               return (
                 <div className="mb-8 p-5 bg-white rounded-2xl border border-gray-200 space-y-2">

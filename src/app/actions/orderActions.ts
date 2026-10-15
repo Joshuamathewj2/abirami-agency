@@ -2,6 +2,7 @@
 
 import { addOrderToDB, getOrdersFromDB, updateOrderStatusInDB, addInquiryToDB, updateInquiryStatusInDB } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+import { formatDimensions } from '@/lib/dimensions';
 
 export async function placeOrderAction(orderData: any) {
   try {
@@ -283,7 +284,7 @@ export async function getUserOrdersAction(userId: string) {
         items: (inq.inquiry_items || []).map((item: any) => ({
           productName: item.variant?.mattress?.name || 'Unknown Product',
           sizeLabel: item.variant?.size_name || 'Standard',
-          dimensions: `${item.variant?.length || 0}" x ${item.variant?.width || 0}"${item.variant?.height ? ` x ${item.variant.height}"` : ''}`,
+          dimensions: formatDimensions(item.variant, 'mm'),
           quantity: item.quantity,
           price: item.unit_price
         }))

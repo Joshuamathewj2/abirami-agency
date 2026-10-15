@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { deleteOrderAction } from '@/app/actions/orderActions';
 import { useRouter } from 'next/navigation';
+import { exportOrdersToCSV } from '@/lib/csvExport';
 
 type PeriodFilter = 'ALL' | 'TODAY' | 'THIS_WEEK' | 'THIS_MONTH' | 'THIS_YEAR';
 
@@ -152,29 +153,8 @@ export default function InquiriesClient({ initialInquiries = [] }: { initialInqu
   // ── CSV Export ───────────────────────────────────────────────────────────────
 
   const handleExportCSV = () => {
-    const headers = ['ORDER ID', 'DATE', 'TIME', 'CUSTOMER NAME', 'MOBILE NUMBER', 'SOURCE', 'TOTAL DUE', 'STATUS'];
-    const rows = filteredInquiries.map((inq) => {
-      const { date, time } = formatDateLine(inq.created_at);
-      return [
-        extractInvoiceId(inq),
-        date,
-        time,
-        inq.customer_name || '-',
-        inq.customer_phone || '-',
-        extractSource(inq),
-        `₹${(inq.total_amount || 0).toLocaleString('en-IN')}.00`,
-        inq.status || 'Pending',
-      ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',');
-    });
-
-    const csvContent = [headers.join(','), ...rows].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `order-history-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const todayStr = new Date().toISOString().split('T')[0];
+    exportOrdersToCSV(filteredInquiries, `order-history-${todayStr}.csv`);
   };
 
   // ── Actions ──────────────────────────────────────────────────────────────────

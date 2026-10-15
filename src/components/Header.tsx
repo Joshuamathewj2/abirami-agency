@@ -42,8 +42,6 @@ function HeaderContent() {
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isSearchVisibleOnScroll, setIsSearchVisibleOnScroll] = useState(true);
-  const lastScrollY = useRef(0);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const [dbCategories, setDbCategories] = useState<{ id: string; name: string }[]>([]);
@@ -108,25 +106,6 @@ function HeaderContent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Collapse / reveal mobile search bar on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > 70) {
-        if (currentScrollY > lastScrollY.current + 8) {
-          setIsSearchVisibleOnScroll(false);
-          setShowSuggestions(false);
-        } else if (currentScrollY < lastScrollY.current - 8) {
-          setIsSearchVisibleOnScroll(true);
-        }
-      } else {
-        setIsSearchVisibleOnScroll(true);
-      }
-      lastScrollY.current = currentScrollY;
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Debounced product suggestions for search
   useEffect(() => {
@@ -629,11 +608,7 @@ function HeaderContent() {
         {/* ────────────────── ROW 2: FULL-WIDTH MOBILE SEARCH BAR ────────────────── */}
         <div
           ref={searchContainerRef}
-          className={`lg:hidden px-3 pb-2.5 pt-0.5 border-t border-gray-100/70 bg-white transition-all duration-300 relative ${
-            isSearchVisibleOnScroll
-              ? 'opacity-100 translate-y-0 max-h-16'
-              : 'opacity-0 -translate-y-2 max-h-0 overflow-hidden pointer-events-none pb-0 pt-0 border-transparent'
-          }`}
+          className="lg:hidden px-3 pb-2.5 pt-1 border-t border-gray-100 bg-white relative z-10"
         >
           <form
             onSubmit={(e) => {

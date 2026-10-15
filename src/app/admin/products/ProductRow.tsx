@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Product } from '@/types';
 import { deleteProductAction, toggleVariantStockAction, updateVariantPriceAction, addVariantAction, deleteVariantAction } from '@/app/actions/productActions';
+import { formatDimensions } from '@/lib/dimensions';
 
 export default function ProductRow({ product, onDelete }: { product: Product; onDelete?: (id: string) => void }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -209,7 +210,7 @@ export default function ProductRow({ product, onDelete }: { product: Product; on
                           {variant.label}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                          {variant.dimensions}
+                          {formatDimensions(variant.dimensions) || '—'}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                           {editingVariantId === variant.id ? (

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getUserOrdersAction } from '@/app/actions/orderActions';
 import { useUserStore } from '@/store/userStore';
 import { createClient } from '@/lib/supabase/client';
+import { formatDimensions } from '@/lib/dimensions';
 
 export default function UserDashboardPage() {
   const { user, profile, clearUser } = useUserStore();
@@ -155,9 +156,7 @@ export default function UserDashboardPage() {
                       </div>
                       <div className="space-y-6">
                         {order.items?.map((item: any, i: number) => {
-                          const parts = item.dimensions?.split(' x ') || [];
-                          const dims = parts[0] || item.dimensions;
-                          const height = parts[1] ? ` x ${parts[1]} inch` : '';
+                          const validDim = formatDimensions(item.dimensions);
                           return (
                             <div key={i} className="flex justify-between items-start text-sm group">
                               <div className="flex gap-4 items-start">
@@ -167,7 +166,13 @@ export default function UserDashboardPage() {
                                 <div>
                                   <p className="font-bold text-slate-900 text-base">{item.productName}</p>
                                   <p className="text-slate-500 mt-1 font-medium">
-                                    {item.sizeLabel} <span className="mx-1.5 text-slate-300">•</span> {dims}{height}
+                                    {item.sizeLabel}
+                                    {validDim && (
+                                      <>
+                                        <span className="mx-1.5 text-slate-300">•</span>
+                                        {validDim}
+                                      </>
+                                    )}
                                   </p>
                                 </div>
                               </div>
