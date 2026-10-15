@@ -1,0 +1,221 @@
+- generic [active] [ref=f3e1]:
+  - main [ref=f3e2]:
+    - generic [ref=f3e3]:
+      - generic [ref=f3e4]:
+        - generic [ref=f3e7]:
+          - generic [ref=f3e8]: Authorised Parryware Wholesaler
+          - heading "Elevate your bathroom." [level=1] [ref=f3e11]
+          - paragraph [ref=f3e12]: Premium sanitaryware & bathroom fittings at wholesale prices, delivered straight to your site.
+          - link "Shop Collection" [ref=f3e15] [cursor=pointer]:
+            - /url: /products
+          - generic [ref=f3e20]:
+            - generic [ref=f3e21]:
+              - paragraph [ref=f3e22]: 200+
+              - paragraph [ref=f3e23]: Premium Products
+            - generic [ref=f3e25]:
+              - paragraph [ref=f3e26]: 24h
+              - paragraph [ref=f3e27]: Fast Delivery
+        - img "Parryware Logo" [ref=f3e33]
+        - generic: Scroll
+      - generic [ref=f3e36]:
+        - generic [ref=f3e37]:
+          - generic [ref=f3e38]: 0+
+          - generic [ref=f3e40]: Happy Customers
+        - generic [ref=f3e41]:
+          - generic [ref=f3e42]: 0+
+          - generic [ref=f3e44]: Premium Products
+        - generic [ref=f3e45]:
+          - generic [ref=f3e46]: 0 Day
+          - generic [ref=f3e48]: Delivery
+        - generic [ref=f3e49]:
+          - generic [ref=f3e50]: 0%
+          - generic [ref=f3e52]: Genuine Products
+      - generic [ref=f3e54]:
+        - generic [ref=f3e56]:
+          - generic [ref=f3e57]:
+            - text: Why Choose Us
+            - heading "Built on Trust." [level=2] [ref=f3e58]
+          - paragraph [ref=f3e59]: Chennai's most reliable sanitaryware wholesale partner since day one.
+        - generic [ref=f3e60]:
+          - generic [ref=f3e62]:
+            - generic [ref=f3e63]: "01"
+            - heading "Fast Dispatch" [level=3] [ref=f3e68]
+            - paragraph [ref=f3e69]: Same-day dispatch across Chennai & Tamil Nadu for all sanitaryware and fitting orders.
+          - generic [ref=f3e74]:
+            - generic [ref=f3e75]: "02"
+            - heading "Authorised Wholesaler" [level=3] [ref=f3e80]
+            - paragraph [ref=f3e81]: Official Parryware partner. Every product is genuine and backed by manufacturer warranty.
+          - generic [ref=f3e86]:
+            - generic [ref=f3e87]: "03"
+            - heading "Warranty Backed" [level=3] [ref=f3e92]
+            - paragraph [ref=f3e93]: Up to 10 years warranty on fittings & sanitaryware. Buy with complete confidence.
+          - generic [ref=f3e98]:
+            - generic [ref=f3e99]: "04"
+            - heading "Wholesale Prices" [level=3] [ref=f3e104]
+            - paragraph [ref=f3e105]: Direct from dealer. Best prices in Chennai — always, no negotiations needed.
+      - generic [ref=f3e110]:
+        - generic [ref=f3e111]:
+          - text: Browse by Category
+          - heading "Shop by Category" [level=2] [ref=f3e112]
+          - paragraph [ref=f3e113]: Explore our full range of premium sanitaryware and bathroom fittings
+        - region "Category Gallery" [ref=f3e115]:
+          - generic:
+            - generic "One Piece WC (S-Trap)" [ref=f3e116] [cursor=pointer]:
+              - img "One Piece WC (S-Trap)"
+              - generic:
+                - paragraph: One Piece WC (S-Trap)
+                - paragraph: Premium single-piece ceramic water closets featuring dual flush and S-Trap configurations.
+            - generic "Squatting Pan" [ref=f3e117] [cursor=pointer]:
+              - img "Squatting Pan"
+              - generic:
+                - paragraph: Squatting Pan
+                - paragraph: Asian and Utsav squatting pans in standard and XL sizes.
+            - generic "Wall Hung Basin" [ref=f3e118] [cursor=pointer]:
+              - img "Wall Hung Basin"
+              - generic:
+                - paragraph: Wall Hung Basin
+                - paragraph: Wall-mounted vitreous china wash basins and corner basins.
+            - generic "Hand Showers Collection" [ref=f3e119] [cursor=pointer]:
+              - img "Hand Showers Collection"
+              - generic:
+                - paragraph: Hand Showers Collection
+                - paragraph: Multi-mode chrome and black hand showers.
+            - generic "Health Faucet Collection" [ref=f3e120] [cursor=pointer]:
+              - img "Health Faucet Collection"
+              - generic:
+                - paragraph: Health Faucet Collection
+                - paragraph: Brass, chrome, and anti-microbial health faucets with hose and hook.
+          - generic [ref=f3e121]:
+            - button "Previous slide" [ref=f3e122]
+            - generic:
+              - button "Go to slide 1"
+              - button "Go to slide 2"
+              - button "Go to slide 3"
+              - button "Go to slide 4"
+              - button "Go to slide 5"
+            - button "Next slide" [ref=f3e125]
+      - generic [ref=f3e128]:
+        - generic [ref=f3e130]:
+          - generic [ref=f3e131]:
+            - text: Social Proof
+            - heading "What Our Customers Say" [level=2] [ref=f3e132]
+            - paragraph [ref=f3e133]: Trusted by hundreds of customers across Tamil Nadu
+          - button "Write a Review" [ref=f3e135]
+        - generic [ref=f3e139]:
+          - generic [ref=f3e140]:
+            - paragraph [ref=f3e152]: “Purchased Parryware One Piece WCs and Claret Faucets for our new home construction in Chennai. Genuine products at wholesale prices with instant invoice generation. Excellent dealer support!”
+            - generic [ref=f3e153]:
+              - generic [ref=f3e154]: S
+              - generic [ref=f3e155]:
+                - paragraph [ref=f3e156]: Senthil Kumar
+                - paragraph [ref=f3e157]: Chennai
+          - generic [ref=f3e158]:
+            - paragraph [ref=f3e170]: “Best wholesale dealer for Parryware sanitaryware in Tamil Nadu. The wall hung closets and brass health faucets were delivered safely with zero damage. Highly recommended Abirami Agency!”
+            - generic [ref=f3e171]:
+              - generic [ref=f3e172]: A
+              - generic [ref=f3e173]:
+                - paragraph [ref=f3e174]: Anitha Raj
+                - paragraph [ref=f3e175]: Tambaram
+          - generic [ref=f3e176]:
+            - paragraph [ref=f3e188]: “Great range of electronic urinals and Jade collection kitchen mixers. Prompt customer inquiry response and authentic Parryware warranty backing.”
+            - generic [ref=f3e189]:
+              - generic [ref=f3e190]: M
+              - generic [ref=f3e191]:
+                - paragraph [ref=f3e192]: Muralidharan P.
+                - paragraph [ref=f3e193]: Avadi
+          - generic [ref=f3e194]:
+            - paragraph [ref=f3e206]: “Ordered 15 Wall Hung Basins and Pedestals for an apartment project. Wholesale discounts applied directly and fast dispatch across Chennai!”
+            - generic [ref=f3e207]:
+              - generic [ref=f3e208]: K
+              - generic [ref=f3e209]:
+                - paragraph [ref=f3e210]: Kavitha S.
+                - paragraph [ref=f3e211]: Poonamallee
+          - generic [ref=f3e212]:
+            - paragraph [ref=f3e224]: “Purchased Parryware One Piece WCs and Claret Faucets for our new home construction in Chennai. Genuine products at wholesale prices with instant invoice generation. Excellent dealer support!”
+            - generic [ref=f3e225]:
+              - generic [ref=f3e226]: S
+              - generic [ref=f3e227]:
+                - paragraph [ref=f3e228]: Senthil Kumar
+                - paragraph [ref=f3e229]: Chennai
+          - generic [ref=f3e230]:
+            - paragraph [ref=f3e242]: “Best wholesale dealer for Parryware sanitaryware in Tamil Nadu. The wall hung closets and brass health faucets were delivered safely with zero damage. Highly recommended Abirami Agency!”
+            - generic [ref=f3e243]:
+              - generic [ref=f3e244]: A
+              - generic [ref=f3e245]:
+                - paragraph [ref=f3e246]: Anitha Raj
+                - paragraph [ref=f3e247]: Tambaram
+          - generic [ref=f3e248]:
+            - paragraph [ref=f3e260]: “Great range of electronic urinals and Jade collection kitchen mixers. Prompt customer inquiry response and authentic Parryware warranty backing.”
+            - generic [ref=f3e261]:
+              - generic [ref=f3e262]: M
+              - generic [ref=f3e263]:
+                - paragraph [ref=f3e264]: Muralidharan P.
+                - paragraph [ref=f3e265]: Avadi
+          - generic [ref=f3e266]:
+            - paragraph [ref=f3e278]: “Ordered 15 Wall Hung Basins and Pedestals for an apartment project. Wholesale discounts applied directly and fast dispatch across Chennai!”
+            - generic [ref=f3e279]:
+              - generic [ref=f3e280]: K
+              - generic [ref=f3e281]:
+                - paragraph [ref=f3e282]: Kavitha S.
+                - paragraph [ref=f3e283]: Poonamallee
+      - generic [ref=f3e285]:
+        - generic [ref=f3e287]:
+          - text: Visit Us
+          - heading "Our Store Location" [level=2] [ref=f3e288]
+          - paragraph [ref=f3e289]: Visit our showroom to see our full sanitaryware and fittings collection in person
+        - generic [ref=f3e291]:
+          - generic [ref=f3e292]:
+            - generic [ref=f3e293]:
+              - paragraph [ref=f3e294]: visit us
+              - heading "Your Premium Bathroom Destination." [level=3] [ref=f3e295]
+              - generic [ref=f3e296]:
+                - generic [ref=f3e297]:
+                  - paragraph [ref=f3e298]: ADDRESS
+                  - paragraph [ref=f3e299]: Madavaram Red Hills Rd, Kilburn Nagar, Madavaram, Chennai - 600060
+                - generic [ref=f3e300]:
+                  - paragraph [ref=f3e301]: BUSINESS HOURS
+                  - paragraph [ref=f3e302]: Mon – Sat · 9:00 AM – 8:00 PM
+                - generic [ref=f3e303]:
+                  - paragraph [ref=f3e304]: PHONE
+                  - link "+91 86107 10434" [ref=f3e305] [cursor=pointer]:
+                    - /url: tel:8610710434
+                  - link "+91 72003 77455" [ref=f3e306] [cursor=pointer]:
+                    - /url: tel:7200377455
+            - generic [ref=f3e307]:
+              - link "WhatsApp Us" [ref=f3e308] [cursor=pointer]:
+                - /url: https://wa.me/918610710434?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20Parryware%20products
+              - link "Get Directions" [ref=f3e312] [cursor=pointer]:
+                - /url: https://www.google.com/maps/search/?api=1&query=Abirami+Agency+Parryware+Madavaram+Red+Hills+Rd+Chennai
+          - generic [ref=f3e317]:
+            - iframe [ref=f3e318]
+            - generic [ref=f3e319]:
+              - generic [ref=f3e320]: LIVE LOCATION
+              - heading "Abirami Agency (Parryware)" [level=4] [ref=f3e322]
+              - paragraph [ref=f3e323]: Madavaram Red Hills Rd, Kilburn Nagar, Madavaram, Chennai - 600060
+            - generic: Shop Here
+            - link "Open in Google Maps App ↗" [ref=f3e324] [cursor=pointer]:
+              - /url: https://www.google.com/maps/search/?api=1&query=Abirami+Agency+Parryware+Madavaram+Red+Hills+Rd+Chennai
+              - generic [ref=f3e327]: Open in Google Maps App
+              - generic [ref=f3e328]: ↗
+      - generic [ref=f3e331]:
+        - heading "Ready to Transform Your Bathroom?" [level=2] [ref=f3e332]
+        - paragraph [ref=f3e333]: Contact us today for wholesale prices and fast delivery across Tamil Nadu.
+        - generic [ref=f3e334]:
+          - generic [ref=f3e335]:
+            - link "Call 86107 10434" [ref=f3e336] [cursor=pointer]:
+              - /url: tel:8610710434
+            - link "Call 72003 77455" [ref=f3e339] [cursor=pointer]:
+              - /url: tel:7200377455
+          - link "Send Inquiry" [ref=f3e342] [cursor=pointer]:
+            - /url: /contact
+  - contentinfo [ref=f3e343]:
+    - generic [ref=f3e345]:
+      - paragraph [ref=f3e346]: © 2026 ALL RIGHTS RESERVED. ABIRAMI AGENCY - PARRYWARE SANITARYWARE.
+      - paragraph [ref=f3e347]:
+        - text: POWERED BY
+        - link "CENEXA SYSTEMS" [ref=f3e348] [cursor=pointer]:
+          - /url: https://www.cenexasystems.com/
+        - text: ©2026
+      - paragraph [ref=f3e349]:
+        - generic [ref=f3e350]: •
+        - text: PREMIUM BATH EXPERIENCES.
